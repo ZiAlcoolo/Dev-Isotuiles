@@ -20,11 +20,28 @@ const tarifs = {
     },
     tuilesPlates: {
         "50/77": [
-            { min: 20, max: 49, prix: 52.5 },
-            { min: 50, max: 99, prix: 42 },
-            { min: 100, max: 199, prix: 39.5 },
-            { min: 200, max: 299, prix: 36 },
-            { min: 300, max: Infinity, prix: 34.5 }
+            { min: 0, max: 24, prix: 56 },
+            { min: 25, max: 49, prix: 52 },
+            { min: 50, max: 74, prix: 49 },
+            { min: 75, max: 99, prix: 46 },
+            { min: 100, max: 149, prix: 41 },
+            { min: 150, max: Infinity, prix: 39 }
+        ],
+        "40/80": [
+            { min: 0, max: 24, prix: 56 },
+            { min: 25, max: 49, prix: 52 },
+            { min: 50, max: 74, prix: 49 },
+            { min: 75, max: 99, prix: 46 },
+            { min: 100, max: 149, prix: 41 },
+            { min: 150, max: Infinity, prix: 39 }
+        ],
+        "60/105": [
+            { min: 0, max: 24, prix: 56 },
+            { min: 25, max: 49, prix: 52 },
+            { min: 50, max: 74, prix: 49 },
+            { min: 75, max: 99, prix: 46 },
+            { min: 100, max: 149, prix: 41 },
+            { min: 150, max: Infinity, prix: 39 }
         ],
     },
     bacAcier: {
@@ -76,13 +93,13 @@ const tarifs = {
 const couleursParType = {
     romaneCanal: ["Rouge Vieillie", "Pastel Vieillie", "Terracotta", "Gris Anthracite"],
     tuilesPlates: ["Gris anthracite (RAL 7016)", "Gris terre d’ombre (RAL 7022)", "Rouge terracotta"],
-    bacAcier: ["Blanc - RAL 9010","Métal argenté - RAL 9006","Métal gris - RAL 9007","Gris perle - RAL 7038","Gris basalte - RAL 7012","Gris anthracite - RAL 7016","Gris fonce - RAL 7022","Noir profond - RAL 9005","Tuile rouge - RAL 8004","Rouge fonce - RAL 3009","Rouge feu - RAL 3000","Creme - RAL 1015","Jaune zinc - RAL 1018","Bleu gentiane - RAL 5010","Vert fonce - RAL 6005"]
+    bacAcier: ["Blanc - RAL 9010", "Métal argenté - RAL 9006", "Métal gris - RAL 9007", "Gris perle - RAL 7038", "Gris basalte - RAL 7012", "Gris anthracite - RAL 7016", "Gris fonce - RAL 7022", "Noir profond - RAL 9005", "Tuile rouge - RAL 8004", "Rouge fonce - RAL 3009", "Rouge feu - RAL 3000", "Creme - RAL 1015", "Jaune zinc - RAL 1018", "Bleu gentiane - RAL 5010", "Vert fonce - RAL 6005"]
 };
 
 // Données des épaisseurs par type
 const epaisseursParType = {
     romaneCanal: ["40/80", "60/105"],
-    tuilesPlates: ["50/77"],
+    tuilesPlates: ["50/77", "40/80", "60/105"],
     bacAcier: ["30", "40", "50", "60", "80", "100"]
 };
 
