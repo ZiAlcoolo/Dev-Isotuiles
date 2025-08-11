@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estimateur de prix</title>
+</head>
+
+<body>
+
+
+
+    <h2>Estimez votre commande chez Isotuile</h2>
+
+    <div id="estimateur_container">
+
+
+        <!-- Type de produit -->
+        <fieldset class="select_container">
+            <label class="required">Type de produit*</label>
+            <div class="form_choices" id="typePanneauContainer">
+                <div class="form-check">
+                    <input type="radio" id="type1" name="typePanneau" value="romaneCanal" checked>
+                    <label for="type1">Romane Canal</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" id="type2" name="typePanneau" value="tuilesPlates">
+                    <label for="type2">Tuiles Plates</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" id="type3" name="typePanneau" value="bacAcier">
+                    <label for="type3">Bac Acier</label>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Couleur (sera rempli dynamiquement) -->
+        <fieldset class="select_container">
+            <label class="required">Couleur*</label>
+            <div class="form_choices" id="couleurContainer"></div>
+        </fieldset>
+
+        <!-- Épaisseur (sera rempli dynamiquement) -->
+        <fieldset class="select_container">
+            <label class="required">Épaisseur*</label>
+            <div class="form_choices" id="epaisseurContainer"></div>
+        </fieldset>
+
+
+
+
+
+        <!-- Tableau Longueur / Quantité / Surface -->
+        <div class="select_container">
+            <p class="select_title">Longueur & quantité</p>
+            <table id="tablePanneaux">
+                <thead>
+                    <tr>
+                        <th>Longueur (mm)</th>
+                        <th>Quantité</th>
+                        <th>Surface (m²)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="number" step="0.01" class="longueur"></td>
+                        <td><input type="number" step="1" class="quantite"></td>
+                        <td class="surface">0</td>
+                    </tr>
+                </tbody>
+            </table>
+            <button id="ajouterLigne">Ajouter une longueur</button>
+        </div>
+
+    </div>
+
+    <div class="total">Prix estimé : <span id="prixTotal">0</span> €</div>
+
+    <style>
+        body {
+            background-color: #f0f2f9;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-spacing: 10px;
+        }
+
+        table,
+        th,
+        td {
+            box-sizing: border-box;
+            border: none;
+            text-align: center;
+        }
+        tr{
+            position: relative;
+        }
+        td input{
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 15px;
+            border: thin solid #f0f2f9;
+            padding: 10px 0;
+        }
+
+        th {
+            padding: 10px;
+            width: 30%;
+            background-color: #f0f2f9;
+            border-radius: 15px;
+            font-weight: 500;
+        }
+
+
+        #estimateur_container {
+            border-radius: 20px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            margin: 2rem;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #estimateur_container .select_container {
+            display: flex;
+            flex-direction: column;
+            border: none;
+            padding: 1rem;
+            box-sizing: border-box;
+            width: 100%;
+            position: relative;
+            flex: 1;
+        }
+
+        #estimateur_container .select_container>label, #estimateur_container .select_container .select_title {
+            font-size: .8rem;
+            font-weight: 600;
+        }
+
+        #estimateur_container .select_container .form_choices {
+            display: flex;
+            flex-direction: row;
+            margin: 1rem 0;
+            gap: 1rem;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        #estimateur_container .select_container .form-check {}
+
+        #estimateur_container .form-check input[type=radio] {
+            position: relative;
+            height: 100%;
+            inset: 0 auto auto 0;
+            margin: auto;
+            position: absolute;
+            visibility: hidden;
+            width: 100%;
+        }
+
+        #estimateur_container .form-check input[type=radio]+label {
+            align-items: center;
+            background-color: #fff;
+            border: 1.5px solid #b1b1b1;
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            font-weight: 500;
+            height: 2rem;
+            justify-content: center;
+            min-width: 4rem;
+            padding: .5rem 1.2rem;
+            position: relative;
+            font-size: 1rem;
+        }
+
+        #estimateur_container .form-check input[type=radio]:checked+label {
+            background-color: #f1f2f7;
+            border-color: #1126b7;
+        }
+        
+        #estimateur_container #ajouterLigne {
+            border: none;
+            padding: 2px;
+            border-radius: 5px;
+            width: 95%;
+            margin: auto;
+            margin-top: 1rem;
+            background-color: #f0f2f9;
+            cursor: pointer;
+        }
+
+        .total {
+            display: flex;
+            justify-content: center;
+            border: 2px solid #fff;
+            border-radius: 20px;
+            margin: 2rem;
+            position: relative;
+            padding: 1rem;
+            font-weight: bold;
+            transition: background-color .4s ease;
+            font-size: 1.5rem;
+        }
+
+        .total:hover {
+            background-color: #fff;
+        }
+    </style>
+
+
+    <script src="./estimateur_simple_prix.js"></script>
+</body>
+
+</html>
