@@ -2,6 +2,24 @@
 const tarifs = {
     romaneCanal: {
         "40/80": [
+            { min: 0, max: 25, prix: 56 },
+            { min: 25, max: 50, prix: 52 },
+            { min: 50, max: 75, prix: 49 },
+            { min: 75, max: 100, prix: 46 },
+            { min: 100, max: 150, prix: 41 },
+            { min: 150, max: Infinity, prix: 39 }
+        ],
+        "60/105": [
+            { min: 0, max: 25, prix: 58.5 },
+            { min: 25, max: 50, prix: 54.5 },
+            { min: 50, max: 75, prix: 51.5 },
+            { min: 75, max: 100, prix: 48.5 },
+            { min: 100, max: 150, prix: 43.5 },
+            { min: 150, max: Infinity, prix: 41.5 }
+        ]
+    },
+    romaneCanalVieillies: {
+        "40/80": [
             { min: 0, max: 25, prix: 59 },
             { min: 25, max: 50, prix: 55 },
             { min: 50, max: 75, prix: 52 },
@@ -120,8 +138,9 @@ document.getElementById('ajouterLigne').addEventListener('click', () => {
 
 // Récupération du prix selon le produit, l’épaisseur et la surface totale
 function getPrixM2(type, epaisseur, surfaceTotale) {
+    if(surfaceTotale===0){return}
     const tranches = tarifs[type][epaisseur];
-    console.log("tarifs", tarifs, "type", type, "epaisseur", epaisseur)
+    // console.log("tarifs", tarifs, "type", type, "epaisseur", epaisseur)
     const tranche = tranches.find(t => surfaceTotale >= t.min && surfaceTotale <= t.max);
     return tranche ? tranche.prix : 0;
 }
@@ -129,7 +148,7 @@ function getPrixM2(type, epaisseur, surfaceTotale) {
 // Calcul
 function majCalcul() {
     const type = document.querySelector('input[name="typePanneau"]:checked').value;
-    const epaisseur = document.querySelector('input[name="epaisseur"]:checked').value;
+    const epaisseur = document.querySelector('input[name="epaisseurPanneau"]:checked').value;
 
     let totalSurface = 0;
     document.querySelectorAll('#tablePanneaux tbody tr').forEach(tr => {
@@ -139,6 +158,7 @@ function majCalcul() {
         tr.querySelector('.surface').textContent = surface.toFixed(2);
         totalSurface += surface;
     });
+
 
     const prixM2 = getPrixM2(type, epaisseur, totalSurface);
     const prixTotal = totalSurface * prixM2;
@@ -181,14 +201,16 @@ document.addEventListener("DOMContentLoaded", function () {
         // Mise à jour épaisseurs
         epaisseurContainer.innerHTML = "";
         epaisseursParType[typeSelect].forEach((ep, i) => {
+            if (i === 0) { epaisseurSelectionne = ep }
             const id = `ep${i}`;
             epaisseurContainer.innerHTML += `
                 <div class="form-check">
-                    <input type="radio" id="${id}" name="epaisseur" value="${ep}" ${i === 0 ? 'checked' : ''}>
+                    <input type="radio" id="${id}" name="epaisseurPanneau" value="${ep}" ${i === 0 ? 'checked' : ''}>
                     <label for="${id}">${ep}mm</label>
                 </div>
             `;
         });
+
     }
 
     // Événement sur changement de type
@@ -199,3 +221,109 @@ document.addEventListener("DOMContentLoaded", function () {
     // Initialisation
     majOptions();
 });
+
+
+
+
+
+
+
+
+
+
+// Produit sélectionné (à changer selon ton select)
+let produitSelectionne = "romaneCanal";
+let epaisseurSelectionne = "40/80";
+
+
+// Tableau des longueurs et quantités (exemple)
+let commande = [
+    { longueur: 1, quantite: 2 },
+    { longueur: 3, quantite: 1 }
+];
+
+
+$('.form_choices input[name="typePanneau"], .form_choices input[name="epaisseurPanneau"]').on('change', function () {
+    majTablePrix();
+    let valType = $('input[name="typePanneau"]:checked').val();
+    let valEpaisseur = $('input[name="epaisseurPanneau"]:checked').val();
+
+    produitSelectionne = valType || produitSelectionne;
+    epaisseurSelectionne = valEpaisseur || epaisseurSelectionne;
+
+    console.log("========", produitSelectionne, epaisseurSelectionne);
+});
+
+
+
+
+
+
+// Génère le tableau des prix
+function majTablePrix() {
+    data = tarifs[produitSelectionne]
+    titre = $('input[name="typePanneau"]:checked').next('label').text();
+
+    let html = `<h3>${titre}</h3>`;
+    html += `<table border="1" cellpadding="5" style="border-collapse:collapse;">
+        <thead>
+            <tr>
+                <th>Surface / Épaisseur</th>
+                <th>${epaisseurSelectionne}mm</th>
+            </tr>
+        </thead>
+        <tbody>`;
+
+
+
+    const nbRows = data[epaisseurSelectionne].length;
+    for (let i = 0; i < nbRows; i++) {
+        const plages = data[epaisseurSelectionne][i];
+
+        let surfaceLabel = "";
+        if (plages.min === 0) surfaceLabel = `De 0 à ${plages.max}m²`;
+        else if (plages.max === Infinity) surfaceLabel = `Plus de ${plages.min}m²`;
+        else surfaceLabel = `De ${plages.min} à ${plages.max}m²`;
+
+        html += `<tr>
+            <td>${surfaceLabel}</td>
+            <td>${plages.prix.toFixed(2).replace('.', ',')} €/m²</td>
+        </tr>`;
+    }
+
+    html += `</tbody></table>`;
+    $("#tablePrix").html(html);
+}
+
+// Génère le tableau de détails + calcule le total
+function majTableDetail() {
+    return
+    let prix = prixProduits[produitSelectionne];
+    let total = 0;
+    let html = commande.map(c => {
+        let prixUnitaire = prix.find(p => p.longueur === c.longueur)?.prix || 0;
+        let surface = c.longueur * c.quantite; // simplifié
+        let prixTotalLigne = prixUnitaire * surface;
+        total += prixTotalLigne;
+        return `
+            <tr>
+                <td>${c.longueur} m</td>
+                <td>${c.quantite}</td>
+                <td>${surface} m²</td>
+                <td>${prixTotalLigne} €</td>
+            </tr>
+        `;
+    }).join('');
+    $("#tableDetail tbody").html(html);
+    $("#prixTotal").text(total.toFixed(2));
+}
+
+// Toggle affichage
+$(".toggle_btn").on("click", function () {
+    $(this).next(".tableContainer").slideToggle();
+    $(this).toggleClass("expand");
+});
+
+// Initialisation
+majTablePrix();
+majTableDetail();

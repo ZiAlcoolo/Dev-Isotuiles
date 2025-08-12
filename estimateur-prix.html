@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estimateur de prix</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
@@ -76,7 +78,56 @@
 
     </div>
 
-    <div class="total">Prix estimé : <span id="prixTotal">0</span> €</div>
+
+
+
+    <div class="total">
+        <!-- Tableau des prix -->
+        <div>
+            <div class="toggle_btn">
+                <img src="https://img.icons8.com/ios-glyphs/1000/chevron-up.png">
+                <span>Tableau des prix</span>
+            </div>
+            <div id="tablePrix" class="tableContainer">
+                <table id="tablePrix">
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th>Couleur</th>
+                            <th>Épaisseur</th>
+                            <th>Prix</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Détail commande -->
+        <div>
+            <div class="toggle_btn">
+                <img src="https://img.icons8.com/ios-glyphs/1000/chevron-up.png">
+                <span>Détail commande</span>
+            </div>
+            <div id="tableDetail" class="tableContainer">
+                <table id="tableDetail">
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th>Couleur</th>
+                            <th>Épaisseur</th>
+                            <th>Quantité</th>
+                            <th>Prix total</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div>Prix estimé : <span id="prixTotal">0</span> €</div>
+    </div>
+
 
 
 
@@ -102,10 +153,12 @@
             border: none;
             text-align: center;
         }
-        tr{
+
+        tr {
             position: relative;
         }
-        td input{
+
+        td input {
             width: 100%;
             box-sizing: border-box;
             border-radius: 15px;
@@ -144,7 +197,8 @@
             flex: 1;
         }
 
-        #estimateur_container .select_container>label, #estimateur_container .select_container .select_title {
+        #estimateur_container .select_container>label,
+        #estimateur_container .select_container .select_title {
             font-size: .8rem;
             font-weight: 600;
         }
@@ -190,7 +244,7 @@
             background-color: #f1f2f7;
             border-color: #1126b7;
         }
-        
+
         #estimateur_container #ajouterLigne {
             border: none;
             padding: 2px;
@@ -204,6 +258,8 @@
 
         .total {
             display: flex;
+            flex-direction: column;
+            gap: 1rem;
             justify-content: center;
             border: 2px solid #fff;
             border-radius: 20px;
@@ -217,6 +273,40 @@
 
         .total:hover {
             background-color: #fff;
+        }
+
+        .total table {
+            width: 100%;
+            /* border-collapse: collapse; */
+            margin-bottom: 10px;
+        }
+
+        .total th,
+        .total td {
+            border: 1px solid #ccc;
+            padding: 6px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .toggle_btn {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .toggle_btn img {
+            width: 12px;
+            height: 12px;
+            margin-right: 6px;
+            transition: transform 0.3s;
+        }
+
+        .toggle_btn.expand img {
+            transform: rotate(180deg);
         }
     </style>
 
