@@ -89,7 +89,7 @@
                 <span>Tableau des prix</span>
             </div>
             <div id="tablePrix" class="tableContainer">
-                <table id="tablePrix">
+                <table>
                     <thead>
                         <tr>
                             <th>Produit</th>
@@ -110,13 +110,14 @@
                 <span>Détail commande</span>
             </div>
             <div id="tableDetail" class="tableContainer">
-                <table id="tableDetail">
+                <table>
                     <thead>
                         <tr>
-                            <th>Produit</th>
-                            <th>Couleur</th>
+                            <th>Produit + Couleur</th>
                             <th>Épaisseur</th>
+                            <th>Longueur</th>
                             <th>Quantité</th>
+                            <th>Surface</th>
                             <th>Prix total</th>
                         </tr>
                     </thead>
@@ -170,7 +171,7 @@
             padding: 10px;
             width: 30%;
             background-color: #f0f2f9;
-            border-radius: 15px;
+            border-radius: 8px;
             font-weight: 500;
         }
 
@@ -277,16 +278,37 @@
 
         .total table {
             width: 100%;
-            /* border-collapse: collapse; */
-            margin-bottom: 10px;
+            border-collapse: collapse;
+        }
+
+        .total thead th {
+            background-color: #f0f2f9;
+        }
+
+        .total thead th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .total thead th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .total td {
+            border: 1px solid #e8e9f0;
         }
 
         .total th,
         .total td {
-            border: 1px solid #ccc;
             padding: 6px;
             text-align: center;
             font-size: 1rem;
+            background-color: transparent;
+            border-radius: 0;
+        }
+
+        .total h3 {
+            margin: .5rem 0;
+            text-align: center;
         }
 
         .toggle_btn {
