@@ -54,12 +54,12 @@ const tarifs = {
             { min: 150, max: Infinity, prix: 39 }
         ],
         "60/105": [
-            { min: 0, max: 24, prix: 56 },
-            { min: 25, max: 49, prix: 52 },
-            { min: 50, max: 74, prix: 49 },
-            { min: 75, max: 99, prix: 46 },
-            { min: 100, max: 149, prix: 41 },
-            { min: 150, max: Infinity, prix: 39 }
+            { min: 0, max: 24, prix: 58.5 },
+            { min: 25, max: 49, prix: 54.5 },
+            { min: 50, max: 74, prix: 51.5 },
+            { min: 75, max: 99, prix: 48.5 },
+            { min: 100, max: 149, prix: 43.5 },
+            { min: 150, max: Infinity, prix: 41.5 }
         ],
     },
     bacAcier: {
@@ -107,6 +107,7 @@ const tarifs = {
         ]
     }
 };
+
 // Données des coloris par type
 const couleursParType = {
     romaneCanal: ["Rouge Vieillie", "Pastel Vieillie", "Terracotta", "Gris Anthracite"],
@@ -124,6 +125,12 @@ const epaisseursParType = {
 
 
 
+// Produit sélectionné (à changer selon ton select)
+let produitSelectionne = "romaneCanal";
+let epaisseurSelectionne = "40/80";
+
+
+
 // Ajout de ligne
 document.getElementById('ajouterLigne').addEventListener('click', () => {
     const tbody = document.querySelector('#tablePanneaux tbody');
@@ -137,9 +144,9 @@ document.getElementById('ajouterLigne').addEventListener('click', () => {
 });
 
 // Récupération du prix selon le produit, l’épaisseur et la surface totale
-function getPrixM2(type, epaisseur, surfaceTotale) {
-    if(surfaceTotale===0){return}
-    const tranches = tarifs[type][epaisseur];
+function getPrixM2(surfaceTotale) {
+    if (surfaceTotale === 0) { return }
+    const tranches = tarifs[produitSelectionne][epaisseurSelectionne];
     // console.log("tarifs", tarifs, "type", type, "epaisseur", epaisseur)
     const tranche = tranches.find(t => surfaceTotale >= t.min && surfaceTotale <= t.max);
     return tranche ? tranche.prix : 0;
@@ -147,8 +154,8 @@ function getPrixM2(type, epaisseur, surfaceTotale) {
 
 // Calcul
 function majCalcul() {
-    const type = document.querySelector('input[name="typePanneau"]:checked').value;
-    const epaisseur = document.querySelector('input[name="epaisseurPanneau"]:checked').value;
+
+    majTypeEpaisseur();
 
     let totalSurface = 0;
     document.querySelectorAll('#tablePanneaux tbody tr').forEach(tr => {
@@ -160,7 +167,7 @@ function majCalcul() {
     });
 
 
-    const prixM2 = getPrixM2(type, epaisseur, totalSurface);
+    const prixM2 = getPrixM2(totalSurface);
     const prixTotal = totalSurface * prixM2;
 
     document.getElementById('prixTotal').textContent = prixTotal.toFixed(2);
@@ -184,11 +191,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Fonction qui met à jour les options en fonction du type sélectionné
     function majOptions() {
-        const typeSelect = document.querySelector('input[name="typePanneau"]:checked').value;
 
         // Mise à jour couleurs
         couleurContainer.innerHTML = "";
-        couleursParType[typeSelect].forEach((couleur, i) => {
+        couleursParType[produitSelectionne].forEach((couleur, i) => {
             const id = `coul${i}`;
             couleurContainer.innerHTML += `
                 <div class="form-check">
@@ -200,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Mise à jour épaisseurs
         epaisseurContainer.innerHTML = "";
-        epaisseursParType[typeSelect].forEach((ep, i) => {
+        epaisseursParType[produitSelectionne].forEach((ep, i) => {
             if (i === 0) { epaisseurSelectionne = ep }
             const id = `ep${i}`;
             epaisseurContainer.innerHTML += `
@@ -231,19 +237,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-// Produit sélectionné (à changer selon ton select)
-let produitSelectionne = "romaneCanal";
-let epaisseurSelectionne = "40/80";
 
 
-// Tableau des longueurs et quantités (exemple)
-let commande = [
-    { longueur: 1, quantite: 2 },
-    { longueur: 3, quantite: 1 }
-];
-
-
-$('.form_choices input[name="typePanneau"], .form_choices input[name="epaisseurPanneau"]').on('change', function () {
+function majTypeEpaisseur() {
     majTablePrix();
     let valType = $('input[name="typePanneau"]:checked').val();
     let valEpaisseur = $('input[name="epaisseurPanneau"]:checked').val();
@@ -252,7 +248,7 @@ $('.form_choices input[name="typePanneau"], .form_choices input[name="epaisseurP
     epaisseurSelectionne = valEpaisseur || epaisseurSelectionne;
 
     console.log("========", produitSelectionne, epaisseurSelectionne);
-});
+};
 
 
 
