@@ -333,8 +333,8 @@ function majCalcul() {
                 <td>${epaisseurSelectionne}</td>
                 <td>${longueur} m</td>
                 <td>${quantite}</td>
-                <td>${surface} m²</td>
-                <td>${prixTotal_ligne} €</td>
+                <td>${surface.toFixed(2)} m²</td>
+                <td>${prixTotal_ligne.toFixed(2)} €</td>
             </tr>
         `);
 
@@ -354,43 +354,6 @@ function majCalcul() {
 document.addEventListener('input', majCalcul);
 document.addEventListener('change', majCalcul);
 
-// Génère le tableau de détails + calcule le total
-function majTableDetail() {
-    return
-    let tbody = $("#tableDetail tbody");
-    tbody.empty();
-
-    // On parcourt toutes les lignes saisies (exemple: input longueur & quantité dans un tableau dynamique)
-    $("#tablePanneaux tbody tr").each(function () {
-        let longueur = parseFloat($(this).find(".tb_longueur").val()) || 0;
-        let quantite = parseInt($(this).find(".tb_quantite").val()) || 0;
-        let surface = (longueur * quantite).toFixed(2);
-
-
-        // Récupération du prix unitaire selon produit + épaisseur
-
-        let prixUnitaire = tarifs[produitSelectionne]?.[epaisseurSelectionne] ?? 0;
-
-        // Majoration si couleur vieillie
-        if (isVieillie) prixUnitaire *= 1.05; // +5% par exemple
-
-        let prixTotal = (surface * prixUnitaire).toFixed(2);
-
-        titre = $('input[name="typePanneau"]:checked').next('label').text();
-
-        // Ajout dans la table
-        tbody.append(`
-            <tr>
-                <td>${titre} ${isVieillie ? "(Vieillie)" : ""}</td>
-                <td>${epaisseurSelectionne}</td>
-                <td>${longueur} m</td>
-                <td>${quantite}</td>
-                <td>${surface} m²</td>
-                <td>${prixTotal} €</td>
-            </tr>
-        `);
-    });
-}
 
 // Toggle affichage
 $(".toggle_btn").on("click", function () {
