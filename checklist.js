@@ -1,3 +1,19 @@
+const mychecklist = [
+    {
+        title: "Ajouter les longueurs par défaut",
+        check: false,
+    },
+    {
+        title: "Les coloris vieillie en Romane canal + chers que couleurs unis (gris / terracotta )",
+        check: true,
+    },
+    {
+        title: "Afficher détail : Genre prix au m2 + prix du panneau",
+        check: true,
+    }
+];
+
+
 $("#checkList").html(`
 
 
@@ -105,20 +121,6 @@ $("#checkList").html(`
 
 
 
-const mychecklist = [
-    {
-        title: "Ajouter les longueurs par défaut",
-        check: false,
-    },
-    {
-        title: "Les coloris vieillie en Romane canal + chers que couleurs unis (gris / terracotta )",
-        check: false,
-    },
-    {
-        title: "Afficher détail : Genre prix au m2 + prix du panneau",
-        check: false,
-    }
-];
 
 
 

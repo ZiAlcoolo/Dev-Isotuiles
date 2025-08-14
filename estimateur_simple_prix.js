@@ -132,50 +132,6 @@ let isVieillie = false;
 
 
 
-// Ajout de ligne
-document.getElementById('ajouterLigne').addEventListener('click', () => {
-    const tbody = document.querySelector('#tablePanneaux tbody');
-    const row = document.createElement('tr');
-    row.innerHTML = `
-        <td><input type="number" step="0.01" class="longueur"></td>
-        <td><input type="number" step="1" class="quantite"></td>
-        <td class="surface">0</td>
-    `;
-    tbody.appendChild(row);
-});
-
-// Récupération du prix selon le produit, l’épaisseur et la surface totale
-function getPrixM2(surfaceTotale) {
-    if (surfaceTotale === 0) { return }
-    const tranches = tarifs[produitSelectionne][epaisseurSelectionne];
-    // console.log("tarifs", tarifs, "type", type, "epaisseur", epaisseur)
-    const tranche = tranches.find(t => surfaceTotale >= t.min && surfaceTotale <= t.max);
-    return tranche ? tranche.prix : 0;
-}
-
-// Calcul
-function majCalcul() {
-
-    let totalSurface = 0;
-    document.querySelectorAll('#tablePanneaux tbody tr').forEach(tr => {
-        const longueur = parseFloat(tr.querySelector('.longueur').value) / 1000 || 0;
-        const quantite = parseInt(tr.querySelector('.quantite').value) || 0;
-        const surface = longueur * quantite;
-        tr.querySelector('.surface').textContent = surface.toFixed(2);
-        totalSurface += surface;
-    });
-
-
-    const prixM2 = getPrixM2(totalSurface);
-    const prixTotal = totalSurface * prixM2;
-
-    document.getElementById('prixTotal').textContent = prixTotal.toFixed(2);
-}
-
-// Événements
-document.addEventListener('input', majCalcul);
-document.addEventListener('change', majCalcul);
-
 
 
 
@@ -212,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         if ((!couleursParType[produitSelectionne])) {
-            return 
+            return
         }
 
         // Mise à jour couleurs
@@ -327,8 +283,80 @@ function majTablePrix() {
     $("#tablePrix").html(html);
 }
 
+
+
+
+
+
+// Ajout de ligne
+document.getElementById('ajouterLigne').addEventListener('click', () => {
+    const tbody = document.querySelector('#tablePanneaux tbody');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td><input type="number" step="0.01" class="longueur"></td>
+        <td><input type="number" step="1" class="quantite"></td>
+        <td class="surface">0</td>
+    `;
+    tbody.appendChild(row);
+});
+
+// Récupération du prix selon le produit, l’épaisseur et la surface totale
+function getPrixM2(surfaceTotale) {
+    if (surfaceTotale === 0) { return }
+    const tranches = tarifs[produitSelectionne][epaisseurSelectionne];
+    // console.log("tarifs", tarifs, "type", type, "epaisseur", epaisseur)
+    const tranche = tranches.find(t => surfaceTotale >= t.min && surfaceTotale <= t.max);
+    return tranche ? tranche.prix : 0;
+}
+
+// Calcul
+function majCalcul() {
+
+    let tbody = $("#tableDetail tbody");
+    tbody.empty();
+
+    let totalSurface = 0;
+    document.querySelectorAll('#tablePanneaux tbody tr').forEach(tr => {
+        const longueur = parseFloat(tr.querySelector('.longueur').value) / 1000 || 0;
+        const quantite = parseInt(tr.querySelector('.quantite').value) || 0;
+        const surface = longueur * quantite;
+        tr.querySelector('.surface').textContent = surface.toFixed(2);
+        totalSurface += surface;
+
+        var prixM2_ligne = getPrixM2(surface);
+        var prixTotal_ligne = surface * prixM2_ligne
+        // Ajout dans la table
+        var titre = $('input[name="typePanneau"]:checked').next('label').text();
+        tbody.append(`
+            <tr>
+                <td>${titre} ${isVieillie ? "(Vieillie)" : ""}</td>
+                <td>${epaisseurSelectionne}</td>
+                <td>${longueur} m</td>
+                <td>${quantite}</td>
+                <td>${surface} m²</td>
+                <td>${prixTotal_ligne} €</td>
+            </tr>
+        `);
+
+    });
+
+
+    const prixM2 = getPrixM2(totalSurface);
+    const prixTotal = totalSurface * prixM2;
+
+
+
+
+    document.getElementById('prixTotal').textContent = prixTotal.toFixed(2);
+}
+
+// Événements
+document.addEventListener('input', majCalcul);
+document.addEventListener('change', majCalcul);
+
 // Génère le tableau de détails + calcule le total
 function majTableDetail() {
+    return
     let tbody = $("#tableDetail tbody");
     tbody.empty();
 
