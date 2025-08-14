@@ -198,7 +198,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         majTablePrix();
-        majTableDetail();
 
 
         // Événement sur changement de type
@@ -214,7 +213,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 let valEpaisseur = $('input[name="epaisseurPanneau"]:checked').val();
                 epaisseurSelectionne = valEpaisseur || epaisseurSelectionne;
                 majTablePrix();
-                majTableDetail();
             });
         });
 
@@ -363,4 +361,3 @@ $(".toggle_btn").on("click", function () {
 
 // Initialisation
 majTablePrix();
-majTableDetail();
