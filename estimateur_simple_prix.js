@@ -110,7 +110,7 @@ const tarifs = {
 
 // Données des coloris par type
 const couleursParType = {
-    romaneCanal: [["Terracotta", "#c96a31"], ["Gris Anthracite", "#484848"], ["Rouge Vieillie", "#ba684f"], ["Pastel Vieillie", "#8b7050"]],
+    romaneCanal: [["Terracotta", "#c96a31"], ["Gris Anthracite", "#484848"], ["Rouge Vieillie", "linear-gradient(90deg,#ba684f 10%, #724437 50%, #ba684f 90%);"], ["Pastel Vieillie", "linear-gradient(90deg,rgba(135, 113, 84, 1) 10%, rgba(102, 79, 56, 1) 50%, rgba(135, 113, 84, 1) 90%)"]],
     tuilesPlates: [["Gris anthracite (RAL 7016)", "#3B4044"], ["Gris terre d’ombre (RAL 7022)", "#4C4C47"], ["Terracotta", "#c96a31"]],
     bacAcier: [["Blanc - RAL 9010", "#EFEEE5"],
     ["Métal argenté - RAL 9006", "#9A9D9D"],
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
             couleurContainer.innerHTML += `
                 <div class="form-check">
                     <input type="radio" id="${id}" name="couleurPanneau" value="${couleur[0]}" ${i === 0 ? 'checked' : ''}>
-                    <label for="${id}"><div class="couleurChip" style="background-color:${couleur[1]};"></div>${couleur[0]}</label>
+                    <label for="${id}"><div class="couleurChip" style="background:${couleur[1]};"></div>${couleur[0]}</label>
                 </div>
             `;
         });
