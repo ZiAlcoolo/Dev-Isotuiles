@@ -346,6 +346,7 @@ function majCalcul() {
                 <td>${longueur} m</td>
                 <td>${quantite}</td>
                 <td>${surface.toFixed(2)} m²</td>
+                <td>${prixM2_ligne} €/m²</td>
                 <td>${prixTotal_ligne?prixTotal_ligne.toFixed(2):0} €</td>
             </tr>
         `);
