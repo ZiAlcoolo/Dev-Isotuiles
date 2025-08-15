@@ -110,9 +110,23 @@ const tarifs = {
 
 // Données des coloris par type
 const couleursParType = {
-    romaneCanal: ["Terracotta", "Gris Anthracite", "Rouge Vieillie", "Pastel Vieillie"],
-    tuilesPlates: ["Gris anthracite (RAL 7016)", "Gris terre d’ombre (RAL 7022)", "Rouge terracotta"],
-    bacAcier: ["Blanc - RAL 9010", "Métal argenté - RAL 9006", "Métal gris - RAL 9007", "Gris perle - RAL 7038", "Gris basalte - RAL 7012", "Gris anthracite - RAL 7016", "Gris fonce - RAL 7022", "Noir profond - RAL 9005", "Tuile rouge - RAL 8004", "Rouge fonce - RAL 3009", "Rouge feu - RAL 3000", "Creme - RAL 1015", "Jaune zinc - RAL 1018", "Bleu gentiane - RAL 5010", "Vert fonce - RAL 6005"]
+    romaneCanal: [["Terracotta", "#c96a31"], ["Gris Anthracite", "#484848"], ["Rouge Vieillie", "#ba684f"], ["Pastel Vieillie", "#8b7050"]],
+    tuilesPlates: [["Gris anthracite (RAL 7016)", "#3B4044"], ["Gris terre d’ombre (RAL 7022)", "#4C4C47"], ["Terracotta", "#c96a31"]],
+    bacAcier: [["Blanc - RAL 9010", "#EFEEE5"],
+    ["Métal argenté - RAL 9006", "#9A9D9D"],
+    ["Métal gris - RAL 9007", "#828280"],
+    ["Gris perle - RAL 7038", "#ADB0A9"],
+    ["Gris basalte - RAL 7012", "#595E60"],
+    ["Gris anthracite - RAL 7016", "#3B4044"],
+    ["Gris fonce - RAL 7022", "#4C4C47"],
+    ["Noir profond - RAL 9005", "#131516"],
+    ["Tuile rouge - RAL 8004", "#814D37"],
+    ["Rouge foncé - RAL 3009", "#643730"],
+    ["Rouge feu - RAL 3000", "#962A27"],
+    ["Crème - RAL 1015", "#DED3B6"],
+    ["Jaune zinc - RAL 1018", "#EBD346"],
+    ["Bleu gentiane - RAL 5010", "#0E457A"],
+    ["Vert foncé - RAL 6005", "#234235"]]
 };
 
 // Données des épaisseurs par type
@@ -177,8 +191,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const id = `coul${i}`;
             couleurContainer.innerHTML += `
                 <div class="form-check">
-                    <input type="radio" id="${id}" name="couleurPanneau" value="${couleur}" ${i === 0 ? 'checked' : ''}>
-                    <label for="${id}">${couleur}</label>
+                    <input type="radio" id="${id}" name="couleurPanneau" value="${couleur[0]}" ${i === 0 ? 'checked' : ''}>
+                    <label for="${id}"><div class="couleurChip" style="background-color:${couleur[1]};"></div>${couleur[0]}</label>
                 </div>
             `;
         });
@@ -332,7 +346,7 @@ function majCalcul() {
                 <td>${longueur} m</td>
                 <td>${quantite}</td>
                 <td>${surface.toFixed(2)} m²</td>
-                <td>${prixTotal_ligne.toFixed(2)} €</td>
+                <td>${prixTotal_ligne?prixTotal_ligne.toFixed(2):0} €</td>
             </tr>
         `);
 
@@ -345,7 +359,7 @@ function majCalcul() {
 
 
 
-    document.getElementById('prixTotal').textContent = prixTotal.toFixed(2);
+    document.getElementById('prixTotal').textContent = prixTotal?prixTotal.toFixed(2):"0";
 }
 
 // Événements

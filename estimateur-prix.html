@@ -241,10 +241,20 @@
             position: relative;
             font-size: 1rem;
         }
+        #estimateur_container .form-check input[name=couleurPanneau]+label {
+            padding-left: .5rem; /*SUPPR PADDING POUR CHIP*/
+        }
 
         #estimateur_container .form-check input[type=radio]:checked+label {
             background-color: #f1f2f7;
             border-color: #1126b7;
+        }
+        #estimateur_container .form-check .couleurChip {
+            height: 1.5rem;
+            width: 1.5rem;
+            border-radius: 100%;
+            margin-right: .5rem;
+            border: solid rgba(0, 0, 0, 0.2) 1px;
         }
 
         #estimateur_container #ajouterLigne {
