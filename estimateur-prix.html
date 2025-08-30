@@ -130,6 +130,16 @@
     </div>
 
 
+    
+    <script>
+        window.onload = () => {
+            const height = document.body.scrollHeight;
+            window.parent.postMessage({ frameHeight: height }, "*");
+        };
+    </script>
+
+
+
 
 
 
