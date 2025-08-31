@@ -103,17 +103,6 @@
      font-size: 1rem;
  }
 
- section a.btn {
-     color: #7B7D8A;
-     border: solid #7B7D8A 1px;
-     border-radius: 20px;
-     padding: 10px 20px;
-     text-decoration: none;
- }
-
- section a.btn:hover {
-     background-color: #7b7d8a1c;
- }
 
 
 
