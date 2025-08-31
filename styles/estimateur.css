@@ -537,6 +537,7 @@
 
      section#estimateur_container {
          padding: 0;
+         padding-top: 12rem;
      }
 
      section#estimateur_container h4 {
