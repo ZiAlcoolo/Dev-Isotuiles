@@ -130,7 +130,7 @@
     </div>
 
 
-    
+
     <script>
         window.onload = () => {
             const height = document.body.scrollHeight;
@@ -291,7 +291,6 @@
             margin: 2rem;
             position: relative;
             padding: 1rem;
-            font-weight: bold;
             transition: background-color .4s ease;
             font-size: 1.5rem;
         }
@@ -313,6 +312,8 @@
             background-color: #f0f2f9;
             width: auto;
             white-space: nowrap;
+            border-bottom: solid white 3px;
+            font-weight: bold;
         }
 
         .total thead th:first-child {
@@ -382,6 +383,19 @@
 
         .toggle_btn.expand img {
             transform: rotate(180deg);
+        }
+
+
+
+
+
+        /* MOBILE VERSION ========================== */
+        @media (max-width: 768px) {
+
+            #estimateur_container,
+            .total {
+                margin: 2rem 0;
+            }
         }
     </style>
 
