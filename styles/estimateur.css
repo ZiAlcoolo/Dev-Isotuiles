@@ -520,6 +520,13 @@
 
  /* MOBILE VERSION ========================== */
  @media (max-width: 768px) {
+     button.btn-1 {
+         padding: .5rem 1rem;
+     }
+
+     section#estimateur_container {
+         box-shadow: unset;
+     }
 
      #estimateur_container,
      .total {
@@ -547,4 +554,5 @@
      section#estimateur_container .btn_container {
          margin-bottom: 2rem;
      }
+
  }
