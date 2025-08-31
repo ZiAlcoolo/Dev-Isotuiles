@@ -1,0 +1,549 @@
+ body {
+     /* background-color: #e2e6fd7a; */
+     background-color: white;
+     font-family: Arial, Helvetica, sans-serif;
+ }
+
+ .col {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+ }
+
+ .row {
+     display: flex;
+     flex-direction: row;
+     align-items: center;
+ }
+
+ .btn_container {
+     display: flex;
+     flex-direction: row;
+     gap: 2rem;
+ }
+
+ section {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     box-sizing: border-box;
+ }
+
+ button.btn-1 {
+     overflow: hidden;
+     padding: 1rem 2rem;
+     border-radius: 10px;
+     border: none;
+     color: white;
+     position: relative;
+     z-index: 10;
+     box-shadow: rgba(70, 93, 255, 0.3) 0px 13px 30px 0px;
+     cursor: pointer;
+ }
+
+ button.btn-1::before {
+     content: "";
+     background: #1126b7;
+     background: linear-gradient(142deg, rgba(255, 255, 255, 1) 0%, rgba(17, 38, 183, 1) 100%);
+     height: 500px;
+     width: 500px;
+     position: absolute;
+     bottom: -200%;
+     left: -100%;
+
+     z-index: -1;
+     animation-name: rotate-center;
+     animation-duration: 3s;
+     animation-timing-function: ease;
+     animation-delay: 0s;
+     animation-iteration-count: infinite;
+     animation-direction: alternate;
+     animation-fill-mode: none;
+     transform-origin: center center;
+     border-radius: 1000px;
+
+ }
+
+ @keyframes rotate-center {
+
+     0% {
+         transform: rotate(0);
+     }
+
+     100% {
+         transform: rotate(360deg);
+     }
+ }
+
+
+ /* TITRES =====================*/
+ h6 {
+     font-weight: 500;
+     font-family: Inter, Inter Placeholder, sans-serif;
+     text-transform: uppercase;
+     letter-spacing: 2px;
+     font-size: .9rem;
+     color: #303030;
+     margin: 1rem 0;
+ }
+
+ section h2 {
+     color: #303030;
+     font-family: "DM Sans", Arial, sans-serif;
+     font-size: 3rem;
+     line-height: 3rem;
+     text-align: center;
+ }
+
+ section p,
+ section li {
+     color: #7B7D8A;
+     font-family: "DM Sans", Arial, sans-serif;
+     font-weight: 400;
+     font-size: 1rem;
+ }
+
+ section a.btn {
+     color: #7B7D8A;
+     border: solid #7B7D8A 1px;
+     border-radius: 20px;
+     padding: 10px 20px;
+     text-decoration: none;
+ }
+
+ section a.btn:hover {
+     background-color: #7b7d8a1c;
+ }
+
+
+
+ /* =====================*/
+
+ section#presentation {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     max-width: 560px;
+     margin: 2rem auto;
+     text-align: center;
+ }
+
+
+
+ section#fonctionnement {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     margin: 2rem auto;
+     text-align: center;
+     width: 100%;
+ }
+
+ section#fonctionnement .row {
+     gap: 4rem;
+     -webkit-flex-wrap: wrap;
+     flex-wrap: wrap;
+ }
+
+ section#fonctionnement ul {
+     counter-reset: section;
+     flex: 1;
+     color: #7B7D8A;
+     font-family: "DM Sans", Arial, sans-serif;
+     font-weight: 400;
+     font-size: 1rem;
+     list-style: none;
+     padding-inline-start: unset;
+     text-align: left;
+ }
+
+ section#fonctionnement li {
+     margin: 0 0 10px 0;
+     line-height: 1rem;
+     position: relative;
+
+ }
+
+ section#fonctionnement li:before {
+     content: counter(section);
+     counter-increment: section;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     font-size: .6rem;
+     font-weight: 800;
+     width: 1rem;
+     height: 1rem;
+     color: white;
+     background-color: #7B7D8A;
+     border: 1px solid #ccc;
+     border-radius: 100%;
+     position: absolute;
+     left: -1.5rem;
+     top: 0;
+ }
+
+ section#fonctionnement li b {
+     font-size: 1.1rem;
+ }
+
+ section#fonctionnement img {
+     flex: 1;
+     width: 100%;
+     max-width: 500px;
+     border-radius: 20px;
+     transition: transform ease-out .5s, box-shadow .5s ease;
+     box-shadow: rgba(100, 100, 111, 0.2) 0px 0px 0px 0px;
+ }
+
+ section#fonctionnement img:hover {
+     transform: translateY(-.5rem) scale(1.005);
+     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+ }
+
+
+
+
+ section#estimateur_container {
+     margin: 4rem auto;
+     max-width: 1000px;
+     background-color: rgb(240, 243, 255);
+     border-radius: 20px;
+     box-shadow: rgba(123, 130, 170, 0.2) 0px 20px 80px 0px;
+     padding: 2rem;
+     padding-top: 10rem;
+     position: relative;
+ }
+
+ section#estimateur_container #calculator-icon {
+     width: 250px;
+     height: auto;
+     position: absolute;
+     top: -50px;
+     left: 50%;
+     transform: translate(-50%, -0%);
+ }
+
+ section#estimateur_container h2 {
+     color: rgb(22 37 176 / 20%);
+     text-align: center;
+     font-size: 4rem;
+     margin: 1rem;
+ }
+
+ section#estimateur_container h3 {
+     text-align: center;
+     font-size: 1rem;
+     margin: auto;
+     margin-bottom: 3rem;
+     width: 80%;
+     opacity: .5;
+     font-weight: 100;
+ }
+
+ section#estimateur_container h4 {
+     margin: auto;
+     margin-bottom: 1rem;
+     width: 100%;
+     text-align: center;
+
+ }
+
+ table {
+     width: 100%;
+     border-spacing: 10px;
+ }
+
+ table,
+ th,
+ td {
+     box-sizing: border-box;
+     border: none;
+     text-align: center;
+ }
+
+ tr {
+     position: relative;
+ }
+
+ td input {
+     width: 100%;
+     box-sizing: border-box;
+     border-radius: 15px;
+     border: thin solid #e2e6fd7a;
+     padding: 10px 0;
+     text-align: center;
+ }
+
+ td input:focus {
+     outline: solid 2px #1126b7;
+ }
+
+ th {
+     padding: 10px;
+     width: 30%;
+     background-color: #e2e6fd7a;
+     border-radius: 8px;
+     font-weight: 500;
+ }
+
+
+ #estimateur_container {
+     border-radius: 20px;
+     background-color: white;
+     display: flex;
+     flex-direction: column;
+     margin: 2rem;
+     flex: 1;
+     overflow: hidden;
+     position: relative;
+ }
+
+ #estimateur_container .select_container {
+     display: flex;
+     flex-direction: column;
+     border: none;
+     padding: 1rem;
+     box-sizing: border-box;
+     width: 100%;
+     position: relative;
+     flex: 1;
+ }
+
+ #estimateur_container .select_container>label,
+ #estimateur_container .select_container .select_title {
+     font-size: .8rem;
+     font-weight: 600;
+ }
+
+ #estimateur_container .select_container .form_choices {
+     display: flex;
+     flex-direction: row;
+     margin: 1rem 0;
+     gap: 1rem;
+     width: 100%;
+     flex-wrap: wrap;
+ }
+
+ #estimateur_container .select_container .form-check {}
+
+ #estimateur_container .form-check input[type=radio] {
+     position: relative;
+     height: 100%;
+     inset: 0 auto auto 0;
+     margin: auto;
+     position: absolute;
+     visibility: hidden;
+     width: 100%;
+ }
+
+ #estimateur_container .form-check input[type=radio]+label {
+     align-items: center;
+     background-color: #fff;
+     border-radius: 16px;
+     cursor: pointer;
+     display: flex;
+     font-weight: 500;
+     height: 2rem;
+     justify-content: center;
+     min-width: 4rem;
+     padding: .5rem 1.2rem;
+     position: relative;
+     font-size: 1rem;
+ }
+
+ #estimateur_container .form-check input[name=couleurPanneau]+label {
+     padding-left: .5rem;
+     /*SUPPR PADDING POUR CHIP*/
+ }
+
+ #estimateur_container .form-check input[type=radio]:checked+label {
+     background-color: #1126b7;
+     border-color: white;
+     color: white;
+ }
+
+ #estimateur_container .form-check .couleurChip {
+     height: 1.5rem;
+     width: 1.5rem;
+     border-radius: 100%;
+     margin-right: .5rem;
+     border: solid rgba(0, 0, 0, 0.2) 1px;
+ }
+
+ #estimateur_container #ajouterLigne {
+     border: none;
+     padding: 2px;
+     border-radius: 5px;
+     width: 95%;
+     margin: auto;
+     margin-top: 1rem;
+     background-color: #e2e6fd7a;
+     cursor: pointer;
+ }
+
+ .total {
+     display: flex;
+     flex-direction: column;
+     gap: 1rem;
+     justify-content: center;
+     border: 2px solid #e1e6ff;
+     border-radius: 20px;
+     margin: 2rem;
+     position: relative;
+     padding: 1rem;
+     font-weight: bold;
+     transition: background-color .4s ease;
+     font-size: 1.5rem;
+     width: 100%;
+     box-sizing: border-box;
+     flex: 1;
+ }
+
+ .total:hover {
+     background-color: #fff;
+ }
+
+ .total .tableContainer {
+     overflow-x: auto;
+ }
+
+ .total table {
+     width: 100%;
+     border-collapse: collapse;
+ }
+
+ .total thead th {
+     background-color: #e2e6fd7a;
+     width: auto;
+     white-space: nowrap;
+ }
+
+ .total thead th:first-child {
+     border-radius: 8px 0 0 0;
+ }
+
+ .total thead th:last-child {
+     border-radius: 0 8px 0 0;
+ }
+
+ .total td {
+     border: 1px solid #e8e9f0;
+ }
+
+ .total th,
+ .total td {
+     padding: 6px;
+     text-align: center;
+     font-size: 1rem;
+     background-color: transparent;
+     border-radius: 0;
+ }
+
+
+ #resultat-estimation {
+     background-color: #e1e6ff;
+     border-radius: 16px;
+     padding: 2rem 1rem;
+     color: #424246;
+     font-family: "DM Sans", Arial, sans-serif;
+     justify-content: space-between;
+     position: relative;
+     box-sizing: border-box;
+     margin: 2rem;
+     width: 100%;
+ }
+
+ #resultat-estimation .col {
+     align-items: flex-start;
+ }
+
+ #resultat-estimation h4 {
+     margin: 0;
+     font-size: 1.5rem;
+     font-weight: normal;
+ }
+
+ #resultat-estimation span#prixTotal {
+     font-size: 2rem;
+     font-weight: 600;
+ }
+
+
+
+
+ .toggle_btn {
+     display: flex;
+     align-items: center;
+     cursor: pointer;
+     padding: 6px;
+     font-weight: bold;
+     font-size: 1rem;
+ }
+
+ .toggle_btn img {
+     width: 12px;
+     height: 12px;
+     margin-right: 6px;
+     transition: transform 0.3s;
+ }
+
+ .toggle_btn.expand img {
+     transform: rotate(180deg);
+ }
+
+
+
+
+
+
+ section#avantages {}
+
+ section#avantages ul {
+     list-style: none;
+     padding-inline-start: 1rem;
+     padding: 0 1rem;
+ }
+
+ section#contact {
+     text-align: center;
+ }
+
+
+ #bug-review {
+     margin-top: 4rem;
+     margin-bottom: 1rem;
+     text-align: center;
+     font-size: .8rem;
+ }
+
+
+ /* MOBILE VERSION ========================== */
+ @media (max-width: 768px) {
+
+     #estimateur_container,
+     .total {
+         margin: 2rem 0;
+     }
+
+     section#fonctionnement .row {
+         gap: 1rem;
+         padding: 0 1rem;
+     }
+
+     section#fonctionnement ul {
+         padding-left: 2rem;
+     }
+
+     section#estimateur_container {
+         padding: 0;
+     }
+
+     section#estimateur_container h4 {
+         margin: 0;
+     }
+
+     section#estimateur_container .btn_container {
+         margin-bottom: 2rem;
+     }
+ }

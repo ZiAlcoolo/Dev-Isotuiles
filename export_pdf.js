@@ -19,7 +19,7 @@
             doc.text(`Couleur : ${couleur}`, 14, 55);
 
             // Prix total
-            doc.text(`Prix estimé : ${prixTotal} €`, 14, 70);
+            doc.text(`Prix estimé : ${prixTotal}`, 14, 70);
 
             // ---- Export du tableau détail ----
             const table = document.querySelector("#tableDetail table");
