@@ -260,7 +260,7 @@ function majTablePrix() {
 
     titre = $('input[name="typePanneau"]:checked').next('label').text();
 
-    let html = `<h3>${titre}</h3>`;
+    let html = `<h4>${titre}</h4>`;
     html += `<table  cellpadding="5">
         <thead>
             <tr>
@@ -360,7 +360,7 @@ function majCalcul() {
 
 
 
-    document.getElementById('prixTotal').textContent = prixTotal?prixTotal.toFixed(2):"0";
+    document.getElementById('prixTotal').textContent = prixTotal?`${prixTotal.toFixed(2)} €`:"0 €";
 }
 
 // Événements

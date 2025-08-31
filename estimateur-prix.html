@@ -5,41 +5,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estimateur de prix</title>
+
+    <!-- IMPORTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+
+
+
+    <link rel="stylesheet" href="./styles/estimateur.css">
+
+
 </head>
 
 <body>
 
+    <section id="presentation">
+        <h6>Calculateur de coûts</h6>
+        <h2>Estimez le budget global de votre projet.</h2>
 
+        <p>
+            Notre estimateur de prix vous offre une solution simple et rapide pour évaluer le budget de votre commande.
+            En choisissant vos paramètres (type de produit, couleur, dimensions, quantités…), vous obtenez
+            instantanément
+            une estimation du coût total ainsi qu’un récapitulatif détaillé.
+            Cet outil est conçu pour vous aider à préparer vos projets en toute sérénité et à mieux anticiper vos
+            investissements avant de passer commande.
+        </p>
+        <a class="btn" href="#estimateur_container">Commencer l'estimation</a>
+    </section>
 
-    <h2>Estimez votre commande chez Isotuile</h2>
-    <h3>Calculez en quelques clics le coût global de votre projet et obtenez une estimation personnalisée.</h3>
-    <a href="#estimateur_container">Commencer l'estimation</a>
+    <section id="fonctionnement">
+        <h2>Comment ça marche ?</h2>
+        <div class="row">
+            <img width="500" height="auto" src="./media/estimateur-commande-preview-video.png">
+            <ul>
+                <li><b>Choisissez vos options :</b><br> sélectionnez le produit, la couleur, l’épaisseur et les
+                    dimensions</li>
+                <li><b>Indiquez vos besoins :</b> <br>précisez les quantités et longueurs souhaitées</li>
+                <li><b>Obtenez votre estimation :</b> <br>l’outil calcule automatiquement la surface et le coût total
+                </li>
+                <li><b>Visualisez et téléchargez votre devis :</b> <br>vous pourrez à la fin enregistrer votre
+                    estimation en PDF</li>
+            </ul>
+        </div>
+    </section>
 
-    <p>
-        Notre estimateur de prix vous offre une solution simple et rapide pour évaluer le budget de votre commande. En
-        choisissant vos paramètres (type de produit, couleur, dimensions, quantités…), vous obtenez instantanément une
-        estimation du coût total ainsi qu’un récapitulatif détaillé.
-        Cet outil est conçu pour vous aider à préparer vos projets en toute sérénité et à mieux anticiper vos
-        investissements avant de passer commande.
-    </p>
-
-    <div class="row">
-        <h3>Comment ça marche ?</h3>
-        <ul>
-            <li>Choisissez vos options : sélectionnez le produit, la couleur, l’épaisseur et les dimensions</li>
-            <li>Indiquez vos besoins : précisez les quantités et longueurs souhaitées</li>
-            <li>Obtenez votre estimation : l’outil calcule automatiquement la surface et le coût total</li>
-            <li>Visualisez et téléchargez votre devis : vous pourrez à la fin enregistrer votre estimation en PDF</li>
-        </ul>
-
-        <img width="500" height="auto"
-            src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/estimateur-commande-preview.png?v=1755536841">
-    </div>
-
-    <div id="estimateur_container">
-        <h3>Interface estimateur de prix</h3>
-        <h4>Remplissez les informations ci-dessous et obtenez en temps réel une estimation personnalisée de votre
-            commande.</h4>
+    <section id="estimateur_container">
+        <img id="calculator-icon" src="./media/calculator.png">
+        <h2>Calculateur de coûts</h2>
+        <h3>Remplissez les informations ci-dessous et obtenez en temps réel une estimation personnalisée de votre
+            commande.</h3>
 
 
         <!-- Type de produit -->
@@ -99,93 +117,120 @@
             <button id="ajouterLigne">Ajouter une longueur</button>
         </div>
 
-    </div>
+        </div>
 
 
 
 
-    <div class="total">
-        <!-- Tableau des prix -->
-        <div>
-            <div class="toggle_btn">
-                <img src="https://img.icons8.com/ios-glyphs/1000/chevron-up.png">
-                <span>Tableau des prix</span>
+        <div class="total">
+            <!-- Tableau des prix -->
+            <div>
+                <div class="toggle_btn">
+                    <img src="https://img.icons8.com/ios-glyphs/1000/chevron-up.png">
+                    <span>Tableau des prix</span>
+                </div>
+                <div id="tablePrix" class="tableContainer">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Produit</th>
+                                <th>Couleur</th>
+                                <th>Épaisseur</th>
+                                <th>Prix</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
-            <div id="tablePrix" class="tableContainer">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Produit</th>
-                            <th>Couleur</th>
-                            <th>Épaisseur</th>
-                            <th>Prix</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+
+            <!-- Détail commande -->
+            <div>
+                <div class="toggle_btn">
+                    <img src="https://img.icons8.com/ios-glyphs/1000/chevron-up.png">
+                    <span>Détail commande</span>
+                </div>
+                <div id="tableDetail" class="tableContainer">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Produit + Couleur</th>
+                                <th>Épaisseur</th>
+                                <th>Longueur</th>
+                                <th>Quantité</th>
+                                <th>Surface</th>
+                                <th>Coût au m²</th>
+                                <th>Prix total</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <!-- Détail commande -->
-        <div>
-            <div class="toggle_btn">
-                <img src="https://img.icons8.com/ios-glyphs/1000/chevron-up.png">
-                <span>Détail commande</span>
+        <div id="resultat-estimation" class="row">
+            <div class="col">
+                <h4>Coût global estimé</h4>
+                <span>pour votre commande</span>
             </div>
-            <div id="tableDetail" class="tableContainer">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Produit + Couleur</th>
-                            <th>Épaisseur</th>
-                            <th>Longueur</th>
-                            <th>Quantité</th>
-                            <th>Surface</th>
-                            <th>Coût au m²</th>
-                            <th>Prix total</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+
+            <span id="prixTotal">0 €</span>
         </div>
 
-        <div>Prix estimé : <span id="prixTotal">0</span> €</div>
-        <button id="exportPdf">📄 Exporter en PDF</button>
-
-    </div>
-
-
-
-
-    <h2>Pourquoi utiliser cet outil ?</h2>
-    <ul>
-        <li>✅ Rapide : résultat instantané, sans attendre un devis manuel.</li>
-
-        <li>✅ Simple : aucune compétence technique requise, il suffit de remplir le formulaire.</li>
-
-        <li>✅ Transparent : détails du calcul affichés ligne par ligne.</li>
-
-        <li>✅ Pratique : possibilité d’exporter votre estimation en PDF.</li>
-
-        <li>✅ Gratuit : accessible à tous, sans engagement.</li>
-    </ul>
+        <div class="col">
+            <p>Pour un devis précis complet, contactez-nous.</p>
+            <div class="btn_container">
+                <button class="btn-1" id="exportPdf">Exporter en PDF</button>
+                <button onclick="window.location.href='https://isotuiles.fr/pages/conctactez-nous'" class="btn-1">Nous
+                    contacter</button>
+            </div>
+        </div>
+    </section>
 
 
 
 
 
-    <h2>FAQ / Infos pratiques sur l'outil</h2>
-    <p>Trouver les questions/réponses</p>
+    <section id="avantages">
+        <h2>Pourquoi utiliser cet outil ?</h2>
+        <ul>
+            <li>✅ <b>Rapide :</b> résultat instantané, sans attendre un devis manuel.</li>
+
+            <li>✅ <b>Simple :</b> aucune compétence technique requise, il suffit de remplir le formulaire.</li>
+
+            <li>✅ <b>Transparent :</b> détails du calcul affichés ligne par ligne.</li>
+
+            <li>✅ <b>Pratique :</b> possibilité d’exporter votre estimation en PDF.</li>
+
+            <li>✅ <b>Gratuit :</b> accessible à tous, sans engagement.</li>
+        </ul>
+    </section>
 
 
 
 
 
-    <h2>Passez à l'action !</h2>
-    <h3>Vous avez réussi à vous décider? Contactez-nous dès maintenant pour concrétiser votre demande.</h3>
-    <p>Prenez contact avec nous pour discuter d'un devis personnalisé</p>
-    <button>Nous contacter</button>
+    <section id="questions-responses" style="display: none;">
+        <h2>FAQ / Infos pratiques sur l'outil</h2>
+        <p>Trouver les questions/réponses</p>
+    </section>
+
+
+
+
+
+    <section id="contact">
+        <h2>Passez à l'action !</h2>
+        <p>Vous avez réussi à vous décider? Contactez-nous dès maintenant pour concrétiser votre demande
+            et discuter d'un devis personnalisé
+        </p>
+        <button onclick="window.location.href='https://isotuiles.fr/pages/conctactez-nous'" class="btn-1">Nous
+            contacter</button>
+    </section>
+
+
+    <p id="bug-review">Un bug, une suggestion ou une remarque sur notre estimateur de coût ? N'hésitez pas à nous contacter en <a href="mailto:isotuiles@gmail.com">cliquant ici</a></p>
 
 
 
@@ -205,247 +250,6 @@
 
 
 
-
-
-
-    <style>
-        body {
-            background-color: #f0f2f9;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        table {
-            width: 100%;
-            border-spacing: 10px;
-        }
-
-        table,
-        th,
-        td {
-            box-sizing: border-box;
-            border: none;
-            text-align: center;
-        }
-
-        tr {
-            position: relative;
-        }
-
-        td input {
-            width: 100%;
-            box-sizing: border-box;
-            border-radius: 15px;
-            border: thin solid #f0f2f9;
-            padding: 10px 0;
-            text-align: center;
-        }
-
-        th {
-            padding: 10px;
-            width: 30%;
-            background-color: #f0f2f9;
-            border-radius: 8px;
-            font-weight: 500;
-        }
-
-
-        #estimateur_container {
-            border-radius: 20px;
-            background-color: white;
-            display: flex;
-            flex-direction: column;
-            margin: 2rem;
-            flex: 1;
-            overflow: hidden;
-            position: relative;
-        }
-
-        #estimateur_container .select_container {
-            display: flex;
-            flex-direction: column;
-            border: none;
-            padding: 1rem;
-            box-sizing: border-box;
-            width: 100%;
-            position: relative;
-            flex: 1;
-        }
-
-        #estimateur_container .select_container>label,
-        #estimateur_container .select_container .select_title {
-            font-size: .8rem;
-            font-weight: 600;
-        }
-
-        #estimateur_container .select_container .form_choices {
-            display: flex;
-            flex-direction: row;
-            margin: 1rem 0;
-            gap: 1rem;
-            width: 100%;
-            flex-wrap: wrap;
-        }
-
-        #estimateur_container .select_container .form-check {}
-
-        #estimateur_container .form-check input[type=radio] {
-            position: relative;
-            height: 100%;
-            inset: 0 auto auto 0;
-            margin: auto;
-            position: absolute;
-            visibility: hidden;
-            width: 100%;
-        }
-
-        #estimateur_container .form-check input[type=radio]+label {
-            align-items: center;
-            background-color: #fff;
-            border: 1.5px solid #b1b1b1;
-            border-radius: 16px;
-            cursor: pointer;
-            display: flex;
-            font-weight: 500;
-            height: 2rem;
-            justify-content: center;
-            min-width: 4rem;
-            padding: .5rem 1.2rem;
-            position: relative;
-            font-size: 1rem;
-        }
-
-        #estimateur_container .form-check input[name=couleurPanneau]+label {
-            padding-left: .5rem;
-            /*SUPPR PADDING POUR CHIP*/
-        }
-
-        #estimateur_container .form-check input[type=radio]:checked+label {
-            background-color: #f1f2f7;
-            border-color: #1126b7;
-        }
-
-        #estimateur_container .form-check .couleurChip {
-            height: 1.5rem;
-            width: 1.5rem;
-            border-radius: 100%;
-            margin-right: .5rem;
-            border: solid rgba(0, 0, 0, 0.2) 1px;
-        }
-
-        #estimateur_container #ajouterLigne {
-            border: none;
-            padding: 2px;
-            border-radius: 5px;
-            width: 95%;
-            margin: auto;
-            margin-top: 1rem;
-            background-color: #f0f2f9;
-            cursor: pointer;
-        }
-
-        .total {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            justify-content: center;
-            border: 2px solid #fff;
-            border-radius: 20px;
-            margin: 2rem;
-            position: relative;
-            padding: 1rem;
-            font-weight: bold;
-            transition: background-color .4s ease;
-            font-size: 1.5rem;
-        }
-
-        .total:hover {
-            background-color: #fff;
-        }
-
-        .total .tableContainer {
-            overflow-x: auto;
-        }
-
-        .total table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .total thead th {
-            background-color: #f0f2f9;
-            width: auto;
-            white-space: nowrap;
-        }
-
-        .total thead th:first-child {
-            border-radius: 8px 0 0 0;
-        }
-
-        .total thead th:last-child {
-            border-radius: 0 8px 0 0;
-        }
-
-        .total td {
-            border: 1px solid #e8e9f0;
-        }
-
-        .total th,
-        .total td {
-            padding: 6px;
-            text-align: center;
-            font-size: 1rem;
-            background-color: transparent;
-            border-radius: 0;
-        }
-
-        .total h3 {
-            margin: .5rem 0;
-            text-align: center;
-        }
-
-        .total #exportPdf {
-            width: fit-content;
-            align-items: center;
-            background-color: #fff;
-            border: 1.5px solid #b1b1b1;
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            font-weight: 500;
-            height: 2rem;
-            justify-content: center;
-            min-width: 4rem;
-            padding: .5rem 1.2rem;
-            position: relative;
-            font-size: 1rem;
-            transition: .4s ease;
-        }
-
-        .total #exportPdf:hover {
-            background-color: #f1f2f7;
-            border-color: #1126b7;
-        }
-
-        .toggle_btn {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            padding: 6px;
-            font-weight: bold;
-            font-size: 1rem;
-        }
-
-        .toggle_btn img {
-            width: 12px;
-            height: 12px;
-            margin-right: 6px;
-            transition: transform 0.3s;
-        }
-
-        .toggle_btn.expand img {
-            transform: rotate(180deg);
-        }
-    </style>
 
     <!-- IMPORTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"
