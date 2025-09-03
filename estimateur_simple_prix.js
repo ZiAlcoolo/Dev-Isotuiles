@@ -252,7 +252,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
 // Génère le tableau des prix
 function majTablePrix() {
 
