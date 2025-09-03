@@ -177,6 +177,7 @@
  }
 
  section#fonctionnement img {
+     display: none; 
      flex: 1;
      width: 100%;
      max-width: 500px;
@@ -536,6 +537,7 @@
      section#estimateur_container h2 {
          font-size: 14vw;
      }
+
      section#estimateur_container h4 {
          margin: 0;
      }
