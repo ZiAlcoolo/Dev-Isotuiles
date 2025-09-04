@@ -9,13 +9,27 @@
     <!-- IMPORTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Assistant:wght@200..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
 
 
 
     <link rel="stylesheet" href="./styles/estimateur.css">
+
+
+    <!-- IMPORTS JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"
+        integrity="sha512-ad3j5/L4h648YM/KObaUfjCsZRBP9sAOmpjaT2BDx6u9aBrKFp7SbeHykruy83rxfmG42+5QqeL/ngcojglbJw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/5.0.2/jspdf.plugin.autotable.min.js"
+        integrity="sha512-JizZOUNesiGhMcp9fsA/9W31FOat6QysBM8hSj6ir8iIANIUJ2mhko7Lo1+j0ErftmJ8SebMZLm9iielKjeIEQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
 </head>
@@ -209,11 +223,75 @@
 
 
 
-
-    <section id="questions-responses" style="display: none;">
+    <section id="questions-reponses">
         <h2>FAQ / Infos pratiques sur l'outil</h2>
-        <p>Trouver les questions/réponses</p>
+        <p>Trouvez ici les réponses aux questions les plus fréquentes :</p>
+        <div id="insert_estimateur_faq"></div>
+        <p>Vous avez encore des questions auxquelles vous n'avez pas trouvé de réponse ? <br>Contactez notre équipe pour plus de précisions.</p>
     </section>
+
+    <script>
+        const FAQ = [
+            {
+                q: "Qu’est-ce que l’estimateur de prix ?",
+                r: "L’estimateur de prix est un outil en ligne qui vous permet de calculer automatiquement le coût global de votre future commande en fonction de vos choix (produit, couleur, dimensions, quantités, etc.) le tout 100% gratuit et en ligne."
+            },
+            {
+                q: "Comment utiliser l’estimateur de prix ?",
+                r: "Sélectionnez le type de produit, la couleur, l’épaisseur, les longueurs et les quantités souhaitées. L’outil calcule ensuite la surface totale et le prix estimé, avec un tableau récapitulatif clair et détaillé."
+            },
+            {
+                q: "L’estimation est-elle un devis officiel ?",
+                r: "Non. L’estimateur fournit une approximation budgétaire pour vous donner de la visibilité avant de passer commande. Pour un devis officiel et personnalisé, contactez notre équipe."
+            },
+            {
+                q: "Puis-je sauvegarder ou partager mon estimation ?",
+                r: "Oui ! Vous pouvez exporter votre estimation au format PDF, afin de les conserver ou de les partager facilement avec notre équipe lors de la demande d'un devis officiel."
+            },
+            {
+                q: "Est-ce que l’estimation prend en compte les promotions ou réductions ?",
+                r: "L’estimateur calcule un prix standard basé sur nos tarifs en vigueur. Les éventuelles réductions, offres spéciales ou frais de livraison peuvent être ajoutés lors de la commande définitive."
+            },
+            {
+                q: "Puis-je modifier mon estimation après l’avoir générée ?",
+                r: "Bien sûr. Vous pouvez changer vos choix (produit, couleur, dimensions, quantités) à tout moment, et l’outil mettra automatiquement à jour le tableau et le prix total."
+            },
+            {
+                q: "Est-ce que je peux utiliser l’estimateur sur mobile ?",
+                r: "Oui, l’outil est conçu pour être responsive et fonctionne aussi bien sur ordinateur, tablette que sur smartphone."
+            },
+            {
+                q: "Puis-je envoyer mon estimation par mail ?",
+                r: "Pas directement depuis l’outil pour l’instant, mais vous pouvez télécharger le PDF et l’envoyer facilement par e-mail."
+            }
+        ];
+
+        // Génération HTML
+        var faq_html = "";
+        FAQ.forEach((qr, index) => {
+            faq_html += `
+            <div class="faq-item">
+                <div class="faq-question" data-id="${index}">
+                    <span>${qr.q}</span>
+                    <span class="arrow">+</span>
+                </div>
+                <div class="faq-answer" style="display: none;">
+                    <p>${qr.r}</p>
+                </div>
+            </div>
+        `;
+        });
+        $('#insert_estimateur_faq').html(faq_html);
+
+        // Gestion du slideToggle
+        $(document).on("click", ".faq-item", function () {
+            $(this).find(".faq-answer").slideToggle(200).toggleClass('expand');
+            $(this).find(".arrow").text(
+                $(this).find(".faq-answer").hasClass("expand") ? "-" : "+"
+            );
+        });
+    </script>
+
 
 
 
@@ -224,12 +302,13 @@
         <p>Vous avez réussi à vous décider? Contactez-nous dès maintenant pour concrétiser votre demande
             et discuter d'un devis personnalisé
         </p>
-        <button onclick="window.open('https://isotuiles.fr/pages/conctactez-nous') "class="btn-1">Nous
+        <button onclick="window.open('https://isotuiles.fr/pages/conctactez-nous') " class="btn-1">Nous
             contacter</button>
     </section>
 
 
-    <p id="bug-review">Un bug, une suggestion ou une remarque sur notre estimateur de coût ? N'hésitez pas à nous contacter en <a href="mailto:isotuiles@gmail.com">cliquant ici</a></p>
+    <p id="bug-review">Un bug, une suggestion ou une remarque sur notre estimateur de coût ? N'hésitez pas à nous
+        contacter en <a href="mailto:isotuiles@gmail.com">cliquant ici</a></p>
 
 
 
@@ -248,16 +327,7 @@
 
 
 
-    <!-- IMPORTS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"
-        integrity="sha512-ad3j5/L4h648YM/KObaUfjCsZRBP9sAOmpjaT2BDx6u9aBrKFp7SbeHykruy83rxfmG42+5QqeL/ngcojglbJw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/5.0.2/jspdf.plugin.autotable.min.js"
-        integrity="sha512-JizZOUNesiGhMcp9fsA/9W31FOat6QysBM8hSj6ir8iIANIUJ2mhko7Lo1+j0ErftmJ8SebMZLm9iielKjeIEQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 
     <script src="./estimateur_simple_prix.js"></script>
 

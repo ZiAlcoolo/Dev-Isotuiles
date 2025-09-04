@@ -271,7 +271,7 @@ function majTablePrix() {
 
 
     if ((!data[epaisseurSelectionne])) {
-        return console.log("GAEEEEEEEEEEEEEEE")
+        return 
     }
     console.log("Check", data[epaisseurSelectionne], epaisseurSelectionne)
 
