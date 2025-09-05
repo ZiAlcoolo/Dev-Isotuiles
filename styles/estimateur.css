@@ -216,15 +216,15 @@ section#estimateur_container {
     background-color: rgb(240, 243, 255);
     border-radius: 20px;
     padding: 2rem;
-    padding-top: 200px;
+    padding-top: 140px;
     position: relative;
 }
 
 section#estimateur_container #calculator-icon {
     width: auto;
-    height: 250px;
+    height: 150px;
     position: absolute;
-    top: -50px;
+    top: -20px;
     left: 50%;
     transform: translate(-50%, -0%);
 }
@@ -791,8 +791,7 @@ section#contact {
 
     section#estimateur_container {
         padding: 0 10px;
-        padding-top: 12rem;
-        box-shadow: unset;
+        padding-top: 140px;
     }
 
     section#estimateur_container h2 {
