@@ -271,7 +271,7 @@ function majTablePrix() {
 
 
     if ((!data[epaisseurSelectionne])) {
-        return 
+        return
     }
     console.log("Check", data[epaisseurSelectionne], epaisseurSelectionne)
 
@@ -360,6 +360,9 @@ function majCalcul() {
     tbody.empty();
 
     let totalSurface = 0;
+    let totalPrix = 0;
+
+    // === 1. Parcours des panneaux ===
     document.querySelectorAll('#tablePanneaux tbody tr').forEach(tr => {
         const longueur = parseFloat(tr.querySelector('.longueur').value) / 1000 || 0;
         const quantite = parseInt(tr.querySelector('.quantite').value) || 0;
@@ -368,7 +371,8 @@ function majCalcul() {
         totalSurface += surface;
 
         var prixM2_ligne = getPrixM2(surface);
-        var prixTotal_ligne = surface * prixM2_ligne
+        var prixTotal_ligne = surface * prixM2_ligne;
+
         // Ajout dans la table
         var titre = $('input[name="typePanneau"]:checked').next('label').text();
         tbody.append(`
@@ -378,26 +382,47 @@ function majCalcul() {
                 <td>${longueur} m</td>
                 <td>${quantite}</td>
                 <td>${surface.toFixed(2)} m²</td>
-                <td>${prixM2_ligne??"--"} €/m²</td>
-                <td>${prixTotal_ligne?prixTotal_ligne.toFixed(2):0} €</td>
+                <td>${prixM2_ligne ?? "--"} €/m²</td>
+                <td>${prixTotal_ligne ? prixTotal_ligne.toFixed(2) : 0} €</td>
             </tr>
         `);
 
+        totalPrix += prixTotal_ligne;
     });
 
+    // === 2. Parcours des accessoires ===
+    $('#listeAccessoires .accessoire_container').each(function () {
+        let nb = parseInt($(this).attr("data-nb-acc")) || 0;
+        if (nb > 0) {
+            let id = $(this).attr("data-id-acc");
+            let acc = liste_accessoires.find(a => a.id === id);
+            if (acc) {
+                let prixTotalAcc = acc.prix * nb;
 
-    const prixM2 = getPrixM2(totalSurface);
-    const prixTotal = totalSurface * prixM2;
+                tbody.append(`
+                    <tr>
+                        <td>${acc.nom}</td>
+                        <td colspan="2"></td>
+                        <td>${nb}</td>
+                        <td colspan="1"></td>
+                        <td>${acc.prix.toFixed(2)} €/u.</td>
+                        <td>${prixTotalAcc.toFixed(2)} €</td>
+                    </tr>
+                `);
 
+                totalPrix += prixTotalAcc;
+            }
+        }
+    });
 
-
-
-    document.getElementById('prixTotal').textContent = prixTotal?`${prixTotal.toFixed(2)} €`:"0 €";
+    // === 3. Total général ===
+    document.getElementById('prixTotal').textContent = totalPrix ? `${totalPrix.toFixed(2)} €` : "0 €";
 }
 
 // Événements
 document.addEventListener('input', majCalcul);
 document.addEventListener('change', majCalcul);
+
 
 
 // Toggle affichage
@@ -408,3 +433,148 @@ $(".toggle_btn").on("click", function () {
 
 // Initialisation
 majTablePrix();
+
+
+
+
+
+
+// ACCESSOIRES ==============================================
+const liste_accessoires = [
+    {
+        id: "1",
+        nom: "Cache mousse ép. 40/80mm",
+        url:"./products/faitage-de-fermeture-copie",
+        photo:"https://isotuiles.fr/cdn/shop/files/Capture_d_ecran_2025-04-08_180757.png?v=1744156679",
+        prix: 12.50,
+    },
+    {
+        id: "2",
+        nom: "Cache mousse ép. 60/100mm",
+        url:"./products/cache-mousse-ep-40-80-mm-copie",
+        photo:"https://isotuiles.fr/cdn/shop/files/Capture_d_ecran_2025-04-08_180815.png?v=1744128595",
+        prix: 13.00,
+    },
+    {
+        id: "3",
+        nom: "Faitage",
+        url:"./products/faitage-1",
+        photo:"https://isotuiles.fr/cdn/shop/files/accessoire5.webp?v=1744156679",
+        prix: 22.00,
+    },
+    {
+        id: "4",
+        nom: "Faitage contre mur",
+        url:"./products/faitage-contre-mur-1",
+        photo:"https://isotuiles.fr/cdn/shop/files/accessoire3.webp?v=1744156679",
+        prix: 18.50,
+    },
+    {
+        id: "5",
+        nom: "Faitage de fermeture",
+        url:"./products/faitage-de-fermeture-1",
+        photo:"https://isotuiles.fr/cdn/shop/files/accessoire4.webp?v=1732008577",
+        prix: 18.50,
+    },
+    {
+        id: "6",
+        nom: "Rive latérale L",
+        url:"./products/rive-laterale-u-copie",
+        photo:"https://isotuiles.fr/cdn/shop/files/Capture_d_ecran_2025-04-08_180903.png?v=1744128556",
+        prix: 16.80,
+    },
+    {
+        id: "7",
+        nom: "Rive latérale U",
+        url:"./products/profil-frontale-copie",
+        photo:"https://isotuiles.fr/cdn/shop/files/Capture_d_ecran_2025-04-08_181122.png?v=1744156679",
+        prix: 17.00,
+    },
+    {
+        id: "8",
+        nom: "Vis de 125mm (100 u.)",
+        url:"./products/vis-de-125mm",
+        photo:"https://isotuiles.fr/cdn/shop/files/vis.png?v=1744156679",
+        prix: 52.80,
+    },
+    {
+        id: "9",
+        nom: "Vis de 150mm (100 u.)",
+        url:"./products/vis-de-150mm",
+        photo:"https://isotuiles.fr/cdn/shop/files/vis.png?v=1744156679",
+        prix: 55.20,
+    },
+]
+
+
+
+
+function DisplayAccessories() {
+    $('#listeAccessoires').toggleClass('expand').slideToggle();
+
+    if ($('#listeAccessoires').hasClass('expand')) {
+        $('button#afficherAccessoires').text("Retirer les accessoires");
+
+        var html_accessoires = "";
+        liste_accessoires.forEach(accessoire => {
+            html_accessoires += `
+            <div class="accessoire_container" data-id-acc="${accessoire.id}" data-nb-acc="0">
+                <div class="cover">
+                    <img src="${accessoire.photo}" loading="lazy">
+                </div>
+                <div class="acc_details">
+                    <p class="nom">${accessoire.nom}</p>
+                    <p class="prix">€${accessoire.prix} EUR</p>
+                    <div class="btn_container">
+                        <button class="reduce_nb">-</button>
+                        <div class="select_acc">Ajouter</div>
+                        <button class="increase_nb">+</button>
+                    </div>
+                </div>
+            </div>
+            `;
+        });
+
+        $('#listeAccessoires').html(html_accessoires);
+
+        // Initialisation : cacher les boutons + et -
+        $('#listeAccessoires .reduce_nb, #listeAccessoires .increase_nb').hide();
+
+        // Gestion des événements
+        $('#listeAccessoires .select_acc').on('click', function () {
+            let container = $(this).closest('.accessoire_container');
+            container.attr("data-nb-acc", 1).addClass('selected');
+            $(this).text("1"); // remplacer "Ajouter" par compteur
+            container.find('.reduce_nb, .increase_nb').show(); // montrer les boutons
+            majCalcul()
+        });
+        
+        $('#listeAccessoires .increase_nb').on('click', function () {
+            let container = $(this).closest('.accessoire_container');
+            let count = parseInt(container.attr("data-nb-acc")) || 0;
+            count++;
+            container.attr("data-nb-acc", count);
+            container.find('.select_acc').text(count);
+            majCalcul()
+        });
+        
+        $('#listeAccessoires .reduce_nb').on('click', function () {
+            let container = $(this).closest('.accessoire_container');
+            let count = parseInt(container.attr("data-nb-acc")) || 0;
+            if (count > 1) {
+                count--;
+                container.attr("data-nb-acc", count);
+                container.find('.select_acc').text(count);
+            } else {
+                // Retour à l'état initial
+                container.attr("data-nb-acc", 0).removeClass('selected');
+                container.find('.select_acc').text("Ajouter");
+                container.find('.reduce_nb, .increase_nb').hide();
+            }
+            majCalcul()
+        });
+
+    } else {
+        $('button#afficherAccessoires').text("Ajouter des accessoires");
+    }
+}

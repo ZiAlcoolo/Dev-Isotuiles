@@ -123,7 +123,7 @@
                     <tr>
                         <td>
                             <select class="longueur">
-                                <option value="">-- Sélectionner --</option>
+                                <option value="">--</option>
                                 <option value="2100">2.100 mm</option>
                                 <option value="2450">2.450 mm</option>
                                 <option value="2800">2.800 mm</option>
@@ -164,6 +164,12 @@
             <button id="ajouterLigne">Ajouter une longueur</button>
         </div>
 
+
+        <!-- Tableau Longueur / Quantité / Surface -->
+        <div class="select_container">
+            <p class="select_title">Accessoires</p>
+            <button id="afficherAccessoires" onclick="DisplayAccessories()">Ajouter des accessoires</button>
+            <div id="listeAccessoires" style="display: none;"></div>
         </div>
 
 
@@ -201,12 +207,12 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Produit + Couleur</th>
+                                <th>Produit</th>
                                 <th>Épaisseur</th>
                                 <th>Longueur</th>
                                 <th>Quantité</th>
                                 <th>Surface</th>
-                                <th>Coût au m²</th>
+                                <th>Coût unitaire</th>
                                 <th>Prix total</th>
                             </tr>
                         </thead>
