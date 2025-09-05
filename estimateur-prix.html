@@ -75,7 +75,7 @@
 
         <!-- Type de produit -->
         <fieldset class="select_container">
-            <label class="required">Type de produit*</label>
+            <label class="required">Type de produit</label>
             <div class="form_choices" id="typePanneauContainer">
                 <div class="form-check">
                     <input type="radio" id="type1" name="typePanneau" value="romaneCanal" checked>
@@ -94,13 +94,13 @@
 
         <!-- Couleur (sera rempli dynamiquement) -->
         <fieldset class="select_container">
-            <label class="required">Couleur*</label>
+            <label class="required">Couleur</label>
             <div class="form_choices" id="couleurContainer"></div>
         </fieldset>
 
         <!-- Épaisseur (sera rempli dynamiquement) -->
         <fieldset class="select_container">
-            <label class="required">Épaisseur*</label>
+            <label class="required">Épaisseur</label>
             <div class="form_choices" id="epaisseurContainer"></div>
         </fieldset>
 
@@ -121,7 +121,41 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="number" step="0.01" class="longueur"></td>
+                        <td>
+                            <select class="longueur">
+                                <option value="">-- Sélectionner --</option>
+                                <option value="2100">2.100 mm</option>
+                                <option value="2450">2.450 mm</option>
+                                <option value="2800">2.800 mm</option>
+                                <option value="3150">3.150 mm</option>
+                                <option value="3500">3.500 mm</option>
+                                <option value="3850">3.850 mm</option>
+                                <option value="4200">4.200 mm</option>
+                                <option value="4550">4.550 mm</option>
+                                <option value="4900">4.900 mm</option>
+                                <option value="5250">5.250 mm</option>
+                                <option value="5600">5.600 mm</option>
+                                <option value="5950">5.950 mm</option>
+                                <option value="6300">6.300 mm</option>
+                                <option value="6650">6.650 mm</option>
+                                <option value="7000">7.000 mm</option>
+                                <option value="7350">7.350 mm</option>
+                                <option value="7700">7.700 mm</option>
+                                <option value="8050">8.050 mm</option>
+                                <option value="8400">8.400 mm</option>
+                                <option value="8750">8.750 mm</option>
+                                <option value="9100">9.100 mm</option>
+                                <option value="9450">9.450 mm</option>
+                                <option value="9800">9.800 mm</option>
+                                <option value="10150">10.150 mm</option>
+                                <option value="10500">10.500 mm</option>
+                                <option value="10850">10.850 mm</option>
+                                <option value="11200">11.200 mm</option>
+                                <option value="11550">11.550 mm</option>
+                                <option value="11900">11.900 mm</option>
+                                <option value="12250">12.250 mm</option>
+                            </select>
+                        </td>
                         <td><input type="number" step="1" class="quantite"></td>
                         <td class="surface">0</td>
                     </tr>
@@ -178,6 +212,7 @@
                         </thead>
                         <tbody></tbody>
                     </table>
+                    <p class="info-text">Pour afficher, ajoutez les paramètres longueur et quantité</p>
                 </div>
             </div>
         </div>
@@ -227,7 +262,8 @@
         <h2>FAQ / Infos pratiques sur l'outil</h2>
         <p>Trouvez ici les réponses aux questions les plus fréquentes :</p>
         <div id="insert_estimateur_faq"></div>
-        <p>Vous avez encore des questions auxquelles vous n'avez pas trouvé de réponse ? <br>Contactez notre équipe pour plus de précisions.</p>
+        <p>Vous avez encore des questions auxquelles vous n'avez pas trouvé de réponse ? <br>Contactez notre équipe pour
+            plus de précisions.</p>
     </section>
 
     <script>

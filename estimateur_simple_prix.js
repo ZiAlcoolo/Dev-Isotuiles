@@ -304,7 +304,39 @@ document.getElementById('ajouterLigne').addEventListener('click', () => {
     const tbody = document.querySelector('#tablePanneaux tbody');
     const row = document.createElement('tr');
     row.innerHTML = `
-        <td><input type="number" step="0.01" class="longueur"></td>
+        <td> <select class="longueur">
+                                <option value="">-- Sélectionner --</option>
+                                <option value="2100">2.100 mm</option>
+                                <option value="2450">2.450 mm</option>
+                                <option value="2800">2.800 mm</option>
+                                <option value="3150">3.150 mm</option>
+                                <option value="3500">3.500 mm</option>
+                                <option value="3850">3.850 mm</option>
+                                <option value="4200">4.200 mm</option>
+                                <option value="4550">4.550 mm</option>
+                                <option value="4900">4.900 mm</option>
+                                <option value="5250">5.250 mm</option>
+                                <option value="5600">5.600 mm</option>
+                                <option value="5950">5.950 mm</option>
+                                <option value="6300">6.300 mm</option>
+                                <option value="6650">6.650 mm</option>
+                                <option value="7000">7.000 mm</option>
+                                <option value="7350">7.350 mm</option>
+                                <option value="7700">7.700 mm</option>
+                                <option value="8050">8.050 mm</option>
+                                <option value="8400">8.400 mm</option>
+                                <option value="8750">8.750 mm</option>
+                                <option value="9100">9.100 mm</option>
+                                <option value="9450">9.450 mm</option>
+                                <option value="9800">9.800 mm</option>
+                                <option value="10150">10.150 mm</option>
+                                <option value="10500">10.500 mm</option>
+                                <option value="10850">10.850 mm</option>
+                                <option value="11200">11.200 mm</option>
+                                <option value="11550">11.550 mm</option>
+                                <option value="11900">11.900 mm</option>
+                                <option value="12250">12.250 mm</option>
+                            </select></td>
         <td><input type="number" step="1" class="quantite"></td>
         <td class="surface">0</td>
     `;
@@ -323,6 +355,7 @@ function getPrixM2(surfaceTotale) {
 // Calcul
 function majCalcul() {
 
+    $("#tableDetail .info-text").hide();
     let tbody = $("#tableDetail tbody");
     tbody.empty();
 
@@ -345,7 +378,7 @@ function majCalcul() {
                 <td>${longueur} m</td>
                 <td>${quantite}</td>
                 <td>${surface.toFixed(2)} m²</td>
-                <td>${prixM2_ligne} €/m²</td>
+                <td>${prixM2_ligne??"--"} €/m²</td>
                 <td>${prixTotal_ligne?prixTotal_ligne.toFixed(2):0} €</td>
             </tr>
         `);

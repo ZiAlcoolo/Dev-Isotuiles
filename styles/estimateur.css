@@ -20,6 +20,13 @@ body {
     align-items: center;
 }
 
+.info-text {
+    text-align: center;
+    font-size: 1rem;
+    margin: .5rem auto;
+    width: 100%;
+}
+
 .btn_container {
     display: flex;
     flex-direction: row;
@@ -265,7 +272,8 @@ tr {
     position: relative;
 }
 
-td input {
+table td input,
+table td select {
     width: 100%;
     box-sizing: border-box;
     border-radius: 15px;
@@ -274,7 +282,36 @@ td input {
     text-align: center;
 }
 
-td input:focus {
+table td select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("https://img.icons8.com/material-rounded/500/chevron-down.png");
+    background-size: 1rem;
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 1rem);
+    background-position-y: 50%;
+    padding-right: 2.5rem;
+}
+
+/* MOBILE VERSION ========================== */
+@media (max-width: 768px) {
+    table td select {
+        background-image: url("https://img.icons8.com/material-rounded/500/chevron-down.png");
+        background-size: 1rem;
+        background-repeat: no-repeat;
+        background-position-x: calc(100% - .5rem);
+        background-position-y: 50%;
+        padding-right: 1rem;
+    }
+
+    table#tablePanneaux{
+        border-spacing: 2px;
+    }
+
+}
+
+table td input:focus,
+table td select:focus {
     outline: solid 2px #1126b7;
 }
 
@@ -311,8 +348,10 @@ th {
 
 #estimateur_container .select_container>label,
 #estimateur_container .select_container .select_title {
-    font-size: .8rem;
+    font-size: 1rem;
     font-weight: 600;
+    font-family: "Assistant", Arial, sans-serif;
+    color: rgb(29, 29, 29);
 }
 
 #estimateur_container .select_container .form_choices {
@@ -409,7 +448,8 @@ th {
 
 .total table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
 .total thead th {
@@ -426,8 +466,24 @@ th {
     border-radius: 0 8px 0 0;
 }
 
+.total tbody:last-child tr:last-child td:first-child {
+    border-radius: 0 0 0 8px;
+}
+
+.total tbody:last-child tr:last-child td:last-child {
+    border-radius: 0 0 8px 0;
+}
+
+
+
 .total td {
     border: 1px solid #e8e9f0;
+    border-top: none;
+    border-right: none;
+}
+
+.total td:last-child {
+    border-right: 1px solid #e8e9f0;
 }
 
 .total th,
