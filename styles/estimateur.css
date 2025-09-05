@@ -472,6 +472,7 @@ th {
     width: 15vw;
     max-height: 200px;
     max-width: 200px;
+    min-width: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -488,6 +489,7 @@ th {
 #listeAccessoires .accessoire_container .acc_details {
     width: 15vw;
     max-width: 200px;
+    min-width: 120px;
     padding: .5rem;
     box-sizing: border-box;
     overflow: hidden;
@@ -514,6 +516,7 @@ th {
 }
 
 #listeAccessoires .accessoire_container .acc_details .btn_container {
+    margin: 0;
     margin-top: auto;
     display: flex;
     flex-direction: row;
@@ -611,6 +614,7 @@ th {
     border: 1px solid #e8e9f0;
     border-top: none;
     border-right: none;
+    white-space: nowrap;
 }
 
 .total td:last-child {
