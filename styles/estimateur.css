@@ -216,13 +216,13 @@ section#estimateur_container {
     background-color: rgb(240, 243, 255);
     border-radius: 20px;
     padding: 2rem;
-    padding-top: 10rem;
+    padding-top: 200px;
     position: relative;
 }
 
 section#estimateur_container #calculator-icon {
-    width: 250px;
-    height: auto;
+    width: auto;
+    height: 250px;
     position: absolute;
     top: -50px;
     left: 50%;
@@ -471,7 +471,7 @@ th {
     height: 15vw;
     width: 15vw;
     max-height: 200px;
-    max-width: 200px;
+    max-width: 190px;
     min-width: 120px;
     display: flex;
     align-items: center;
@@ -488,7 +488,7 @@ th {
 
 #listeAccessoires .accessoire_container .acc_details {
     width: 15vw;
-    max-width: 200px;
+    max-width: 190px;
     min-width: 120px;
     padding: .5rem;
     box-sizing: border-box;
@@ -805,6 +805,10 @@ section#contact {
 
     section#estimateur_container .btn_container {
         margin-bottom: 2rem;
+    }
+
+    #listeAccessoires {
+        justify-content: center;
     }
 
 }
