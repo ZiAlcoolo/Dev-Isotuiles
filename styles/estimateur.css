@@ -215,7 +215,6 @@ section#estimateur_container {
     max-width: 1000px;
     background-color: rgb(240, 243, 255);
     border-radius: 20px;
-    box-shadow: rgba(123, 130, 170, 0.2) 0px 20px 80px 0px;
     padding: 2rem;
     padding-top: 10rem;
     position: relative;
@@ -304,7 +303,7 @@ table td select {
         padding-right: 1rem;
     }
 
-    table#tablePanneaux{
+    table#tablePanneaux {
         border-spacing: 2px;
     }
 
@@ -411,14 +410,146 @@ th {
 
 #estimateur_container #ajouterLigne {
     border: none;
-    padding: 2px;
+    padding: 5px 10px;
     border-radius: 5px;
-    width: 95%;
+    width: fit-content;
     margin: auto;
     margin-top: 1rem;
-    background-color: #e2e6fd7a;
+    background-color: transparent;
+    cursor: pointer;
+    transition: border .2s ease;
+    border: solid 1px transparent;
+}
+
+#estimateur_container #ajouterLigne:hover {
+    border-color: var(--color-1);
+}
+
+/* ACCESSOIRES ================ */
+
+
+#afficherAccessoires {
+    background-color: var(--color-1);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: .4rem 1rem;
+    margin-bottom: 2rem;
     cursor: pointer;
 }
+
+#listeAccessoires {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+#listeAccessoires .accessoire_container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: .5rem;
+    box-sizing: border-box;
+    background-color: #e2e6fd7a;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: border-color .3s ease;
+}
+
+#listeAccessoires .accessoire_container:hover {
+    border-color: #e5e9fc;
+
+}
+
+#listeAccessoires .accessoire_container.selected {
+    border-color: var(--color-1);
+}
+
+#listeAccessoires .accessoire_container .cover {
+    height: 15vw;
+    width: 15vw;
+    max-height: 200px;
+    max-width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+#listeAccessoires .accessoire_container .cover img {
+    width: 100%;
+    height: auto;
+}
+
+#listeAccessoires .accessoire_container .acc_details {
+    width: 15vw;
+    max-width: 200px;
+    padding: .5rem;
+    box-sizing: border-box;
+    overflow: hidden;
+    gap: .4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex: 1;
+}
+
+#listeAccessoires .accessoire_container .acc_details p {
+    margin: 0;
+    color: black;
+}
+
+#listeAccessoires .accessoire_container .acc_details p.nom {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+#listeAccessoires .accessoire_container .acc_details p.prix {
+    font-weight: 400;
+    font-size: .8rem;
+}
+
+#listeAccessoires .accessoire_container .acc_details .btn_container {
+    margin-top: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    gap: 5px;
+}
+
+#listeAccessoires .acc_details .btn_container button,
+#listeAccessoires .acc_details .btn_container .select_acc {
+    border-radius: 10px;
+    box-sizing: border-box;
+    border: none;
+    background-color: #fff;
+    height: 2rem;
+    width: 2rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#listeAccessoires .acc_details .btn_container .select_acc {
+    flex: 1;
+}
+
+#listeAccessoires .accessoire_container.selected .acc_details .btn_container .select_acc {
+    background-color: var(--color-1);
+    color: white;
+}
+
+
+
+
+
 
 .total {
     display: flex;
