@@ -9,7 +9,7 @@
             align-items: center;
             width: 100%;
             box-sizing: border-box;
-            margin: 10vh auto;
+            margin: 100px auto;
             position: relative;
             justify-content: center;
         }
@@ -152,7 +152,7 @@
         /* choix-panneaux-sandwich-isolés */
         #choix-panneaux-sandwich-isolés {
             background-color: var(--color-1);
-            min-height: 100vh;
+            min-height: 700px;
             color: white;
         }
 
@@ -176,12 +176,12 @@
         }
 
         #choix-panneaux-sandwich-isolés .col {
-            padding-bottom: 20vh;
+            padding-bottom: 200px;
             box-sizing: border-box;
         }
 
         #estimation-commande {
-            padding: 10vh 0;
+            padding: 200px 0;
             flex-direction: column;
             text-align: center;
         }
