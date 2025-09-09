@@ -91,7 +91,7 @@ button.btn-1::before {
 /* TITRES =====================*/
 h6 {
     font-weight: 500;
-    font-family: Inter, Inter Placeholder, sans-serif;
+    font-family: "Inter", Arial, sans-serif;
     text-transform: uppercase;
     letter-spacing: 2px;
     font-size: .9rem;

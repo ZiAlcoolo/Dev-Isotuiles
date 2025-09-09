@@ -304,7 +304,7 @@ document.getElementById('ajouterLigne').addEventListener('click', () => {
     const tbody = document.querySelector('#tablePanneaux tbody');
     const row = document.createElement('tr');
     row.innerHTML = `
-        <td> <select class="longueur">
+        <td> <select class="longueur" required>
                                 <option value="">-- Sélectionner --</option>
                                 <option value="2100">2.100 mm</option>
                                 <option value="2450">2.450 mm</option>
@@ -337,7 +337,7 @@ document.getElementById('ajouterLigne').addEventListener('click', () => {
                                 <option value="11900">11.900 mm</option>
                                 <option value="12250">12.250 mm</option>
                             </select></td>
-        <td><input type="number" step="1" class="quantite"></td>
+        <td><input type="number" step="1" class="quantite" required></td>
         <td class="surface">0</td>
     `;
     tbody.appendChild(row);
