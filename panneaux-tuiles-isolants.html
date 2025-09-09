@@ -20,8 +20,8 @@
         </div>
 
         <div class="row">
-            <button class="btn_1" onclick="location.href='#definition-panneaux-sandwich'">Notre gamme</button>
-            <button class="btn_2" onclick="location.href='#'">En savoir plus</button>
+            <button class="btn_1" onclick="goToSection('#definition-panneaux-sandwich')">Notre gamme</button>
+            <button class="btn_2" onclick="goToSection('#definition-panneaux-sandwich')">En savoir plus</button>
         </div>
     </section>
 
@@ -130,7 +130,6 @@
 
 
 
-        // Exemple quand on clique sur un bouton
         function goToSection(sectionId) {
             window.parent.postMessage({ action: "scrollTo", target: sectionId }, "*");
         }
