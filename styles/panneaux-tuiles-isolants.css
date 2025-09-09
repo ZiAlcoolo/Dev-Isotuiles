@@ -1,274 +1,278 @@
  @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-        :root {
-            --color-1: #002F5C;
-        }
+ :root {
+     --color-1: #002F5C;
+ }
 
-        section {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            box-sizing: border-box;
-            margin: 100px auto;
-            position: relative;
-            justify-content: center;
-        }
+ body {
+     margin: 0;
+ }
 
-
-        /* GLOBAL CLASSES */
-        h2 {
-            font-size: 2.3rem;
-            font-weight: 600;
-            font-family: "Inter", Arial, sans-serif;
-        }
-
-        p {
-            font-size: 1rem;
-            opacity: .9;
-            line-height: 1.6rem;
-            font-family: "Inter", Arial, sans-serif;
-            font-weight: 300;
-        }
-
-        a {
-            color: var(--color-1);
-        }
-
-        .row {
-            display: flex;
-            flex-direction: row;
-            gap: 1rem;
-        }
-
-        .col {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .row.center,
-        .col.center {
-            align-items: center;
-        }
-
-        .row.left,
-        .col.left {
-            align-items: flex-start;
-        }
-
-        .btn_1,
-        .btn_2 {
-            background-color: var(--color-1);
-            border-radius: 15px;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            font-size: 1.2rem;
-            font-weight: 500;
-            border: transparent 2px solid;
-            cursor: pointer;
-        }
-
-        .btn_2 {
-            background-color: transparent;
-            border-color: var(--color-1);
-            color: var(--color-1);
-        }
-
-        .btn_1:hover,
-        .btn_2:hover {
-            opacity: .8;
-        }
+ section {
+     display: flex;
+     align-items: center;
+     width: 100%;
+     box-sizing: border-box;
+     margin: 100px auto;
+     position: relative;
+     justify-content: center;
+ }
 
 
+ /* GLOBAL CLASSES */
+ h2 {
+     font-size: 2.3rem;
+     font-weight: 600;
+     font-family: "Inter", Arial, sans-serif;
+ }
 
-        /* SECTION FRONT */
-        #front {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+ p {
+     font-size: 1rem;
+     opacity: .9;
+     line-height: 1.6rem;
+     font-family: "Inter", Arial, sans-serif;
+     font-weight: 300;
+ }
 
-        #front h1,
-        #front h3 {
-            font-family: "Inter", Arial, sans-serif;
-            font-size: 2.5rem;
-            text-align: center;
-            font-weight: 700;
-            margin: 1rem 0;
-        }
+ a {
+     color: var(--color-1);
+ }
 
-        #front h3 {
-            font-size: 1.8rem;
-            font-weight: 300;
-            margin: 0;
-        }
+ .row {
+     display: flex;
+     flex-direction: row;
+     gap: 1rem;
+ }
 
-        #front .cover {
-            max-width: 800px;
-            width: 90%;
-            height: fit-content;
-            margin: 3rem auto;
-        }
+ .col {
+     display: flex;
+     flex-direction: column;
+     gap: 1rem;
+ }
 
-        #front .cover img {
-            width: 100%;
-            height: auto;
-            border-radius: 20px;
-        }
+ .row.center,
+ .col.center {
+     align-items: center;
+ }
 
+ .row.left,
+ .col.left {
+     align-items: flex-start;
+ }
 
-        /* definition-panneaux-sandwich-isolés */
-        #definition-panneaux-sandwich-isolés {}
+ .btn_1,
+ .btn_2 {
+     background-color: var(--color-1);
+     border-radius: 15px;
+     border: none;
+     color: white;
+     padding: 10px 20px;
+     font-size: 1.2rem;
+     font-weight: 500;
+     border: transparent 2px solid;
+     cursor: pointer;
+ }
 
-        #definition-panneaux-sandwich-isolés>.row {
-            gap: 5rem;
-            max-width: 1000px;
-            align-items: center;
-        }
+ .btn_2 {
+     background-color: transparent;
+     border-color: var(--color-1);
+     color: var(--color-1);
+ }
 
-        #definition-panneaux-sandwich-isolés>.row>* {
-            flex: 1;
-        }
-
-        #definition-panneaux-sandwich-isolés .picture {
-            max-width: 600px;
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-
-            filter: drop-shadow(0px 4px 18px rgba(0, 0, 0, 0.07));
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        #definition-panneaux-sandwich-isolés .picture img {
-            width: 100%;
-        }
+ .btn_1:hover,
+ .btn_2:hover {
+     opacity: .8;
+ }
 
 
 
-        /* choix-panneaux-sandwich-isolés */
-        #choix-panneaux-sandwich-isolés {
-            background-color: var(--color-1);
-            min-height: 700px;
-            color: white;
-        }
+ /* SECTION FRONT */
+ #front {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+ }
 
-        #choix-panneaux-sandwich-isolés>.row {
-            gap: 5rem;
-            max-width: 1000px;
-            align-items: center;
-        }
+ #front h1,
+ #front h3 {
+     font-family: "Inter", Arial, sans-serif;
+     font-size: 2.5rem;
+     text-align: center;
+     font-weight: 700;
+     margin: 1rem 0;
+ }
 
-        #choix-panneaux-sandwich-isolés .picture {
-            display: flex;
-            position: relative;
-            max-width: 800px;
-            min-width: 25vw;
-            overflow: hidden;
-            border-radius: 15px;
-        }
+ #front h3 {
+     font-size: 1.8rem;
+     font-weight: 300;
+     margin: 0;
+ }
 
-        #choix-panneaux-sandwich-isolés .picture img {
-            width: 100%;
-        }
+ #front .cover {
+     max-width: 800px;
+     width: 90%;
+     height: fit-content;
+     margin: 3rem auto;
+ }
 
-        #choix-panneaux-sandwich-isolés .col {
-            padding-bottom: 200px;
-            box-sizing: border-box;
-        }
-
-        #estimation-commande {
-            padding: 200px 0;
-            flex-direction: column;
-            text-align: center;
-        }
-
-        #estimation-commande>.col {
-            max-width: 850px;
-            gap: 0;
-        }
-
-        #estimation-commande .col.preview {
-            position: relative;
-        }
-
-        #estimation-commande .col.preview::after {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 48.08%, rgba(255, 255, 255, 0.7) 66.83%, #FFFFFF 100%);
-            content: "";
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-        }
-
-        #estimation-commande .col.preview img {
-            position: relative;
-            width: 100%;
-        }
-
-        #estimation-commande .col.preview .row {
-            position: absolute;
-            bottom: 0;
-            z-index: 1;
-        }
-
-        /* faq */
-        #faq {
-            text-align: center;
-        }
-
-        #faq .col {
-            max-width: 800px;
-
-        }
+ #front .cover img {
+     width: 100%;
+     height: auto;
+     border-radius: 20px;
+ }
 
 
-        /* conclusion */
-        #conclusion {
-            padding: 4rem;
-            box-sizing: border-box;
-        }
+ /* definition-panneaux-sandwich */
+ #definition-panneaux-sandwich {}
 
-        #conclusion>.row {
-            background-color: var(--color-1);
-            color: white;
-            border-radius: 30px;
-            padding: 4rem;
-        }
+ #definition-panneaux-sandwich>.row {
+     gap: 5rem;
+     max-width: 1000px;
+     align-items: center;
+ }
 
-        #conclusion h2 {
-            margin: 0;
-        }
+ #definition-panneaux-sandwich>.row>* {
+     flex: 1;
+ }
 
-        #conclusion .row>.col {
-            flex: 1;
-        }
+ #definition-panneaux-sandwich .picture {
+     max-width: 600px;
+     display: flex;
+     flex-direction: row;
+     justify-content: center;
+     align-items: center;
 
-        #conclusion img.logo {
-            height: 4rem;
-        }
+     filter: drop-shadow(0px 4px 18px rgba(0, 0, 0, 0.07));
+     border-radius: 20px;
+     overflow: hidden;
+ }
 
-        #conclusion .picture img {
-            width: 100%;
-            border-radius: 30px;
-        }
-
-        #conclusion .btn_1 {
-            background-color: #fff;
-            color: var(--color-1);
-        }
+ #definition-panneaux-sandwich .picture img {
+     width: 100%;
+ }
 
 
 
+ /* choix-panneaux-sandwich */
+ #choix-panneaux-sandwich {
+     background-color: var(--color-1);
+     min-height: 700px;
+     color: white;
+ }
+
+ #choix-panneaux-sandwich>.row {
+     gap: 5rem;
+     max-width: 1000px;
+     align-items: center;
+ }
+
+ #choix-panneaux-sandwich .picture {
+     display: flex;
+     position: relative;
+     max-width: 800px;
+     min-width: 25vw;
+     overflow: hidden;
+     border-radius: 15px;
+ }
+
+ #choix-panneaux-sandwich .picture img {
+     width: 100%;
+ }
+
+ #choix-panneaux-sandwich .col {
+     padding-bottom: 200px;
+     box-sizing: border-box;
+ }
+
+ #estimation-commande {
+     padding: 200px 0;
+     flex-direction: column;
+     text-align: center;
+ }
+
+ #estimation-commande>.col {
+     max-width: 850px;
+     gap: 0;
+ }
+
+ #estimation-commande .col.preview {
+     position: relative;
+ }
+
+ #estimation-commande .col.preview::after {
+     background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 48.08%, rgba(255, 255, 255, 0.7) 66.83%, #FFFFFF 100%);
+     content: "";
+     position: absolute;
+     left: 0;
+     right: 0;
+     top: 0;
+     bottom: 0;
+ }
+
+ #estimation-commande .col.preview img {
+     position: relative;
+     width: 100%;
+ }
+
+ #estimation-commande .col.preview .row {
+     position: absolute;
+     bottom: 0;
+     z-index: 1;
+ }
+
+ /* faq */
+ #faq {
+     text-align: center;
+ }
+
+ #faq .col {
+     max-width: 800px;
+
+ }
+
+
+ /* conclusion */
+ #conclusion {
+     padding: 4rem;
+     box-sizing: border-box;
+ }
+
+ #conclusion>.row {
+     background-color: var(--color-1);
+     color: white;
+     border-radius: 30px;
+     padding: 4rem;
+ }
+
+ #conclusion h2 {
+     margin: 0;
+ }
+
+ #conclusion .row>.col {
+     flex: 1;
+ }
+
+ #conclusion img.logo {
+     height: 4rem;
+ }
+
+ #conclusion .picture img {
+     width: 100%;
+     border-radius: 30px;
+ }
+
+ #conclusion .btn_1 {
+     background-color: #fff;
+     color: var(--color-1);
+ }
 
 
 
 
 
 
-        /* MOBILE VERSION ========================== */
-        @media (max-width: 768px) {}
+
+
+
+ /* MOBILE VERSION ========================== */
+ @media (max-width: 768px) {}

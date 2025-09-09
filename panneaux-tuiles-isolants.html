@@ -20,12 +20,12 @@
         </div>
 
         <div class="row">
-            <button class="btn_1" onclick="location.href='#'">Notre gamme</button>
+            <button class="btn_1" onclick="location.href='#definition-panneaux-sandwich'">Notre gamme</button>
             <button class="btn_2" onclick="location.href='#'">En savoir plus</button>
         </div>
     </section>
 
-    <section id="definition-panneaux-sandwich-isolés">
+    <section id="definition-panneaux-sandwich">
         <div class="row">
             <div class="col left">
                 <h2>Qu’est-ce que les panneaux sandwich isolants ?</h2>
@@ -41,7 +41,7 @@
     </section>
 
 
-    <section id="choix-panneaux-sandwich-isolés">
+    <section id="choix-panneaux-sandwich">
         <div class="row">
             <div class="picture">
                 <img src="./media/empilement tuiles.jpg">
@@ -122,11 +122,23 @@
 
 
 
-<script>
+    <script>
         window.onload = () => {
             const height = document.body.scrollHeight;
             window.parent.postMessage({ frameHeight: height }, "*");
         };
+
+
+
+        // Exemple quand on clique sur un bouton
+        function goToSection(sectionId) {
+            window.parent.postMessage({ action: "scrollTo", target: sectionId }, "*");
+        }
+
+        function goToPage(url) {
+            window.parent.postMessage({ action: "redirect", url: url }, "*");
+        }
+
     </script>
 
 </body>
