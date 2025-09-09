@@ -7,6 +7,11 @@
     <title>Panneaux Sandwich Isolés pour Toiture</title>
     <link rel="stylesheet" href="./styles/panneaux-tuiles-isolants.css">
 
+    <!-- IMPORTS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 </head>
 
 <body>
@@ -87,9 +92,76 @@
     <section id="faq">
         <div class="col">
             <h2>Questions fréquentes sur les panneaux sandwich isolants</h2>
-            <div>Contenu de la FAQ</div>
-            <p>Encore des questions ? N'hésitez pas à nous contacter via mail <a href="#">isotuiles@gmail.com</a> ou
-                téléphone <a href="#">+33 6 76 xx xx xx</a></p>
+
+            <div id="insert_panneaux_sandwich_faq"></div>
+
+
+            <script>
+                const FAQ = [
+                    {
+                        q: "Qu’est-ce qu’un panneau sandwich imitation tuile ?",
+                        r: "C’est un panneau isolant composé de deux tôles d’acier et d’une âme isolante, offrant l’aspect esthétique d’une toiture traditionnelle en tuiles tout en garantissant une excellente isolation thermique à moindre coût."
+                    },
+                    {
+                        q: "Quels sont les avantages des panneaux sandwich ?",
+                        r: "Ils sont légers, rapides à poser, isolants, esthétiques et... bons pour votre budget ! Ils remplacent avantageusement les toitures classiques en tuiles ou en tôles, avec un rendu moderne et durable."
+                    },
+                    {
+                        q: "Peut-on installer des fenêtres de toit (Velux) sur ces panneaux ?",
+                        r: "Oui, les panneaux sandwich imitation tuile sont compatibles avec la pose de fenêtres de toit type Velux, permettant une intégration harmonieuse et étanche."
+                    },
+                    {
+                        q: "Les panneaux sandwich conviennent-ils à la rénovation de toitures contenant de l’amiante-ciment ?",
+                        r: "Oui, ils sont particulièrement adaptés pour remplacer une toiture en amiante-ciment, en assurant une solution durable, esthétique et conforme aux normes."
+                    },
+                    {
+                        q: "Quels accessoires sont disponibles pour une pose complète ?",
+                        r: "Nous proposons faîtières, arêtiers, noues, solins et fixations adaptés, afin de garantir une étanchéité parfaite et une finition soignée. Retrouvez l'enssemble de nos accessoires sur la page 'Accessoires'."
+                    },
+                    // {
+                    //     q: "Quels matériaux sont utilisés pour les finitions ?",
+                    //     r: "Les accessoires peuvent être en acier laqué, aluminium ou zinc, pour s’adapter aussi bien aux toitures modernes qu’aux styles traditionnels."
+                    // },
+                    // {
+                    //     q: "Quelle est la durée de vie d’un panneau sandwich ?",
+                    //     r: "Grâce à leur résistance et leur traitement anticorrosion, les panneaux sandwich bénéficient d’une excellente longévité et conservent leur performance dans le temps."
+                    // },
+                    {
+                        q: "Les panneaux sont-ils faciles à installer ?",
+                        r: "Oui, leur légèreté et leur conception modulaire facilitent la pose, que ce soit pour une construction neuve ou une rénovation."
+                    }
+                ];
+
+
+                // Génération HTML
+                var faq_html = "";
+                FAQ.forEach((qr, index) => {
+                    faq_html += `
+            <div class="faq-item">
+                <div class="faq-question" data-id="${index}">
+                    <span>${qr.q}</span>
+                    <span class="arrow">+</span>
+                </div>
+                <div class="faq-answer" style="display: none;">
+                    <p>${qr.r}</p>
+                </div>
+            </div>
+        `;
+                });
+                $('#insert_panneaux_sandwich_faq').html(faq_html);
+
+                // Gestion du slideToggle
+                $(document).on("click", ".faq-item", function () {
+                    $(this).find(".faq-answer").slideToggle(200).toggleClass('expand');
+                    $(this).find(".arrow").text(
+                        $(this).find(".faq-answer").hasClass("expand") ? "-" : "+"
+                    );
+                });
+            </script>
+            <p>Vous avez encore des questions auxquelles vous n'avez pas trouvé de réponse ? <br>Contactez notre
+                équipe pour plus de précisions.<br>
+                Via mail <a href="#">isotuiles@gmail.com</a> ou
+                téléphone <a href="tel:+33 6 76 45 67 57">+33 6 76 45 67 57</a></p>
         </div>
     </section>
 

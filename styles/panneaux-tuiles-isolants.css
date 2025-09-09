@@ -267,7 +267,52 @@
  }
 
 
+ /* FAQ */
 
+ section#faq #insert_panneaux_sandwich_faq {
+     margin-top: 20px;
+     display: flex;
+     flex-direction: column;
+     align-items: stretch;
+     gap: 10px;
+     width: 750px;
+     max-width: 80vw;
+     font-family: 'Inter', sans-serif;
+     text-align: left;
+ }
+
+ section#faq .faq-item {
+     background-color: rgb(240, 243, 255);
+     padding: 1rem 1.5rem;
+     border-radius: 20px;
+     box-sizing: border-box;
+ }
+
+ section#faq .faq-question {
+     font-weight: bold;
+     cursor: pointer;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+ }
+
+ section#faq .faq-item:hover {
+     background-color: rgba(240, 243, 255, .6);
+ }
+
+ section#faq .faq-answer {
+     padding: 8px 0 0 0;
+     color: #444;
+ }
+
+ section#faq .arrow {
+     font-size: 1.5rem;
+     font-family: sans-serif!important;
+     color: #666;
+     font-weight: 600;
+     width: 1.5rem;
+     text-align: center;
+ }
 
 
 
