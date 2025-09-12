@@ -719,54 +719,51 @@ th {
 
 
 /* EXPORT PDF */
-#overlayPdf {
-    display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
 
-#overlayPdf .overlay_content {
-    background: rgb(240, 243, 255);
+#overlayPdf.overlay_content {
+    margin-top: 2rem;
+    background: white;
     padding: 20px;
     border-radius: 20px;
-    width: 350px;
+    width: 100%;
     text-align: center;
     position: relative;
     box-sizing: border-box;
 }
 
-#overlayPdf .overlay_content input {
+#overlayPdf.overlay_content h4 {
+    font-size: 2rem;
+}
+#overlayPdf.overlay_content input {
     width: 100%;
     padding: 8px;
     box-sizing: border-box;
     border: none;
     background-color: white;
+    border: solid 2px rgb(240, 243, 255);
     border-radius: 15px;
     margin: 10px 0;
 }
 
-#overlayPdf .overlay_content button {
+#overlayPdf.overlay_content button {
     margin-right: 10px;
-    padding: 6px 12px;
+    padding: .6rem 1.4rem;
     color: rgb(48, 48, 48);
     border: none;
     border-radius: 15px;
     cursor: pointer;
-    background: white;
+    background: rgb(240, 243, 255);
 }
 
-#overlayPdf .overlay_content button:first-child {
+#overlayPdf.overlay_content button:hover {
+    opacity: .8;
+}
+
+#overlayPdf.overlay_content button:first-child {
     background: #002f5c;
     color: white;
 }
-#overlayPdf .overlay_content #close_overlay {
+#overlayPdf.overlay_content #close_overlay {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -781,7 +778,7 @@ th {
     align-items: center;
     margin: 0;
 }
-#overlayPdf .overlay_content #close_overlay img {
+#overlayPdf.overlay_content #close_overlay img {
     height: 100%;
     width: auto;
 }

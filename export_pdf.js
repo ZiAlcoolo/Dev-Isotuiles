@@ -2,10 +2,9 @@
 document.getElementById("exportPdf").addEventListener("click", function () {
     var pdf_overlay = `
 <!-- Overlay -->
-<div id="overlayPdf">
-  <div class="overlay_content">
+  <div id="overlayPdf" class="overlay_content">
     <button id="close_overlay" onclick="$('#overlayPdf').remove()"><img  src="https://img.icons8.com/ios/500/delete-sign--v1.png"></button>
-    <h3>Personnaliser le devis</h3>
+    <h4>Personnaliser le devis</h4>
     <p>Complétez les champs que vous désirez</p>
     <input type="text" id="nomPrenom" placeholder="Nom Prénom">
     <input type="email" id="emailClient" placeholder="Email">
@@ -15,9 +14,8 @@ document.getElementById("exportPdf").addEventListener("click", function () {
       <button id="exportSansNom" onclick="generatePdf(false)">Exporter sans infos</button>
     </div>
   </div>
-</div>
 `;
-    $('body').append(pdf_overlay)
+    $('#insert_pdf_options').append(pdf_overlay)
 });
 
 

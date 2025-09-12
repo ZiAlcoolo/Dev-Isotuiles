@@ -97,15 +97,15 @@
             <label class="required">Type de produit</label>
             <div class="form_choices" id="typePanneauContainer">
                 <div class="form-check">
-                    <input type="radio" id="type1" name="typePanneau" value="romaneCanal" checked>
+                    <input class="maj_height" type="radio" id="type1" name="typePanneau" value="romaneCanal" checked>
                     <label for="type1">Romane Canal</label>
                 </div>
                 <div class="form-check">
-                    <input type="radio" id="type2" name="typePanneau" value="tuilesPlates">
+                    <input class="maj_height" type="radio" id="type2" name="typePanneau" value="tuilesPlates">
                     <label for="type2">Tuiles Plates</label>
                 </div>
                 <div class="form-check">
-                    <input type="radio" id="type3" name="typePanneau" value="bacAcier">
+                    <input class="maj_height" type="radio" id="type3" name="typePanneau" value="bacAcier">
                     <label for="type3">Bac Acier</label>
                 </div>
             </div>
@@ -187,7 +187,7 @@
         <!-- Tableau Longueur / Quantité / Surface -->
         <div class="select_container">
             <p class="select_title">Accessoires</p>
-            <button id="afficherAccessoires" onclick="DisplayAccessories()">Ajouter des accessoires</button>
+            <button id="afficherAccessoires"  class="maj_height" onclick="DisplayAccessories()">Ajouter des accessoires</button>
             <div id="listeAccessoires" style="display: none;"></div>
         </div>
 
@@ -197,7 +197,7 @@
         <div class="total">
             <!-- Tableau des prix -->
             <div>
-                <div class="toggle_btn">
+                <div class="toggle_btn maj_height">
                     <img src="https://img.icons8.com/ios-glyphs/1000/chevron-up.png">
                     <span>Tableau des prix</span>
                 </div>
@@ -218,7 +218,7 @@
 
             <!-- Détail commande -->
             <div>
-                <div class="toggle_btn">
+                <div class="toggle_btn maj_height">
                     <img src="https://img.icons8.com/ios-glyphs/1000/chevron-up.png">
                     <span>Détail commande</span>
                 </div>
@@ -254,10 +254,11 @@
         <div class="col">
             <p>Pour un devis précis complet, contactez-nous.</p>
             <div class="btn_container">
-                <button class="btn-1" id="exportPdf">Exporter en PDF</button>
+                <button class="btn-1 maj_height" id="exportPdf">Exporter en PDF</button>
                 <button onclick="window.open('https://isotuiles.fr/pages/conctactez-nous')" class="btn-1">Nous
                     contacter</button>
             </div>
+            <div id="insert_pdf_options"></div>
         </div>
     </section>
 
@@ -331,7 +332,7 @@
         var faq_html = "";
         FAQ.forEach((qr, index) => {
             faq_html += `
-            <div class="faq-item">
+            <div class="faq-item maj_height">
                 <div class="faq-question" data-id="${index}">
                     <span>${qr.q}</span>
                     <span class="arrow">+</span>
@@ -378,10 +379,19 @@
 
 
     <script>
-        window.onload = () => {
-            const height = document.body.scrollHeight;
+        function sendHeight() {
+            const height = $('body').prop('scrollHeight');
             window.parent.postMessage({ frameHeight: height }, "*");
-        };
+        }
+
+        // Envoi initial
+        $(window).on('load', sendHeight);
+
+        // À chaque clic sur un bouton
+        $('.maj_height').on('click', function () {
+            setTimeout(sendHeight, 50);
+        });
+
     </script>
 
 
