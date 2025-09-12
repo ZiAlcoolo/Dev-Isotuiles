@@ -144,54 +144,86 @@ section#fonctionnement {
     width: 100%;
 }
 
-section#fonctionnement .row {
-    gap: 4rem;
-    -webkit-flex-wrap: wrap;
-    flex-wrap: wrap;
+section#fonctionnement .col {
+    gap: 1rem;
+    /* -webkit-flex-wrap: wrap;
+    flex-wrap: wrap; */
 }
 
-section#fonctionnement ul {
-    counter-reset: section;
+section#fonctionnement .steps_container {
     flex: 1;
-    color: #7B7D8A;
     font-family: "Assistant", Arial, sans-serif;
     font-weight: 400;
     font-size: 1rem;
-    list-style: none;
-    padding-inline-start: unset;
     text-align: left;
-}
-
-section#fonctionnement li {
-    margin: 0 0 10px 0;
-    line-height: 1rem;
-    position: relative;
-
-}
-
-section#fonctionnement li:before {
-    content: counter(section);
-    counter-increment: section;
     display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 1rem;
+    max-width: 1000px;
+    flex-wrap: wrap;
+}
+
+section#fonctionnement .steps_container .row {
+    gap: 1rem;
+    padding: 0;
+    flex: 1;
+    align-items: stretch;
+}
+
+section#fonctionnement .steps_container .row div,
+section#fonctionnement .last_step {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    background-color: rgb(240, 243, 255);
+    border-radius: 15px;
+    padding: 1.5rem 1rem;
+    gap: 3rem;
+    flex: 1;
+    text-align: left;
+    max-width: 1000px;
+    box-sizing: border-box;
+}
+
+section#fonctionnement .last_step {
+    flex-direction: row;
+    gap: 1rem;
     align-items: center;
-    justify-content: center;
-    font-size: .6rem;
-    font-weight: 800;
-    width: 1.5rem;
-    height: 1.5rem;
-    color: white;
-    background-color: var(--color-1);
-    border: 1px solid #ccc;
-    border-radius: 100%;
-    position: absolute;
-    left: -2rem;
-    top: 0;
+    padding: 1rem;
 }
 
-section#fonctionnement li b {
-    font-size: 1.1rem;
+section#fonctionnement .last_step p {
+    margin: 0;
 }
 
+section#fonctionnement .last_step img {
+    display: unset;
+    opacity: .5;
+    height: 2rem;
+    width: auto;
+}
+
+/* MOBILE VERSION ========================== */
+@media (max-width: 768px) {
+    section#fonctionnement .last_step img {
+        display: none;
+    }
+
+}
+
+section#fonctionnement .steps_container h4,
+section#fonctionnement .steps_container p {
+    margin: 0;
+}
+
+section#fonctionnement .steps_container p {
+    font-size: .8rem;
+}
+
+
+/* VIDEO */
 section#fonctionnement img {
     display: none;
     flex: 1;
@@ -693,6 +725,25 @@ section#avantages ul {
     list-style: none;
     padding-inline-start: 1rem;
     padding: 0 1rem;
+}
+section#avantages li {
+    position: relative;
+    border-radius: 15px;
+    background-color: rgb(240, 243, 255);
+    margin-bottom: .5rem;
+    padding: .5rem 2rem;
+}
+section#avantages li::before {
+    content: '';
+    background-image: url('https://img.icons8.com/ios-glyphs/500/approval.png');
+    background-size: contain;
+    height: 1rem;
+    width: 1rem;
+    position: absolute;
+    opacity: .6;
+    left: .5rem;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 
