@@ -132,7 +132,7 @@ const couleursParType = {
 // Données des épaisseurs par type
 const epaisseursParType = {
     romaneCanal: ["40/80", "60/105"],
-    tuilesPlates: ["50/77", "40/80", "60/105"],
+    tuilesPlates: ["50/77"/*, "40/80", "60/105"*/],
     bacAcier: ["30", "40", "50", "60", "80", "100"]
 };
 

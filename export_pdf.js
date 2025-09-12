@@ -19,7 +19,7 @@ document.getElementById("exportPdf").addEventListener("click", function () {
     doc.setFontSize(11);
     doc.text("Adresse : Zone d'Activité de Gemeillan, 33480 Sainte-Hélène, France", 50, 28);
     doc.text("Téléphone : +33 6 76 45 67 57", 50, 34);
-    doc.text("Email : contact@isotuiles.fr", 50, 40);
+    doc.text("Email : isotuiles@gmail.com", 50, 40);
 
     // Ligne séparatrice
     doc.line(14, 45, 195, 45);
@@ -58,7 +58,7 @@ document.getElementById("exportPdf").addEventListener("click", function () {
     // === Prix total ===
     const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : 120;
     doc.setFontSize(14);
-    doc.text(`Prix estimé : ${prixTotal}`, 14, finalY);
+    doc.text(`Prix estimé (HT) : ${prixTotal}`, 14, finalY);
 
     // === Bouton site ===
     // === Bouton site ===
