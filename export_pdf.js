@@ -1,9 +1,12 @@
 // Au clic sur le bouton principal -> ouvre l'overlay
 document.getElementById("exportPdf").addEventListener("click", function () {
-    var pdf_overlay = `
+    if ($("#overlayPdf").length) {
+        // Si l'overlay existe déjà, on le supprime
+        $("#overlayPdf").remove();
+    } else {
+        var pdf_overlay = `
 <!-- Overlay -->
   <div id="overlayPdf" class="overlay_content">
-    <button id="close_overlay" onclick="$('#overlayPdf').remove()"><img  src="https://img.icons8.com/ios/500/delete-sign--v1.png"></button>
     <h4>Personnaliser le devis</h4>
     <p>Complétez les champs que vous désirez</p>
     <input type="text" id="nomPrenom" placeholder="Nom Prénom">
@@ -15,7 +18,8 @@ document.getElementById("exportPdf").addEventListener("click", function () {
     </div>
   </div>
 `;
-    $('#insert_pdf_options').append(pdf_overlay)
+        $('#insert_pdf_options').append(pdf_overlay)
+    }
 });
 
 

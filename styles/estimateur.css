@@ -729,6 +729,7 @@ th {
     text-align: center;
     position: relative;
     box-sizing: border-box;
+    margin-bottom: 1rem;
 }
 
 #overlayPdf.overlay_content h4 {
@@ -763,25 +764,7 @@ th {
     background: #002f5c;
     color: white;
 }
-#overlayPdf.overlay_content #close_overlay {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    border-radius: 100px;
-    background-color: #fff;
-    height: 1.5rem;
-    width: 1.5rem;
-    box-sizing: border-box;
-    padding: .5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-}
-#overlayPdf.overlay_content #close_overlay img {
-    height: 100%;
-    width: auto;
-}
+
 
 
 section#avantages {}
