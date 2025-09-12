@@ -1,18 +1,42 @@
+// Au clic sur le bouton principal -> ouvre l'overlay
 document.getElementById("exportPdf").addEventListener("click", function () {
+    var pdf_overlay = `
+<!-- Overlay -->
+<div id="overlayPdf">
+  <div class="overlay_content">
+    <button id="close_overlay" onclick="$('#overlayPdf').remove()"><img  src="https://img.icons8.com/ios/500/delete-sign--v1.png"></button>
+    <h3>Personnaliser le devis</h3>
+    <p>Complétez les champs que vous désirez</p>
+    <input type="text" id="nomPrenom" placeholder="Nom Prénom">
+    <input type="email" id="emailClient" placeholder="Email">
+    <input type="tel" id="telClient" placeholder="Téléphone">
+    <div style="margin-top:15px;">
+      <button id="exportAvecNom" onclick="generatePdf(true)">Exporter avec infos</button>
+      <button id="exportSansNom" onclick="generatePdf(false)">Exporter sans infos</button>
+    </div>
+  </div>
+</div>
+`;
+    $('body').append(pdf_overlay)
+});
+
+
+// Fonction de génération du PDF avec option nom
+function generatePdf(withInfos) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
     // === Récupération date et heure ===
     const now = new Date();
-    const dateStr = now.toLocaleDateString("fr-FR"); // format JJ/MM/AAAA
-    const timeStr = now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }); // HH:MM
-    const fileDate = dateStr.replaceAll("/", "-") + "_" + timeStr.replace(":", "-"); // pour le nom du fichier
+    const dateStr = now.toLocaleDateString("fr-FR");
+    const timeStr = now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+    const fileDate = dateStr.replaceAll("/", "-") + "_" + timeStr.replace(":", "-");
 
     // === Logo ===
     const logoUrl = "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/logo-bleu.png?v=1731518185";
     doc.addImage(logoUrl, "PNG", 14, 10, 30, 10);
 
-    // === Coordonnées ===
+    // === Coordonnées entreprise ===
     doc.setFontSize(16);
     doc.text("Isotuiles", 50, 20);
 
@@ -21,82 +45,82 @@ document.getElementById("exportPdf").addEventListener("click", function () {
     doc.text("Téléphone : +33 6 76 45 67 57", 50, 34);
     doc.text("Email : isotuiles@gmail.com", 50, 40);
 
-    // Ligne séparatrice
     doc.line(14, 45, 195, 45);
 
-    // === Titre du devis ===
+    // === Titre devis ===
     doc.setFontSize(18);
     doc.text("Devis en ligne", 14, 55);
 
-    // Ajout de la date/heure du devis
     doc.setFontSize(11);
     doc.text(`Émis le : ${dateStr} à ${timeStr}`, 150, 55);
 
-    // === Infos du produit choisi ===
+    // === Infos client si demandées ===
+    let yPos = 65;
+    if (withInfos) {
+        const nomPrenom = document.getElementById("nomPrenom").value.trim();
+        const emailClient = document.getElementById("emailClient").value.trim();
+        const telClient = document.getElementById("telClient").value.trim();
+
+        doc.setFontSize(12);
+        if (nomPrenom) {
+            doc.text(`Client : ${nomPrenom}`, 14, yPos);
+            yPos += 8;
+        }
+        if (emailClient) {
+            doc.text(`Email : ${emailClient}`, 14, yPos);
+            yPos += 8;
+        }
+        if (telClient) {
+            doc.text(`Téléphone : ${telClient}`, 14, yPos);
+            yPos += 8;
+        }
+    }
+
+    // === Infos produit ===
     const produit = $('input[name="typePanneau"]:checked').val() || "";
     const epaisseur = $('input[name="epaisseurPanneau"]:checked').val() || "";
     const couleur = $('input[name="couleurPanneau"]:checked').val() || "";
     const prixTotal = document.getElementById("prixTotal").innerText;
 
     doc.setFontSize(12);
-    doc.text(`Produit : ${produit}`, 14, 70);
-    doc.text(`Épaisseur : ${epaisseur}`, 14, 78);
-    doc.text(`Couleur : ${couleur}`, 14, 86);
+    doc.text(`Produit : ${produit}`, 14, yPos);
+    doc.text(`Épaisseur : ${epaisseur}`, 14, yPos + 8);
+    doc.text(`Couleur : ${couleur}`, 14, yPos + 16);
 
     // === Tableau détail ===
     const table = document.querySelector("#tableDetail table");
     if (table) {
         doc.autoTable({
             html: "#tableDetail table",
-            startY: 95,
+            startY: yPos + 25,
             theme: "grid",
             headStyles: { fillColor: [0, 47, 92] },
             styles: { halign: "center" },
         });
     }
 
+    const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : yPos + 40;
+
     // === Prix total ===
-    const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : 120;
     doc.setFontSize(14);
     doc.text(`Prix estimé (HT) : ${prixTotal}`, 14, finalY);
 
-    // === Bouton site ===
-    // === Bouton site ===
-    const siteUrl = "https://isotuiles.fr";
-    const estimatorUrl = "https://isotuiles.fr/pages/estimateur-de-prix";
-
-    // Texte des boutons
-    const siteText = "Visitez notre site";
-    const estimatorText = "Aller à l'estimateur";
-
-    // Couleur et style du texte
-    doc.setFont("helvetica", "bold");
+    // === Note client ===
     doc.setFontSize(11);
+    doc.setTextColor(50, 50, 50);
+    doc.text(
+        "NB : lors de votre prise de contact, n’hésitez pas à nous transmettre directement ce devis. Cela facilitera vos échanges et accélérera le traitement de votre commande.",
+        14,
+        finalY + 12,
+        { maxWidth: 180 }
+    );
+    doc.setTextColor(0, 0, 0);
 
-    // Calcul largeur des textes pour ajuster la largeur du bouton
-    const siteWidth = doc.getTextWidth(siteText) + 8; // ajout de padding
-    const estimatorWidth = doc.getTextWidth(estimatorText) + 8;
-
-    const buttonHeight = 10;
-    const buttonY = finalY + 15;
-    let buttonX = 14;
-
-    // Premier bouton : site
-    doc.setFillColor(0, 47, 92);
-    doc.roundedRect(buttonX, buttonY, siteWidth, buttonHeight, 2, 2, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.text(siteText, buttonX + 4, buttonY + 7); // 4px padding gauche, 7px vertical
-    doc.link(buttonX, buttonY, siteWidth, buttonHeight, { url: siteUrl });
-
-    // Deuxième bouton : estimateur
-    buttonX += siteWidth + 5; // espace de 5px entre les boutons
-    doc.setFillColor(0, 47, 92);
-    doc.roundedRect(buttonX, buttonY, estimatorWidth, buttonHeight, 2, 2, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.text(estimatorText, buttonX + 4, buttonY + 7);
-    doc.link(buttonX, buttonY, estimatorWidth, buttonHeight, { url: estimatorUrl });
-
-
-    // === Sauvegarde avec date et heure dans le nom ===
+    // === Sauvegarde PDF ===
     doc.save(`devis_${fileDate}.pdf`);
-});
+
+    // Fermer l’overlay
+    $('#overlayPdf').remove()
+}
+
+
