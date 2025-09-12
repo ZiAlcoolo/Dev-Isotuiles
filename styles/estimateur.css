@@ -314,6 +314,7 @@ table td select {
 }
 
 table td select {
+    background: white;
     -webkit-appearance: none;
     -moz-appearance: none;
     background-image: url("https://img.icons8.com/material-rounded/500/chevron-down.png");
