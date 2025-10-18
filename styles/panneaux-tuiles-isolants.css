@@ -8,6 +8,10 @@
      margin: 0;
  }
 
+ .mobile-v {
+     display: none;
+ }
+
  section {
      display: flex;
      align-items: center;
@@ -227,7 +231,7 @@
 
  #faq .col {
      max-width: 800px;
-
+     align-items: center;
  }
 
 
@@ -307,7 +311,7 @@
 
  section#faq .arrow {
      font-size: 1.5rem;
-     font-family: sans-serif!important;
+     font-family: sans-serif !important;
      color: #666;
      font-weight: 600;
      width: 1.5rem;
@@ -319,5 +323,131 @@
 
 
 
+ /* ANIMATIONS =========== */
+ .shake-v {
+     animation: shake-vertical 30s infinite ease-in-out 0s normal forwards;
+ }
+
+ @keyframes shake-vertical {
+
+     0%,
+     100% {
+         transform: translateY(0);
+     }
+
+     10%,
+     30%,
+     50%,
+     70%,
+     80% {
+         transform: translateY(0px);
+     }
+
+     20%,
+     40%,
+     60%,
+     90% {
+         transform: translateY(-16px) scale(1.03);
+     }
+ }
+
+
+
+
+
+
+
  /* MOBILE VERSION ========================== */
- @media (max-width: 768px) {}
+ @media (max-width: 768px) {
+     .pc-v {
+         display: none;
+     }
+
+     .mobile-v {
+         display: flex;
+     }
+
+
+
+     h2 {
+         font-size: 1.6rem;
+     }
+
+     /* #definition-panneaux-sandwich ============ */
+     #definition-panneaux-sandwich>.row {
+         flex-direction: column;
+         text-align: center;
+         max-width: 90vw;
+     }
+
+
+     /* #choix-panneaux-sandwich ============ */
+     #choix-panneaux-sandwich .mobile-v {
+         flex-direction: column;
+         display: flex;
+
+     }
+
+     #choix-panneaux-sandwich .mobile-v .col {
+         text-align: center;
+         padding: 2rem 1rem;
+         align-items: center;
+     }
+
+     #choix-panneaux-sandwich .mobile-v img {
+         width: 100%;
+         max-width: 300px;
+         border-radius: 15px;
+         margin: 2rem 0;
+     }
+
+     /* #estimation-commande =============== */
+     #estimation-commande {
+         padding: 0 1rem;
+     }
+
+     #estimation-commande .col.preview {
+         padding: 2rem 0;
+     }
+
+     /* #faq =================== */
+     #faq >.col>p{
+        padding: 2rem;
+        box-sizing: border-box;
+        font-size: 14px;
+     }
+
+     /* #conclusion ==================== */
+     #conclusion {
+         padding: 4rem .5rem;
+     }
+
+     #conclusion>.row {
+         box-sizing: border-box;
+         padding: 4rem 2rem;
+         flex-direction: column;
+     }
+
+     #conclusion .col.left {
+         align-items: center;
+         text-align: center;
+     }
+
+     #conclusion img.logo {
+         height: unset;
+         width: 60vw;
+     }
+
+     #conclusion .small-title {
+         text-align: center;
+         text-transform: uppercase;
+         letter-spacing: 4px;
+         font-size: 12px;
+     }
+
+     #conclusion .row.left {
+         flex-direction: column;
+         align-items: stretch;
+         width: 100%;
+     }
+ }
