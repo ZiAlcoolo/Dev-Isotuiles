@@ -132,11 +132,9 @@
         async function sendToOpenAI(message) {
             const systemPrompt = `Tu es ISOTUILES, un assistant commercial professionnel spécialisé dans la vente de panneaux sandwich isolants imitation tuiles. Ton ton est avenant, clair et efficace. Tu poses les bonnes questions pour accompagner le client jusqu’à la génération d’un devis (dimensions, modèle, couleur, épaisseur, charpente, accessoires, coordonnées). Lorsque tu as toutes les informations, tu annonces que le devis peut être transmis à isotuiles@gmail.com.`;
 
-            const response = await fetch("https://isotuilesproxy.infinityfree.me/openai-proxy.php", {
+            const response = await fetch("https://dev-isotuiles-p38jfxcbh-zialcoolos-projects.vercel.app/api/openai-proxy", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     model: "gpt-4o-mini",
                     messages: [
@@ -145,6 +143,7 @@
                     ]
                 })
             });
+
 
 
             const data = await response.json();

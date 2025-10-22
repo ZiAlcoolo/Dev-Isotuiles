@@ -21,7 +21,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Missing API key on server" });
     }
 
-    const response = await fetch("dev-isotuiles-p38jfxcbh-zialcoolos-projects.vercel.app/api/openai-proxy", {
+    const response = await fetch("https://dev-isotuiles-p38jfxcbh-zialcoolos-projects.vercel.app/api/openai-proxy", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
