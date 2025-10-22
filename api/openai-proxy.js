@@ -1,23 +1,36 @@
 export default async function handler(req, res) {
-  // Autorise seulement ton domaine GitHub Pages
-  // res.setHeader("Access-Control-Allow-Origin", "https://zialcoolo.github.io");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  // --- GESTION DU CORS ---
+  const allowedOrigins = [
+    "https://zialcoolo.github.io",   // ton site GitHub Pages
+    "http://127.0.0.1:5501",         // ton environnement local (VSCode Live Server)
+    "http://localhost:5501"
+  ];
 
-  if (req.method === "OPTIONS") {
-    res.status(200).end();
-    return;
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
   }
 
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  // Réponse immédiate aux requêtes preflight (OPTIONS)
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  // --- SÉCURITÉ : uniquement POST ---
   if (req.method !== "POST") {
-    res.status(405).json({ error: "Method not allowed" });
-    return;
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: "Missing OpenAI API key" });
+  }
 
   try {
+    // --- RELAIS DE LA REQUÊTE VERS OPENAI ---
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -28,9 +41,15 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    res.status(200).json(data);
+
+    // --- RETOUR AU CLIENT ---
+    if (allowedOrigins.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+    res.status(response.status).json(data);
+
   } catch (error) {
-    res.status(500).json({ error: "Server error", details: error.message });
+    console.error("Erreur proxy OpenAI :", error);
+    res.status(500).json({ error: "Erreur serveur", details: error.message });
   }
 }
-
