@@ -1,0 +1,682 @@
+<!-- PROTOTYPE : Configurateur ISOTUILES (page unique HTML)
+  - Héberger sur GitHub Pages (index.html)
+  - Intégrer en iframe dans Shopify
+  - Charge les données via OpenSheet (Sheet ID fourni)
+  - Multi-steps, scroll automatique, précédente/suivante, barre de progression
+  - Overlay latéral affichant le prix HT en direct
+  - Sauvegarde locale, génération PDF, envoi du récapitulatif via postMessage au parent
+
+  REMARQUE :
+  - TVA par défaut = 20% (modifier la variable VAT_RATE ci-dessous si besoin)
+  - Le fichier suppose que vos feuilles s'appellent : "panneaux", "accessoires", "transport"
+  - Pour ajout automatique au panier Shopify, le thème parent doit écouter le postMessage et ajouter les lignes au panier (snippet exemple fourni en commentaire plus bas).
+-->
+
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Configurateur ISOTUILES — Prototype</title>
+
+    <style>
+        :root {
+            --color-primary: #0a5fb4;
+            --color-primary-600: #0d72d4;
+            --bg: #ffffff;
+            --text: #222222;
+            --muted: #6b7280;
+            --overlay-width: 360px;
+            --vat-rate: 0.20;
+            /* à ajuster */
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            margin: 0;
+            background: var(--bg);
+            color: var(--text)
+        }
+
+        .page {
+            display: flex;
+            min-height: 100vh
+        }
+
+        .main {
+            flex: 1;
+            padding: 32px;
+            max-width: 900px
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 6px 18px rgba(10, 20, 40, 0.06);
+            padding: 28px
+        }
+
+        /* Progress bar */
+        .progress {
+            height: 8px;
+            background: #eee;
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 18px
+        }
+
+        .progress>i {
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-primary-600));
+            width: 0%
+        }
+
+        /* Steps */
+        .steps {
+            position: relative
+        }
+
+        .step {
+            min-height: 320px;
+            padding: 16px 8px
+        }
+
+        .step.hidden {
+            display: none
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-top: 18px
+        }
+
+        button {
+            background: var(--color-primary);
+            color: #fff;
+            border: 0;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer
+        }
+
+        button.secondary {
+            background: #fff;
+            color: var(--color-primary);
+            border: 1px solid #e6eefb
+        }
+
+        /* Overlay */
+        .overlay {
+            width: var(--overlay-width);
+            border-left: 1px solid #eee;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            background: linear-gradient(180deg, #fbfdff, #fff)
+        }
+
+        .overlay h3 {
+            margin-top: 0
+        }
+
+        .overlay .lines {
+            max-height: 60vh;
+            overflow: auto;
+            margin-bottom: 12px
+        }
+
+        .overlay .line {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed #f0f2f6
+        }
+
+        .overlay .total {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 12px
+        }
+
+        /* Inputs */
+        .field {
+            margin-bottom: 12px
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: var(--muted)
+        }
+
+        input[type=number],
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #e6eefb
+        }
+
+        /* recap */
+        .recap-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0
+        }
+
+        /* responsive */
+        @media(max-width:980px) {
+            .page {
+                flex-direction: column
+            }
+
+            .overlay {
+                position: relative;
+                width: 100%;
+                height: auto;
+                border-left: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page">
+        <main class="main">
+            <div class="card">
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                    <h2>Configurateur ISOTUILES</h2>
+                    <small id="savedState" style="color:var(--muted)"></small>
+                </div>
+
+                <div class="progress"><i id="progressBar"></i></div>
+
+                <div class="steps" id="stepsContainer">
+                    <!-- Step 1: Choisir panneau -->
+                    <section class="step" data-step="1" id="step-1">
+                        <h3>1 • Choisissez votre panneau</h3>
+                        <div class="field">
+                            <label for="selectPanneau">Modèle / Variante</label>
+                            <select id="selectPanneau">
+                                <option>Choisir un panneau</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Longueur par panneau (m)</label>
+                            <input type="number" id="inputLongueur" min="2.1" max="12.25" step="0.01" value="2.10">
+                        </div>
+                        <div class="field">
+                            <label>Quantité de panneaux</label>
+                            <input type="number" id="inputQuantite" min="1" step="1" value="1">
+                        </div>
+                    </section>
+
+                    <!-- Step 2: Accessoires -->
+                    <section class="step hidden" data-step="2" id="step-2">
+                        <h3>2 • Accessoires associés</h3>
+                        <div id="accessoriesList"></div>
+                    </section>
+
+                    <!-- Step 3: Options livraison / contact -->
+                    <section class="step hidden" data-step="3" id="step-3">
+                        <h3>3 • Livraison & contact</h3>
+                        <div class="field"><label>Code postal (pour info transport)</label><input type="text"
+                                id="inputPostal" placeholder="Ex: 33480"></div>
+                        <div class="field"><label>Nom / Société</label><input type="text" id="inputName"></div>
+                        <div class="field"><label>Email</label><input type="email" id="inputEmail"></div>
+                        <div class="field"><label>Téléphone (optionnel)</label><input type="text" id="inputPhone"></div>
+                    </section>
+
+                    <!-- Step 4: Récapitulatif -->
+                    <section class="step hidden" data-step="4" id="step-4">
+                        <h3>4 • Récapitulatif & devis</h3>
+                        <div id="recapDetails"></div>
+                        <div style="margin-top:12px;display:flex;gap:8px">
+                            <button id="btnDownloadPdf" class="secondary">Télécharger le devis (PDF)</button>
+                            <button id="btnSendToCart">Valider et ajouter au panier</button>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="controls">
+                    <button id="btnPrev" class="secondary">Précédent</button>
+                    <div style="margin-left:auto;display:flex;gap:8px">
+                        <button id="btnNext">Suivant</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <aside class="overlay">
+            <h3>Panier & estimation</h3>
+            <div class="lines" id="overlayLines"></div>
+            <div class="total">
+                <div>Estimation (HT) : <span id="overlayTotalHt">0.00 €</span></div>
+                <div style="font-size:0.9rem;color:var(--muted);margin-top:6px">TVA : <span id="vatRate"></span></div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Dependencies: jsPDF via CDN for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        // CONFIG
+        const SHEET_ID = '1iq55sUMvZRN8v5ky5F55K2b49bdA-o31JLlqdS-scGI';
+        const VAT_RATE = 0.20; // modifier si nécessaire
+        const OPENSHEET_BASE = (sheet) => `https://opensheet.elk.sh/${SHEET_ID}/${encodeURIComponent(sheet)}`;
+
+        // STATE
+        let panneaux = [];
+        let accessoires = [];
+        let transportTable = [];
+        let state = {
+            panneauId: null,
+            longueur: 2.1,
+            quantite: 1,
+            accessoiresChoisis: [],
+            postal: '',
+            name: '',
+            email: ''
+        };
+
+        // DOM
+        const selectPanneau = document.getElementById('selectPanneau');
+        const inputLongueur = document.getElementById('inputLongueur');
+        const inputQuantite = document.getElementById('inputQuantite');
+        const accessoriesList = document.getElementById('accessoriesList');
+        const overlayLines = document.getElementById('overlayLines');
+        const overlayTotalHt = document.getElementById('overlayTotalHt');
+        const progressBar = document.getElementById('progressBar');
+        const stepsContainer = document.getElementById('stepsContainer');
+        const btnNext = document.getElementById('btnNext');
+        const btnPrev = document.getElementById('btnPrev');
+        const vatRateEl = document.getElementById('vatRate');
+        const savedStateEl = document.getElementById('savedState');
+
+        vatRateEl.textContent = `${Math.round(VAT_RATE * 100)}%`;
+
+        // helpers
+        function e(q, parent = document) { return parent.querySelector(q) }
+        function eAll(q, parent = document) { return Array.from((parent || document).querySelectorAll(q)) }
+
+        // fetch sheets
+        async function loadData() {
+            try {
+                const [p, a, t] = await Promise.all([
+                    fetch(OPENSHEET_BASE('panneaux')).then(r => r.json()),
+                    fetch(OPENSHEET_BASE('accessoires')).then(r => r.json()),
+                    fetch(OPENSHEET_BASE('transport')).then(r => r.json())
+                ]);
+                panneaux = p.map(normalizePanneau);
+                accessoires = a.map(normalizeAccessoire);
+                transportTable = t.map(normalizeTransport);
+                populatePanneauSelect();
+                loadSaved();
+                renderAccessories();
+                updateAll();
+            } catch (err) {
+                console.error('Erreur chargement OpenSheet', err);
+                alert("Impossible de charger les données OpenSheet. Vérifiez l'ID de feuille et la connexion.");
+            }
+        }
+
+        function normalizePanneau(row) {
+            // attente : row.id, row.nom, row.prix_m2_ht, row.prix_m2_ttc, row.accessoires_associes
+            return {
+                id: row.id || row.N || row.nom || row.id || ('P_' + Math.random().toString(36).slice(2, 9)),
+                nom: row.nom || row.Libellé || row.nom || row.Nom || row['Libellé'] || row.Libellé || row.nom || row.nom,
+                prix_m2_ht: parseFloat((row.prix_m2_ht || row['Prix Vente'] || row['Prix Vente'] || row['Prix Vente'] || '').toString().replace(/[^0-9.,-]/g, '').replace(',', '.')) || 0,
+                description: row.description || row.Description || '',
+                accessoires_associes: (row.accessoires_associes || row.accessoires || '').toString().split(/[;,]/).map(s => s.trim()).filter(Boolean)
+            };
+        }
+
+        function normalizeAccessoire(row) {
+            // attente : id, nom, unite, prix_unitaire_ht, compatible_panneaux
+            return {
+                id: (row.id || row.N || row.Libellé || ('A_' + Math.random().toString(36).slice(2, 8))).toString().trim(),
+                nom: row.nom || row['Libellé'] || row.Libellé || row.nom || row['Libellé'] || row['Libellé'] || row.nom,
+                unite: (row.unite || row.Unité || row['Unité'] || row['type'] || row.type || 'ml').toString().trim(),
+                prix_unitaire_ht: parseFloat((row.prix_unitaire_ht || row['Prix Vente'] || row['Prix Minimum (ml)'] || row['Prix Vente'] || '').toString().replace(/[^0-9.,-]/g, '').replace(',', '.')) || 0,
+                compatible_panneaux: (row.compatible_panneaux || row['compatible_panneaux'] || row['compatible_panneaux'] || row['compatible_panneaux'] || row['Catégorie'] || '').toString().split(/[;,]/).map(s => s.trim()).filter(Boolean)
+            };
+        }
+
+        function normalizeTransport(row) {
+            return {
+                min: parseFloat((row.palier_commande_ht_min || row['palier_commande_ht_min'] || row['palier_commande_ht_min'] || row['palier_commande_ht_min'] || row[Object.keys(row)[0]] || 0) || 0),
+                max: parseFloat((row.palier_commande_ht_max || row['palier_commande_ht_max'] || row['palier_commande_ht_max'] || row['palier_commande_ht_max'] || '').toString().replace(/[^0-9.,-]/g, '').replace(',', '.') || 9999999),
+                prix: parseFloat((row.prix_transport || row['prix_transport'] || row['prix_transport'] || row['prix_transport'] || row['prix_transport'] || '').toString().replace(/[^0-9.,-]/g, '').replace(',', '.') || 0),
+                malus: parseFloat((row.malus_longueur_sup_7m || row['malus_longueur_sup_7m'] || row['malus_longueur_sup_7m'] || row['malus_longueur_sup_7m'] || '').toString().replace(/[^0-9.,-]/g, '').replace(',', '.') || 0)
+            };
+        }
+
+        function populatePanneauSelect() {
+            selectPanneau.innerHTML = '';
+            panneaux.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.textContent = `${p.nom} — ${p.prix_m2_ht.toFixed(2)} € HT/m²`;
+                selectPanneau.appendChild(opt);
+            });
+            if (panneaux.length) {
+                state.panneauId = panneaux[0].id;
+            }
+        }
+
+        // Accessory UI
+        function renderAccessories() {
+            accessoriesList.innerHTML = '';
+            const selected = panneaux.find(p => p.id === state.panneauId);
+            const compat = selected ? selected.accessoires_associes : [];
+
+            // Filtrage : affiche uniquement les accessoires compatibles
+            const list = accessoires.filter(a => {
+                if (!compat.length) return true;
+                return compat.includes(a.id) || compat.some(c => a.compatible_panneaux.includes(c)) || a.compatible_panneaux.length === 0;
+            });
+
+            list.forEach(acc => {
+                const id = 'acc_' + acc.id;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'field';
+                wrapper.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:4px">
+        <label for="${id}_check" style="font-weight:600;cursor:pointer">
+            ${acc.nom} — ${acc.prix_unitaire_ht.toFixed(2)} € HT / ${acc.unite}
+        </label>
+        <div style="display:flex;gap:8px;align-items:center">
+            <input type="checkbox" id="${id}_check">
+            <div style="flex:1">
+                <input type="number" id="${id}_value" min="0" value="0" step="1" placeholder="ml ou quantité">
+            </div>
+        </div>
+    </div>
+`;
+
+                accessoriesList.appendChild(wrapper);
+
+                const chk = e(`#${id}_check`);
+                const val = e(`#${id}_value`);
+
+                chk.addEventListener('change', () => {
+                    // Si coché et valeur à 0 → valeur par défaut 1
+                    if (chk.checked && parseFloat(val.value) === 0) {
+                        val.value = 1;
+                    }
+                    if (!chk.checked) {
+                        val.value = 0;
+                    }
+                    updateStateAccessory(acc.id, chk.checked, parseFloat(val.value));
+                    updateAll();
+                });
+
+                val.addEventListener('input', () => {
+                    const v = parseFloat(val.value);
+                    if (v > 0) chk.checked = true;
+                    else chk.checked = false;
+                    updateStateAccessory(acc.id, chk.checked, v);
+                    updateAll();
+                });
+            });
+        }
+
+        function updateStateAccessory(id, checked, value) {
+            const idx = state.accessoiresChoisis.findIndex(x => x.id === id);
+            if (checked) {
+                if (idx === -1) {
+                    state.accessoiresChoisis.push({ id, value });
+                } else {
+                    state.accessoiresChoisis[idx].value = value;
+                }
+            } else {
+                if (idx !== -1) {
+                    state.accessoiresChoisis.splice(idx, 1);
+                }
+            }
+        }
+
+
+
+        // calculs
+        function calcPrices() {
+            const panneau = panneaux.find(p => p.id === state.panneauId);
+            const largeur = 1.0;
+            const surfacePar = state.longueur * largeur; // m² par panneau
+            const surfaceTotal = surfacePar * state.quantite;
+            const prixPanneau = panneau ? surfaceTotal * panneau.prix_m2_ht : 0;
+            let prixAccess = 0;
+            for (const a of state.accessoiresChoisis) {
+                const acc = accessoires.find(x => x.id === a.id);
+                if (!acc) continue;
+                const unitCount = (acc.unite.toLowerCase().includes('ml') ? parseFloat(a.value || 0) : parseFloat(a.value || 0));
+                prixAccess += unitCount * acc.prix_unitaire_ht;
+            }
+            const subtotalHt = prixPanneau + prixAccess;
+            const maxLen = state.longueur;
+            const transport = calcTransport(subtotalHt, maxLen);
+            const totalHt = subtotalHt + transport;
+            const totalTtc = totalHt * (1 + VAT_RATE);
+            return { surfacePar, surfaceTotal, prixPanneau, prixAccess, subtotalHt, transport, totalHt, totalTtc };
+        }
+
+        function calcTransport(totalHt, maxLen) {
+            if (!transportTable.length) return 0;
+            const row = transportTable.find(r => totalHt >= r.min && totalHt < r.max);
+            if (!row) return 0;
+            let prix = row.prix || 0;
+            if (maxLen > 7) prix += row.malus || 0;
+            return prix;
+        }
+
+        // UI updates
+        function updateOverlay() {
+            overlayLines.innerHTML = '';
+            const panneau = panneaux.find(p => p.id === state.panneauId);
+            const prices = calcPrices();
+            if (panneau) {
+                const div = document.createElement('div'); div.className = 'line';
+                div.innerHTML = `<div>${panneau.nom} x ${state.quantite} (${state.longueur}m)</div><div>${prices.prixPanneau.toFixed(2)} €</div>`;
+                overlayLines.appendChild(div);
+            }
+            for (const a of state.accessoiresChoisis) {
+                const acc = accessoires.find(x => x.id === a.id);
+                if (!acc) continue;
+                const div = document.createElement('div'); div.className = 'line';
+                div.innerHTML = `<div>${acc.nom} (${a.value} ${acc.unite})</div><div>${(a.value * acc.prix_unitaire_ht).toFixed(2)} €</div>`;
+                overlayLines.appendChild(div);
+            }
+            const divTransport = document.createElement('div'); divTransport.className = 'line';
+            divTransport.innerHTML = `<div>Transport estimé</div><div>${prices.transport.toFixed(2)} €</div>`;
+            overlayLines.appendChild(divTransport);
+
+            overlayTotalHt.textContent = prices.totalHt.toFixed(2) + ' €';
+        }
+
+        // Navigation & progression
+        let currentStep = 1; const MAX_STEP = 4;
+        function showStep(n) {
+            currentStep = n;
+            eAll('.step').forEach(s => s.classList.toggle('hidden', parseInt(s.dataset.step) !== n));
+            const pct = (n - 1) / (MAX_STEP - 1) * 100;
+            progressBar.style.width = pct + '%';
+            // auto-scroll first field
+            const firstInput = e('.step:not(.hidden) input, .step:not(.hidden) select');
+            if (firstInput) firstInput.focus();
+        }
+
+        btnNext.addEventListener('click', () => {
+            if (currentStep < MAX_STEP) {
+                showStep(currentStep + 1);
+                saveLocal();
+            }
+        });
+        btnPrev.addEventListener('click', () => {
+            if (currentStep > 1) showStep(currentStep - 1);
+        });
+
+        // events for inputs
+        selectPanneau.addEventListener('change', () => { state.panneauId = selectPanneau.value; renderAccessories(); updateAll(); saveLocal(); });
+        inputLongueur.addEventListener('input', () => { state.longueur = parseFloat(inputLongueur.value) || 2.1; updateAll(); saveLocal(); });
+        inputQuantite.addEventListener('input', () => { state.quantite = parseInt(inputQuantite.value) || 1; updateAll(); saveLocal(); });
+
+        document.getElementById('inputPostal').addEventListener('input', () => { state.postal = e('#inputPostal').value; saveLocal(); });
+        document.getElementById('inputName').addEventListener('input', () => { state.name = e('#inputName').value; saveLocal(); });
+        document.getElementById('inputEmail').addEventListener('input', () => { state.email = e('#inputEmail').value; saveLocal(); });
+
+        // save/load local
+        function saveLocal() { localStorage.setItem('isotuiles_config', JSON.stringify(state)); savedStateEl.textContent = 'Enregistré localement'; setTimeout(() => savedStateEl.textContent = '', 2500); }
+        function loadSaved() {
+            const s = localStorage.getItem('isotuiles_config'); if (s) {
+                try {
+                    const parsed = JSON.parse(s); Object.assign(state, parsed); // restore some UI
+                    inputLongueur.value = state.longueur;
+                    inputQuantite.value = state.quantite;
+                    if (state.panneauId) selectPanneau.value = state.panneauId;
+                } catch (e) { console.warn('Chargement local échoué', e); }
+            }
+        }
+
+        // recap & PDF
+        async function buildRecap() {
+            const prices = calcPrices();
+            const recapEl = document.getElementById('recapDetails');
+            recapEl.innerHTML = '';
+            const lines = [];
+            const panneau = panneaux.find(p => p.id === state.panneauId);
+            if (panneau) {
+                lines.push({ label: `${panneau.nom} x ${state.quantite} (${state.longueur}m)`, ht: prices.prixPanneau });
+            }
+            for (const a of state.accessoiresChoisis) {
+                const acc = accessoires.find(x => x.id === a.id);
+                if (!acc) continue;
+                lines.push({ label: `${acc.nom} (${a.value} ${acc.unite})`, ht: a.value * acc.prix_unitaire_ht });
+            }
+            lines.push({ label: 'Transport estimé', ht: prices.transport });
+
+            lines.forEach(l => {
+                const div = document.createElement('div'); div.className = 'recap-line';
+                div.innerHTML = `<div>${l.label}</div><div>${l.ht.toFixed(2)} € HT</div>`;
+                recapEl.appendChild(div);
+            });
+
+            const subtotal = prices.totalHt;
+            const ttc = prices.totalTtc;
+            const footer = document.createElement('div'); footer.style.marginTop = '12px'; footer.innerHTML = `<div class="recap-line"><div><strong>Total HT</strong></div><div><strong>${subtotal.toFixed(2)} €</strong></div></div>
+  <div class="recap-line"><div>TVA (${Math.round(VAT_RATE * 100)}%)</div><div>${(subtotal * VAT_RATE).toFixed(2)} €</div></div>
+  <div class="recap-line"><div><strong>Total TTC</strong></div><div><strong>${ttc.toFixed(2)} €</strong></div></div>`;
+            recapEl.appendChild(footer);
+        }
+
+        async function downloadPdf() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+            doc.setFontSize(12);
+            doc.text('Devis ISOTUILES', 14, 20);
+            doc.setFontSize(10);
+            doc.text(`Nom : ${state.name || '-'}    Email : ${state.email || '-'}    Postal : ${state.postal || '-'}`, 14, 30);
+            let y = 40;
+            const prices = calcPrices();
+            const panneau = panneaux.find(p => p.id === state.panneauId);
+            if (panneau) { doc.text(`${panneau.nom} x ${state.quantite} (${state.longueur}m) — ${prices.prixPanneau.toFixed(2)} € HT`, 14, y); y += 8; }
+            for (const a of state.accessoiresChoisis) { const acc = accessoires.find(x => x.id === a.id); if (acc) { doc.text(`${acc.nom} (${a.value} ${acc.unite}) — ${(a.value * acc.prix_unitaire_ht).toFixed(2)} € HT`, 14, y); y += 8; } }
+            doc.text(`Transport estimé — ${prices.transport.toFixed(2)} € HT`, 14, y); y += 12;
+            doc.setFontSize(11); doc.text(`Total HT : ${prices.totalHt.toFixed(2)} €`, 14, y); y += 8; doc.text(`Total TTC : ${prices.totalTtc.toFixed(2)} €`, 14, y);
+            doc.save('devis-isotuiles.pdf');
+        }
+
+        document.getElementById('btnDownloadPdf').addEventListener('click', () => { downloadPdf(); });
+
+        // send to parent (Shopify) via postMessage
+        function sendToParent() {
+            // Build lines: the parent must map to actual Shopify variant IDs. If you already have shopify ids, include them in the sheet and they will be sent.
+            const prices = calcPrices();
+            const lines = [];
+            const panneau = panneaux.find(p => p.id === state.panneauId);
+            if (panneau) {
+                lines.push({ shopify_variant_id: panneau.shopify_variant_id || null, sku: panneau.nom, quantity: state.quantite, properties: { longueur_m: state.longueur } });
+            }
+            for (const a of state.accessoiresChoisis) {
+                const acc = accessoires.find(x => x.id === a.id);
+                if (!acc) continue;
+                lines.push({ shopify_variant_id: acc.shopify_variant_id || null, sku: acc.nom, quantity: 1, properties: { mesure: a.value } });
+            }
+
+            const payload = {
+                type: 'ISOTUILES_ADD_TO_CART',
+                payload: {
+                    lines,
+                    totals: { ht: prices.totalHt, ttc: prices.totalTtc, transport: prices.transport }
+                }
+            };
+            window.parent.postMessage(payload, '*');
+        }
+
+        document.getElementById('btnSendToCart').addEventListener('click', () => {
+            buildRecap();
+            sendToParent();
+        });
+
+        function updateAll() {
+            updateOverlay();
+            buildRecap();
+        }
+
+
+        // init
+        loadData();
+        showStep(1);
+
+    </script>
+
+    <!--
+SNIPPET (à intégrer dans le thème Shopify) :
+Ce script écoute le message postMessage envoyé par l'iframe et ajoute les lignes au panier.
+Il doit être inséré dans theme.liquid ou un fichier JS chargé sur la page qui contient l'iframe.
+
+<script>
+window.addEventListener('message', async (e) => {
+  if(!e.data || e.data.type !== 'ISOTUILES_ADD_TO_CART') return;
+  const payload = e.data.payload;
+
+  // Exemple de mappage local : associez vos SKUs/labels à des variant_ids ici
+  const variantMap = {
+    // 'Panneau ROMANE 40mm': 1234567890,
+    // 'Rive L': 9876543210
+  };
+
+  for(const line of payload.lines){
+    const variant_id = line.shopify_variant_id || variantMap[line.sku];
+    if(!variant_id){
+      console.warn('Variant non trouvé pour', line.sku);
+      continue;
+    }
+    try{
+      await fetch('/cart/add.js', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({id: variant_id, quantity: line.quantity || 1, properties: line.properties || {}})
+      });
+    }catch(err){ console.error('Erreur ajout panier', err); }
+  }
+  // Rediriger vers le panier
+  window.location.href = '/cart';
+});
+</script>
+-->
+
+</body>
+
+</html>
