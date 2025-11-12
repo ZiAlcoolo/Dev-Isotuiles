@@ -344,7 +344,8 @@
             accessoiresChoisis: [],
             postal: '',
             name: '',
-            email: ''
+            email: '',
+            phone: ''
         };
 
         // DOM
@@ -514,6 +515,7 @@
                 $('#inputPostal').val(state.postal || '');
                 $('#inputName').val(state.name || '');
                 $('#inputEmail').val(state.email || '');
+                $('#inputPhone').val(state.phone || '');
             } catch (e) {
                 console.warn('Erreur restauration état local', e);
             }
@@ -639,7 +641,7 @@
             progressBar.style.width = pct + '%';
             $('#btnNext').show()
             $('#btnPrev').show()
-            
+
             if (currentStep === 1) {
                 console.log("start")
                 $('#btnPrev').hide()
@@ -688,6 +690,7 @@
         document.getElementById('inputPostal').addEventListener('input', () => { state.postal = e('#inputPostal').value; saveLocal(); });
         document.getElementById('inputName').addEventListener('input', () => { state.name = e('#inputName').value; saveLocal(); });
         document.getElementById('inputEmail').addEventListener('input', () => { state.email = e('#inputEmail').value; saveLocal(); });
+        document.getElementById('inputPhone').addEventListener('input', () => { state.phone = e('#inputPhone').value; saveLocal(); });
 
         // save/load local
         function saveLocal() { localStorage.setItem('isotuiles_config', JSON.stringify(state)); savedStateEl.textContent = 'Enregistré localement'; setTimeout(() => savedStateEl.textContent = '', 2500); }
@@ -732,7 +735,7 @@
             doc.setFontSize(12);
             doc.text('Devis ISOTUILES', 14, 20);
             doc.setFontSize(10);
-            doc.text(`Nom : ${state.name || '-'}    Email : ${state.email || '-'}    Postal : ${state.postal || '-'}`, 14, 30);
+            doc.text(`Nom : ${state.name || '-'}    Email : ${state.email || '-'}    Tel : ${state.phone || '-'}    Postal : ${state.postal || '-'}`, 14, 30);
             let y = 40;
             const prices = calcPrices();
             const panneau = panneaux.find(p => p.id === state.panneauId);
@@ -804,11 +807,16 @@
                 accessoiresChoisis: [],
                 postal: '',
                 name: '',
-                email: ''
+                email: '',
+                phone: ''
             };
             inputLongueur.value = state.longueur;
             inputQuantite.value = state.quantite;
             selectPanneau.value = state.panneauId;
+            $('#inputPostal').val(state.postal);
+            $('#inputName').val(state.name);
+            $('#inputEmail').val(state.email);
+            $('#inputPhone').val(state.phone);
             renderAccessories();
             updateAll();
             showStep(1);
