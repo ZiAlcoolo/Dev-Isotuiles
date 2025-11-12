@@ -20,6 +20,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Configurateur ISOTUILES — Prototype</title>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         :root {
             --color-primary: #0a5fb4;
@@ -90,6 +93,21 @@
         .step.hidden {
             display: none
         }
+
+        .step {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.5s ease;
+            position: absolute;
+            width: 100%;
+        }
+
+        .step.active {
+            opacity: 1;
+            transform: translateY(0);
+            position: relative;
+        }
+
 
         .controls {
             display: flex;
@@ -194,6 +212,27 @@
 
     <div class="page">
         <main class="main">
+
+            <div id="loadingSpinner" style="display:flex;align-items:center;justify-content:center;height:100vh;">
+                <div
+                    style="border:4px solid #ccc;border-top:4px solid #333;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;">
+                </div>
+            </div>
+            <style>
+                @keyframes spin {
+                    from {
+                        transform: rotate(0deg);
+                    }
+
+                    to {
+                        transform: rotate(360deg);
+                    }
+                }
+            </style>
+
+
+            <button id="btnReset" type="button">Réinitialiser</button>
+
             <div class="card">
                 <div style="display:flex;align-items:center;justify-content:space-between">
                     <h2>Configurateur ISOTUILES</h2>
@@ -207,18 +246,22 @@
                     <section class="step" data-step="1" id="step-1">
                         <h3>1 • Choisissez votre panneau</h3>
                         <div class="field">
-                            <label for="selectPanneau">Modèle / Variante</label>
-                            <select id="selectPanneau">
-                                <option>Choisir un panneau</option>
-                            </select>
+                            <label for="selectPanneau">Modèle / Variante
+                                <select id="selectPanneau">
+                                    <option>Choisir un panneau</option>
+                                </select></label>
                         </div>
                         <div class="field">
-                            <label>Longueur par panneau (m)</label>
-                            <input type="number" id="inputLongueur" min="2.1" max="12.25" step="0.01" value="2.10">
+                            <label>
+                                <input type="number" id="inputLongueur" min="2.1" max="12.25" step="0.01" value="2.10">
+                                Longueur par panneau (m)
+                            </label>
                         </div>
                         <div class="field">
-                            <label>Quantité de panneaux</label>
-                            <input type="number" id="inputQuantite" min="1" step="1" value="1">
+                            <label>
+                                <input type="number" id="inputQuantite" min="1" step="1" value="1">
+                                Quantité de panneaux
+                            </label>
                         </div>
                     </section>
 
@@ -231,11 +274,23 @@
                     <!-- Step 3: Options livraison / contact -->
                     <section class="step hidden" data-step="3" id="step-3">
                         <h3>3 • Livraison & contact</h3>
-                        <div class="field"><label>Code postal (pour info transport)</label><input type="text"
-                                id="inputPostal" placeholder="Ex: 33480"></div>
-                        <div class="field"><label>Nom / Société</label><input type="text" id="inputName"></div>
-                        <div class="field"><label>Email</label><input type="email" id="inputEmail"></div>
-                        <div class="field"><label>Téléphone (optionnel)</label><input type="text" id="inputPhone"></div>
+                        <div class="field"><label>
+                                <input type="text" id="inputPostal" placeholder="Ex: 33480">
+                                Code postal (pour info transport)
+                            </label>
+                        </div>
+                        <div class="field"><label>
+                                <input type="text" id="inputName">
+                                Nom / Société</label>
+                        </div>
+                        <div class="field"><label>
+                                <input type="email" id="inputEmail">
+                                Email</label>
+                        </div>
+                        <div class="field"><label>
+                                <input type="text" id="inputPhone">
+                                Téléphone (optionnel)</label>
+                        </div>
                     </section>
 
                     <!-- Step 4: Récapitulatif -->
@@ -313,25 +368,157 @@
         function eAll(q, parent = document) { return Array.from((parent || document).querySelectorAll(q)) }
 
         // fetch sheets
+        // --- Chargement des données via OpenSheet ---
         async function loadData() {
+            $('#loadingSpinner').fadeIn(150);
+
             try {
-                const [p, a, t] = await Promise.all([
-                    fetch(OPENSHEET_BASE('panneaux')).then(r => r.json()),
-                    fetch(OPENSHEET_BASE('accessoires')).then(r => r.json()),
-                    fetch(OPENSHEET_BASE('transport')).then(r => r.json())
-                ]);
-                panneaux = p.map(normalizePanneau);
-                accessoires = a.map(normalizeAccessoire);
-                transportTable = t.map(normalizeTransport);
+                const cachedStr = localStorage.getItem('isotuiles_ordering_cloud_data');
+                let useCache = false;
+                if (cachedStr) {
+                    try {
+                        const cached = JSON.parse(cachedStr);
+                        const cacheDate = new Date(cached.date); // Date du cache
+                        const now = new Date();
+
+                        // Vérifie si le cache est inférieur à 1 jour (24h)
+                        if (now - cacheDate < 24 * 60 * 60 * 1000) {
+                            // Cache valide
+                            panneaux = cached.panneaux.map(normalizePanneau);
+                            accessoires = cached.accessoires.map(normalizeAccessoire);
+                            transportTable = cached.transportTable.map(normalizeTransport);
+
+                            console.log("Cache loaded:", panneaux);
+                            useCache = true;
+                        } else {
+                            console.log("Cache expiré, chargement depuis Google Sheet...");
+                        }
+                    } catch (e) {
+                        console.warn("Erreur lecture cache, chargement depuis Google Sheet", e);
+                    }
+                }
+
+                if (!useCache) {
+                    // Fetch depuis OpenSheet
+                    const [p, a, t] = await Promise.all([
+                        fetch(OPENSHEET_BASE('Panneaux')).then(r => r.json()),
+                        fetch(OPENSHEET_BASE('Accessoires')).then(r => r.json()),
+                        fetch(OPENSHEET_BASE('Transport')).then(r => r.json())
+                    ]);
+
+                    // Stocke les données + date actuelle
+                    localStorage.setItem('isotuiles_ordering_cloud_data', JSON.stringify({
+                        panneaux: p,
+                        accessoires: a,
+                        transportTable: t,
+                        date: new Date().toISOString()
+                    }));
+
+                    panneaux = p.map(normalizePanneau);
+                    accessoires = a.map(normalizeAccessoire);
+                    transportTable = t.map(normalizeTransport);
+                }
+
+                // Appel des fonctions pour afficher les données
                 populatePanneauSelect();
                 loadSaved();
                 renderAccessories();
-                updateAll();
+                updateAllDebounced();
+
             } catch (err) {
-                console.error('Erreur chargement OpenSheet', err);
-                alert("Impossible de charger les données OpenSheet. Vérifiez l'ID de feuille et la connexion.");
+                console.error('Erreur OpenSheet', err);
+                alert("Impossible de charger les données. Vérifiez votre connexion ou l’ID du Google Sheet.");
+            } finally {
+                $('#loadingSpinner').fadeOut(150);
             }
         }
+
+
+        // --- Génération des accessoires dynamiquement ---
+        function renderAccessories() {
+            const $list = $('#accessoriesList').empty();
+            const selected = panneaux.find(p => p.id === state.panneauId);
+            const compat = selected ? selected.accessoires_associes : [];
+
+            const list = accessoires.filter(a => {
+                if (!compat.length) return true;
+                return compat.includes(a.id) || compat.some(c => a.compatible_panneaux.includes(c)) || a.compatible_panneaux.length === 0;
+            });
+
+            list.forEach(acc => {
+                const id = `acc_${acc.id}`;
+                const saved = state.accessoiresChoisis.find(x => x.id === acc.id) || { value: 0 };
+
+                $list.append(`
+      <div class="field accessory-item mb-2">
+        <label for="${id}_check" style="font-weight:600;cursor:pointer">
+          ${acc.nom} — ${acc.prix_unitaire_ht.toFixed(2)} € HT / ${acc.unite}
+        </label>
+        <div class="d-flex align-items-center gap-2 mt-1">
+          <input type="checkbox" id="${id}_check" data-id="${acc.id}" ${saved.value > 0 ? 'checked' : ''}>
+          <input type="number" id="${id}_value" data-id="${acc.id}" min="0" step="1" 
+                 value="${saved.value}" class="form-control form-control-sm" placeholder="ml ou quantité">
+        </div>
+      </div>
+    `);
+            });
+        }
+
+        // --- Gestion des événements accessoires (en délégation jQuery) ---
+        $(document).on('change', '.accessory-item input[type=checkbox]', function () {
+            const id = $(this).data('id');
+            const $val = $(`#acc_${id}_value`);
+            const checked = $(this).is(':checked');
+            const value = parseFloat($val.val()) || 0;
+
+            if (checked && value === 0) $val.val(1);
+            if (!checked) $val.val(0);
+
+            updateStateAccessory(id, checked, parseFloat($val.val()));
+            updateAllDebounced();
+        });
+
+        $(document).on('input', '.accessory-item input[type=number]', function () {
+            const id = $(this).data('id');
+            const val = parseFloat($(this).val()) || 0;
+            const $chk = $(`#acc_${id}_check`);
+
+            $chk.prop('checked', val > 0);
+            updateStateAccessory(id, val > 0, val);
+            updateAllDebounced();
+        });
+
+        // --- Mise à jour de l'état global ---
+        function updateStateAccessory(id, checked, value) {
+            const idx = state.accessoiresChoisis.findIndex(x => x.id === id);
+            if (checked) {
+                if (idx === -1) state.accessoiresChoisis.push({ id, value });
+                else state.accessoiresChoisis[idx].value = value;
+            } else if (idx !== -1) {
+                state.accessoiresChoisis.splice(idx, 1);
+            }
+        }
+
+        // --- Amélioration loadSaved() pour pré-remplir les champs contact/livraison ---
+        function loadSaved() {
+            const s = localStorage.getItem('isotuiles_config');
+            if (!s) return;
+            try {
+                const parsed = JSON.parse(s);
+                Object.assign(state, parsed);
+
+                // Restaure les champs
+                $('#selectPanneau').val(state.panneauId);
+                $('#inputLongueur').val(state.longueur || 2.1);
+                $('#inputQuantite').val(state.quantite || 1);
+                $('#inputPostal').val(state.postal || '');
+                $('#inputName').val(state.name || '');
+                $('#inputEmail').val(state.email || '');
+            } catch (e) {
+                console.warn('Erreur restauration état local', e);
+            }
+        }
+
 
         function normalizePanneau(row) {
             // attente : row.id, row.nom, row.prix_m2_ht, row.prix_m2_ttc, row.accessoires_associes
@@ -372,82 +559,11 @@
                 opt.textContent = `${p.nom} — ${p.prix_m2_ht.toFixed(2)} € HT/m²`;
                 selectPanneau.appendChild(opt);
             });
-            if (panneaux.length) {
+            if (!state.panneauId && panneaux.length) {
                 state.panneauId = panneaux[0].id;
             }
         }
 
-        // Accessory UI
-        function renderAccessories() {
-            accessoriesList.innerHTML = '';
-            const selected = panneaux.find(p => p.id === state.panneauId);
-            const compat = selected ? selected.accessoires_associes : [];
-
-            // Filtrage : affiche uniquement les accessoires compatibles
-            const list = accessoires.filter(a => {
-                if (!compat.length) return true;
-                return compat.includes(a.id) || compat.some(c => a.compatible_panneaux.includes(c)) || a.compatible_panneaux.length === 0;
-            });
-
-            list.forEach(acc => {
-                const id = 'acc_' + acc.id;
-                const wrapper = document.createElement('div');
-                wrapper.className = 'field';
-                wrapper.innerHTML = `
-    <div style="display:flex;flex-direction:column;gap:4px">
-        <label for="${id}_check" style="font-weight:600;cursor:pointer">
-            ${acc.nom} — ${acc.prix_unitaire_ht.toFixed(2)} € HT / ${acc.unite}
-        </label>
-        <div style="display:flex;gap:8px;align-items:center">
-            <input type="checkbox" id="${id}_check">
-            <div style="flex:1">
-                <input type="number" id="${id}_value" min="0" value="0" step="1" placeholder="ml ou quantité">
-            </div>
-        </div>
-    </div>
-`;
-
-                accessoriesList.appendChild(wrapper);
-
-                const chk = e(`#${id}_check`);
-                const val = e(`#${id}_value`);
-
-                chk.addEventListener('change', () => {
-                    // Si coché et valeur à 0 → valeur par défaut 1
-                    if (chk.checked && parseFloat(val.value) === 0) {
-                        val.value = 1;
-                    }
-                    if (!chk.checked) {
-                        val.value = 0;
-                    }
-                    updateStateAccessory(acc.id, chk.checked, parseFloat(val.value));
-                    updateAll();
-                });
-
-                val.addEventListener('input', () => {
-                    const v = parseFloat(val.value);
-                    if (v > 0) chk.checked = true;
-                    else chk.checked = false;
-                    updateStateAccessory(acc.id, chk.checked, v);
-                    updateAll();
-                });
-            });
-        }
-
-        function updateStateAccessory(id, checked, value) {
-            const idx = state.accessoiresChoisis.findIndex(x => x.id === id);
-            if (checked) {
-                if (idx === -1) {
-                    state.accessoiresChoisis.push({ id, value });
-                } else {
-                    state.accessoiresChoisis[idx].value = value;
-                }
-            } else {
-                if (idx !== -1) {
-                    state.accessoiresChoisis.splice(idx, 1);
-                }
-            }
-        }
 
 
 
@@ -509,29 +625,65 @@
         // Navigation & progression
         let currentStep = 1; const MAX_STEP = 4;
         function showStep(n) {
+            const steps = eAll('.step');
+            steps.forEach((s, i) => {
+                s.classList.remove('active');
+                s.classList.add('hidden');
+                if (parseInt(s.dataset.step) === n) {
+                    s.classList.remove('hidden');
+                    requestAnimationFrame(() => s.classList.add('active'));
+                }
+            });
             currentStep = n;
-            eAll('.step').forEach(s => s.classList.toggle('hidden', parseInt(s.dataset.step) !== n));
             const pct = (n - 1) / (MAX_STEP - 1) * 100;
             progressBar.style.width = pct + '%';
-            // auto-scroll first field
-            const firstInput = e('.step:not(.hidden) input, .step:not(.hidden) select');
-            if (firstInput) firstInput.focus();
+            $('#btnNext').show()
+            $('#btnPrev').show()
+            
+            if (currentStep === 1) {
+                console.log("start")
+                $('#btnPrev').hide()
+
+            }
+            if (currentStep === MAX_STEP) {
+                console.log("end")
+                $('#btnNext').hide()
+            }
+        }
+
+
+        function validateStep(n) {
+            if (n === 1) {
+                if (!state.panneauId) return "Veuillez choisir un modèle de panneau.";
+                if (!state.longueur || state.longueur <= 0) return "Veuillez renseigner une longueur valide.";
+                if (!state.quantite || state.quantite <= 0) return "Veuillez indiquer une quantité valide.";
+            }
+            if (n === 3) {
+                if (!state.name || !state.email || !state.postal) return "Veuillez remplir vos informations de contact.";
+            }
+            return null;
         }
 
         btnNext.addEventListener('click', () => {
+            const error = validateStep(currentStep);
+            if (error) {
+                alert(error);
+                return;
+            }
             if (currentStep < MAX_STEP) {
                 showStep(currentStep + 1);
                 saveLocal();
             }
         });
+
         btnPrev.addEventListener('click', () => {
             if (currentStep > 1) showStep(currentStep - 1);
         });
 
         // events for inputs
-        selectPanneau.addEventListener('change', () => { state.panneauId = selectPanneau.value; renderAccessories(); updateAll(); saveLocal(); });
-        inputLongueur.addEventListener('input', () => { state.longueur = parseFloat(inputLongueur.value) || 2.1; updateAll(); saveLocal(); });
-        inputQuantite.addEventListener('input', () => { state.quantite = parseInt(inputQuantite.value) || 1; updateAll(); saveLocal(); });
+        selectPanneau.addEventListener('change', () => { state.panneauId = selectPanneau.value; state.accessoiresChoisis = []; renderAccessories(); updateAllDebounced(); saveLocal(); });
+        inputLongueur.addEventListener('input', () => { state.longueur = parseFloat(inputLongueur.value) || 2.1; updateAllDebounced(); saveLocal(); });
+        inputQuantite.addEventListener('input', () => { state.quantite = parseInt(inputQuantite.value) || 1; updateAllDebounced(); saveLocal(); });
 
         document.getElementById('inputPostal').addEventListener('input', () => { state.postal = e('#inputPostal').value; saveLocal(); });
         document.getElementById('inputName').addEventListener('input', () => { state.name = e('#inputName').value; saveLocal(); });
@@ -539,16 +691,6 @@
 
         // save/load local
         function saveLocal() { localStorage.setItem('isotuiles_config', JSON.stringify(state)); savedStateEl.textContent = 'Enregistré localement'; setTimeout(() => savedStateEl.textContent = '', 2500); }
-        function loadSaved() {
-            const s = localStorage.getItem('isotuiles_config'); if (s) {
-                try {
-                    const parsed = JSON.parse(s); Object.assign(state, parsed); // restore some UI
-                    inputLongueur.value = state.longueur;
-                    inputQuantite.value = state.quantite;
-                    if (state.panneauId) selectPanneau.value = state.panneauId;
-                } catch (e) { console.warn('Chargement local échoué', e); }
-            }
-        }
 
         // recap & PDF
         async function buildRecap() {
@@ -582,6 +724,9 @@
         }
 
         async function downloadPdf() {
+            if (!window.jspdf) {
+                await import("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+            }
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'mm', format: 'a4' });
             doc.setFontSize(12);
@@ -592,13 +737,20 @@
             const prices = calcPrices();
             const panneau = panneaux.find(p => p.id === state.panneauId);
             if (panneau) { doc.text(`${panneau.nom} x ${state.quantite} (${state.longueur}m) — ${prices.prixPanneau.toFixed(2)} € HT`, 14, y); y += 8; }
-            for (const a of state.accessoiresChoisis) { const acc = accessoires.find(x => x.id === a.id); if (acc) { doc.text(`${acc.nom} (${a.value} ${acc.unite}) — ${(a.value * acc.prix_unitaire_ht).toFixed(2)} € HT`, 14, y); y += 8; } }
+            for (const a of state.accessoiresChoisis) {
+                const acc = accessoires.find(x => x.id === a.id);
+                if (acc) { doc.text(`${acc.nom} (${a.value} ${acc.unite}) — ${(a.value * acc.prix_unitaire_ht).toFixed(2)} € HT`, 14, y); y += 8; }
+            }
             doc.text(`Transport estimé — ${prices.transport.toFixed(2)} € HT`, 14, y); y += 12;
-            doc.setFontSize(11); doc.text(`Total HT : ${prices.totalHt.toFixed(2)} €`, 14, y); y += 8; doc.text(`Total TTC : ${prices.totalTtc.toFixed(2)} €`, 14, y);
+            doc.setFontSize(11);
+            doc.text(`Total HT : ${prices.totalHt.toFixed(2)} €`, 14, y);
+            y += 8;
+            doc.text(`Total TTC : ${prices.totalTtc.toFixed(2)} €`, 14, y);
             doc.save('devis-isotuiles.pdf');
         }
 
-        document.getElementById('btnDownloadPdf').addEventListener('click', () => { downloadPdf(); });
+        document.getElementById('btnDownloadPdf').addEventListener('click', downloadPdf);
+
 
         // send to parent (Shopify) via postMessage
         function sendToParent() {
@@ -634,6 +786,36 @@
             updateOverlay();
             buildRecap();
         }
+
+        let updateTimer;
+        function updateAllDebounced() {
+            clearTimeout(updateTimer);
+            updateTimer = setTimeout(updateAll, 200);
+        }
+
+
+        document.getElementById('btnReset').addEventListener('click', () => {
+            if (!confirm("Voulez-vous vraiment réinitialiser le formulaire ?")) return;
+            localStorage.removeItem('isotuiles_config');
+            state = {
+                panneauId: panneaux.length ? panneaux[0].id : null,
+                longueur: 2.1,
+                quantite: 1,
+                accessoiresChoisis: [],
+                postal: '',
+                name: '',
+                email: ''
+            };
+            inputLongueur.value = state.longueur;
+            inputQuantite.value = state.quantite;
+            selectPanneau.value = state.panneauId;
+            renderAccessories();
+            updateAll();
+            showStep(1);
+        });
+
+
+
 
 
         // init
