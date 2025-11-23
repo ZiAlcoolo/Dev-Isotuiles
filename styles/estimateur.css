@@ -420,6 +420,7 @@ th {
     padding: .5rem 1.2rem;
     position: relative;
     font-size: 1rem;
+    z-index: 1;
 }
 
 #estimateur_container .form-check input[name=couleurPanneau]+label {
@@ -439,6 +440,37 @@ th {
     border-radius: 100%;
     margin-right: .5rem;
     border: solid rgba(0, 0, 0, 0.2) 1px;
+}
+
+#estimateur_container .form-check .illustration {
+    top: -1rem;
+    z-index: 0;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 16px;
+    display: flex;
+    height: 0;
+    justify-content: center;
+    min-width: 4rem;
+    margin: 0 10px;
+    position: relative;
+    opacity: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+#estimateur_container .form-check:hover .illustration {
+}
+#estimateur_container .form-check input[type=radio]:checked + label + .illustration {
+    opacity: 1;
+    padding: .5rem;
+    padding-top: 1.5rem;
+    height: 10rem;
+    transition: height .3s ease, opacity .2s ease;
+}
+
+#estimateur_container .form-check .illustration img {
+    height: 100%;
+    width: auto;
 }
 
 #estimateur_container #ajouterLigne {
@@ -735,6 +767,7 @@ th {
 #overlayPdf.overlay_content h4 {
     font-size: 2rem;
 }
+
 #overlayPdf.overlay_content input {
     width: 100%;
     padding: 8px;

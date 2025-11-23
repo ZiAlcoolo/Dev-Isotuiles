@@ -34,55 +34,7 @@
 
 <body>
 
-    <section id="presentation">
-        <h6>Calculateur de coûts</h6>
-        <h2>Estimez le budget global de votre projet.</h2>
 
-        <p>
-            Notre estimateur de prix vous offre une solution simple et rapide pour évaluer le budget de votre commande.
-            En choisissant vos paramètres (type de produit, couleur, dimensions, quantités…), vous obtenez
-            instantanément
-            une estimation du coût total ainsi qu’un récapitulatif détaillé.
-            Cet outil est conçu pour vous aider à préparer vos projets en toute sérénité et à mieux anticiper vos
-            investissements avant de passer commande.
-        </p>
-    </section>
-
-    <section id="fonctionnement">
-        <h2>Comment ça marche ?</h2>
-        <div class="col">
-            <img width="500" height="auto" src="./media/estimateur-commande-preview-video.png">
-            <div class="steps_container">
-                <div class="row">
-                    <div>
-                        <h4>01.<br>Choisissez vos options</h4>
-                        <p>Sélectionnez le produit, la couleur, l’épaisseur et les
-                            dimensions</p>
-                    </div>
-                    <div>
-                        <h4>02.<br>Indiquez vos besoins</h4>
-                        <p>Précisez les quantités et longueurs souhaitées</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div>
-                        <h4>03.<br>Obtenez votre estimation</h4>
-                        <p>L’outil calcule automatiquement la surface et le coût total</p>
-                    </div>
-                    <div>
-                        <h4>04.<br>Lisez et téléchargez votre devis</h4>
-                        <p>Vous pourrez à la fin enregistrer votre estimation en PDF</p>
-                    </div>
-                </div>
-            </div>
-            <div class="last_step">
-                <img src="https://img.icons8.com/ios/500/approval.png">
-                <p>Lorsque vous réalisez votre devis en ligne, vous nous aidez à traiter votre demande plus
-                    efficacement. En nous l’envoyant, nous disposons immédiatement de toutes les informations
-                    nécessaires pour enregistrer votre commande et comprendre au mieux vos besoins.</p>
-            </div>
-        </div>
-    </section>
 
     <section id="estimateur_container">
         <img id="calculator-icon" src="./media/calculator.svg">
@@ -98,15 +50,28 @@
             <div class="form_choices" id="typePanneauContainer">
                 <div class="form-check">
                     <input class="maj_height" type="radio" id="type1" name="typePanneau" value="romaneCanal" checked>
-                    <label for="type1">Romane Canal</label>
+                    <label for="type1">
+                        Romane Canal
+                    </label>
+                    <div class="illustration">
+                        <img src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/rouge.webp?v=1744188622">
+                    </div>
                 </div>
                 <div class="form-check">
                     <input class="maj_height" type="radio" id="type2" name="typePanneau" value="tuilesPlates">
                     <label for="type2">Tuiles Plates</label>
+                    <div class="illustration">
+                        <img
+                            src="https://panotuiles.fr/panneaux-sandwich-imitation-tuiles-gironde-bordeaux-couverture-isole/p102.webp">
+                    </div>
                 </div>
                 <div class="form-check">
                     <input class="maj_height" type="radio" id="type3" name="typePanneau" value="bacAcier">
                     <label for="type3">Bac Acier</label>
+                    <div class="illustration">
+                        <img
+                            src="https://isotuiles.fr/cdn/shop/files/Bac_acier_-_Metal_argente_-_RAL_9006.png?v=1744153063">
+                    </div>
                 </div>
             </div>
         </fieldset>
@@ -187,7 +152,8 @@
         <!-- Tableau Longueur / Quantité / Surface -->
         <div class="select_container">
             <p class="select_title">Accessoires</p>
-            <button id="afficherAccessoires"  class="maj_height" onclick="DisplayAccessories()">Ajouter des accessoires</button>
+            <button id="afficherAccessoires" class="maj_height" onclick="DisplayAccessories()">Ajouter des
+                accessoires</button>
             <div id="listeAccessoires" style="display: none;"></div>
         </div>
 
@@ -266,8 +232,9 @@
 
 
 
+
     <section id="avantages">
-        <h2>Pourquoi utiliser cet outil ?</h2>
+        <!-- <h2>Pourquoi utiliser cet outil ?</h2> -->
         <ul>
             <li><b>Rapide :</b> résultat instantané, sans attendre un devis manuel.</li>
 
@@ -282,7 +249,55 @@
     </section>
 
 
+    <section id="presentation">
+        <h6>Calculateur de coûts</h6>
+        <h2>Estimez le budget global de votre projet.</h2>
 
+        <p>
+            Notre estimateur de prix vous offre une solution simple et rapide pour évaluer le budget de votre commande.
+            En choisissant vos paramètres (type de produit, couleur, dimensions, quantités…), vous obtenez
+            instantanément
+            une estimation du coût total ainsi qu’un récapitulatif détaillé.
+            Cet outil est conçu pour vous aider à préparer vos projets en toute sérénité et à mieux anticiper vos
+            investissements avant de passer commande.
+        </p>
+    </section>
+
+    <section id="fonctionnement">
+        <h2>Comment ça marche ?</h2>
+        <div class="col">
+            <img width="500" height="auto" src="./media/estimateur-commande-preview-video.png">
+            <div class="steps_container">
+                <div class="row">
+                    <div>
+                        <h4>01.<br>Choisissez vos options</h4>
+                        <p>Sélectionnez le produit, la couleur, l’épaisseur et les
+                            dimensions</p>
+                    </div>
+                    <div>
+                        <h4>02.<br>Indiquez vos besoins</h4>
+                        <p>Précisez les quantités et longueurs souhaitées</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div>
+                        <h4>03.<br>Obtenez votre estimation</h4>
+                        <p>L’outil calcule automatiquement la surface et le coût total</p>
+                    </div>
+                    <div>
+                        <h4>04.<br>Lisez et téléchargez votre devis</h4>
+                        <p>Vous pourrez à la fin enregistrer votre estimation en PDF</p>
+                    </div>
+                </div>
+            </div>
+            <div class="last_step">
+                <img src="https://img.icons8.com/ios/500/approval.png">
+                <p>Lorsque vous réalisez votre devis en ligne, vous nous aidez à traiter votre demande plus
+                    efficacement. En nous l’envoyant, nous disposons immédiatement de toutes les informations
+                    nécessaires pour enregistrer votre commande et comprendre au mieux vos besoins.</p>
+            </div>
+        </div>
+    </section>
 
     <section id="questions-reponses">
         <h2>FAQ / Infos pratiques sur l'outil</h2>
