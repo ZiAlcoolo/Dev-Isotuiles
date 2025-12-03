@@ -108,6 +108,7 @@ const tarifs = {
     }
 };
 
+
 // Données des coloris par type
 const couleursParType = {
     romaneCanal: [["Terracotta", "#c96a31"], ["Gris Anthracite", "#484848"], ["Rouge Vieillie", "linear-gradient(90deg,#ba684f 10%, #724437 50%, #ba684f 90%);"], ["Pastel Vieillie", "linear-gradient(90deg,rgba(135, 113, 84, 1) 10%, rgba(102, 79, 56, 1) 50%, rgba(135, 113, 84, 1) 90%)"]],
