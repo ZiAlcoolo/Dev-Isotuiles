@@ -7,274 +7,38 @@
     <title>Suivi de commande - Isotuiles</title>
     <script src="./modules/jquery.min.js"></script>
 
-    <style>
-        /* --- Reset & layout --- */
-        :root {
-            --primary: #1e88e5;
-            --accent: #2b66a8;
-            --muted: #6b7280;
-            --bg: #f4f6f8;
-            --card-bg: #ffffff;
-            --success: #16a34a;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --radius: 10px;
-            --max-width: 980px;
-            --gap: 18px;
-        }
-
-        * {
-            box-sizing: border-box
-        }
-
-        body {
-            margin: 0;
-            font-family: "Inter", Roboto, Arial, sans-serif;
-            background: var(--bg);
-            color: #111827;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            line-height: 1.4;
-        }
-
-        .page {
-            max-width: var(--max-width);
-            margin: 28px auto;
-            padding: 20px;
-        }
-
-        /* Header */
-        .header {
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            color: white;
-            padding: 20px;
-            border-radius: var(--radius);
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .logo {
-            width: 72px;
-            height: 72px;
-            background: rgba(255, 255, 255, 0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            font-weight: 700;
-            letter-spacing: 0.6px;
-        }
-        .logo img{
-            height: auto;
-            width: 100%;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 18px
-        }
-
-        .header .meta {
-            opacity: 0.95;
-            font-size: 14px
-        }
-
-        /* Main container */
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 360px;
-            gap: var(--gap);
-            margin-top: 18px;
-        }
-
-        /* Card */
-        .card {
-            background: var(--card-bg);
-            padding: 18px;
-            border-radius: 12px;
-            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-        }
-
-        /* Timeline */
-        .timeline {
-            padding: 8px 0 0 0;
-        }
-
-        .progress-bar {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        .step {
-            text-align: center;
-            flex: 1;
-            position: relative;
-        }
-
-        .step .dot {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            margin: 0 auto 8px;
-            background: #e6eef9;
-            border: 2px solid #d0e7ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: white;
-        }
-
-        .step.done .dot {
-            background: var(--success);
-            border-color: rgba(22, 163, 74, 0.15)
-        }
-
-        .step.current .dot {
-            background: var(--primary)
-        }
-
-        .step.pending .dot {
-            background: #f1f5f9;
-            border-color: #e6eef9;
-            color: #94a3b8
-        }
-
-        .step .label {
-            font-size: 13px;
-            color: var(--muted);
-            margin-bottom: 6px
-        }
-
-        .step .date {
-            font-size: 12px;
-            color: #374151
-        }
-
-        .progress-line {
-            position: relative;
-            height: 6px;
-            background: #e6eef9;
-            border-radius: 6px;
-            margin-top: 18px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            width: 0%;
-            transition: width .6s cubic-bezier(.2, .9, .4, 1);
-        }
-
-        /* Right column */
-        .summary h3 {
-            margin: 0 0 8px 0
-        }
-
-        .summary .row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed #eef2f7
-        }
-
-        .summary .row:last-child {
-            border-bottom: none
-        }
-
-        .summary .value {
-            font-weight: 600
-        }
-
-        table.details {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px
-        }
-
-        table.details td {
-            padding: 8px 6px;
-            border-top: 1px solid #f3f6f9;
-            font-size: 13px;
-            color: #263238
-        }
-
-        table.details td.label {
-            color: var(--muted);
-            width: 38%
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 14px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #e6eef9;
-            color: var(--accent)
-        }
-
-        .muted {
-            color: var(--muted);
-            font-size: 13px;
-            margin-top: 10px
-        }
-
-        @media (max-width:920px) {
-            .grid {
-                grid-template-columns: 1fr;
-                padding-bottom: 20px
-            }
-
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px
-            }
-
-            .logo {
-                width: 56px;
-                height: 56px
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="./styles/tracking-order.css">
 </head>
 
 <body>
 
+    <div id="popup-details-order" style="display: none;">
+        <div class="popup-content">
+            <img class="close" onclick="$('#popup-details-order').hide()" width="20" height="20"
+                src="https://img.icons8.com/ios/50/delete-sign--v1.png" alt="close popup" />
+            <h3>Suivi complet de votre commande</h3>
+            <p class="muted" style="margin-top:12px">
+                Votre commande est en cours d'expédition ou proche de la livraison.
+            </p>
+
+            <div id="progress-container">
+                <p>Chargement des informations en cours</p>
+            </div>
+        </div>
+    </div>
+
     <div class="page">
         <div class="header">
             <div class="logo"><img src="./media/logo-colored.png"></div>
-            <div>
+            <div style="flex: 1;">
                 <h1>Suivi de votre commande</h1>
                 <div class="meta">
                     Commande n° <strong id="orderId">—</strong> · <span id="clientName">—</span>
                 </div>
+            </div>
+            <div id="data_synch" style="margin-top:10px">
+                <div class="muted">Dernière mise à jour</div>
+                <div id="lastUpdate">—</div>
             </div>
         </div>
 
@@ -282,14 +46,14 @@
             <div>
                 <div class="card">
                     <h3>Progression de la commande</h3>
+                    <div class="muted" id="stageMsg"></div>
                     <div class="timeline">
-                        <div class="progress-bar" id="stepsContainer"></div>
-
                         <div class="progress-line">
                             <div class="progress-fill" id="progressFill"></div>
                         </div>
+                        <div class="progress-bar" id="stepsContainer"></div>
 
-                        <div class="muted" id="stageMsg"></div>
+
                     </div>
 
                     <h3 style="margin-top:20px">Détails de la commande</h3>
@@ -351,18 +115,16 @@
                         <div class="value" id="resteValue">—</div>
                     </div>
 
-                    <div style="margin-top:10px">
-                        <div class="muted">Dernière mise à jour</div>
-                        <div id="lastUpdate">—</div>
-                    </div>
-
                     <div class="actions">
-                        <a id="contactBtn" class="btn btn-outline" href="https://isotuiles.fr/pages/conctactez-nous">Contacter le service</a>
-                        <a id="openLinkBtn" class="btn btn-primary" href="#" target="_blank">Voir le suivi complet</a>
+                        <a id="contactBtn" class="btn btn-outline" href="https://isotuiles.fr/pages/conctactez-nous"
+                            target="_blank">Contacter le service</a>
+                        <a id="openLinkBtn" class="btn btn-primary" onclick="$('#popup-details-order').show()">Voir le
+                            suivi complet</a>
                     </div>
 
                     <div class="muted" style="margin-top:12px">
-                        Besoin d'aide ? <a style="color:grey" href="mailto:service.client.isotuiles@gmail.com">service.client.isotuiles@gmail.com</a>
+                        Besoin d'aide ? <a style="color:grey"
+                            href="mailto:service.client.isotuiles@gmail.com">service.client.isotuiles@gmail.com</a>
                     </div>
                 </div>
             </aside>
@@ -425,9 +187,10 @@
                 surface: data["Surface totale (m²)"] || "—",
 
                 // Dates timeline
-                etape: data["Étape actuelle"]|| "Commande enregistrée",
+                etape: data["Étape actuelle"] || "Commande enregistrée",
+                dates_etapes: [data["Date Commande enregistrée"], data["Date Production"], data["Date Prêt à être expédié"], data["Date En cours de livraison"], data["Date Livré"]],
 
-                trackingUrl: data["URL suivi client"] || "#"
+                trackingUrl: data["URL suivi client"] || "#",
             };
 
             // -------------------------
@@ -452,27 +215,22 @@
             $("#longueurs").text(d.longueurs);
             $("#surface").text(d.surface);
 
-            const now = new Date();
 
-            const formatted_today_date = now.toLocaleString("fr-FR", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit"
-            }).replace(',', ' -');
+
+
+
+            const formatted_today_date = FormattedDate(new Date());
 
 
             $("#lastUpdate").text(formatted_today_date);
 
             $("#openLinkBtn").attr("href", d.trackingUrl);
-            
+
             // -------------------------
             // TIMELINE
             // -------------------------
             const currentStep = d.etape;
-            console.log(currentStep)
-            $("#transportStatus").text(d.currentStep === "En cours de livraison"||d.currentStep === "Livré" ? "Expédié" : "Non expédié");
+            $("#transportStatus").text(d.currentStep === "En cours de livraison" || d.currentStep === "Livré" ? "Expédié" : "Non expédié");
 
             const ORDER_STEPS = [
                 "Commande enregistrée",
@@ -481,6 +239,9 @@
                 "En cours de livraison",
                 "Livré",
             ];
+
+            GenerateDetailedSteps(d.dates_etapes, currentStep, ORDER_STEPS)
+
 
             const STEPS = ORDER_STEPS.map(step => ({
                 label: step,
@@ -499,36 +260,66 @@
 
         function renderTimeline(steps) {
 
-    const $stepsContainer = $("#stepsContainer");
-    const $progressFill = $("#progressFill");
-    const $stageMsg = $("#stageMsg");
+            const $stepsContainer = $("#stepsContainer");
+            const $progressFill = $("#progressFill");
+            const $stageMsg = $("#stageMsg");
 
-    $stepsContainer.empty();
+            $stepsContainer.empty();
 
-    const completed = steps.filter(s => s.isDone).length;
-    const pct = Math.round((completed / steps.length) * 100);
+            const completed = steps.filter(s => s.isDone).length;
+            const pct = Math.round((completed / steps.length) * 100);
 
-    steps.forEach((s, idx) => {
+            steps.forEach((s, idx) => {
 
-        const className = s.isDone 
-            ? "done" 
-            : s.isCurrent 
-            ? "current" 
-            : "pending";
+                const className = s.isDone
+                    ? "done"
+                    : s.isCurrent
+                        ? "current"
+                        : "pending";
 
-        const html = `
+                const html = `
         <div class="step ${className}">
             <div class="dot">${s.isDone ? "✓" : s.isCurrent ? idx + 1 : ""}</div>
             <div class="label">${s.label}</div>
             <div class="date">${s.date ? formatDate(s.date) : ""}</div>
         </div>`;
 
-        $stepsContainer.append(html);
-    });
+                $stepsContainer.append(html);
+            });
 
-    $progressFill.css("width", pct + "%");
-    $stageMsg.text(getStageMessage(pct));
-}
+            $progressFill.css("width", pct + "%");
+            $stageMsg.text(getStageMessage(pct));
+        }
+
+
+        function GenerateDetailedSteps(dates, current_step, steps) {
+            let html = "";
+            var circle_style = ""
+
+            steps.forEach((step, i) => {
+                const date = dates && dates[i] ? `<span> - ${FormattedDate(new Date(dates[i]), true)}</span>` : "";
+
+                circle_style = step === current_step ? "present" : circle_style === "present" ? "future" : circle_style === "future"?"future":"past";
+
+                html += `
+        <div class="step-container${" " + circle_style}">
+            <div class="dots-container">
+                <div class="circle-1">
+                    <div class="circle-2"></div>
+                </div>
+            </div>
+            <div class="text-content">
+                <h4>${step}${date}</h4>
+                <p>Description de l'étape et infos complémentaires</p>
+            </div>
+        </div>
+        <div class="progession-bar${" " + circle_style}"><div><div class="inner-bar"></div></div></div>
+        `;
+            });
+
+            return $("#progress-container").html(html);
+        }
+
 
 
         // -------- Utils ----------
@@ -555,6 +346,27 @@
             if (pct >= 60) return "Votre commande est en cours d'expédition ou proche de la livraison.";
             if (pct >= 30) return "Votre commande est en production.";
             return "Votre commande est en cours de traitement.";
+        }
+
+
+        function FormattedDate(date, f) {
+            var date_formatted = "--"
+            if (f) {
+                date_formatted = date.toLocaleString("fr-FR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "2-digit",
+                }).replace(',', ' -')
+            } else {
+                date_formatted = date.toLocaleString("fr-FR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                }).replace(',', ' -')
+            }
+            return date_formatted
         }
 
     </script>
