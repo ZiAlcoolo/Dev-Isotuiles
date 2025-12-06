@@ -46,16 +46,7 @@
             <div>
                 <div class="card">
                     <h3>Progression de la commande</h3>
-                    <div class="muted" id="stageMsg"></div>
-                    <!-- <div class="timeline">
-                        <div class="progress-line">
-                            <div class="progress-fill" id="progressFill"></div>
-                        </div>
-                        <div class="progress-bar" id="stepsContainer"></div>
-
-
-                    </div> -->
-
+                    <div class="muted"></div>
 
                     <div id="progress-container">
                         <p>Chargement des informations en cours</p>
@@ -245,60 +236,21 @@
                 "En cours de livraison",
                 "Livré",
             ];
+            const STEPS_DESCRIPTION = [
+                "Nos équipes ont bien reçu votre commande et vérifient les informations fournies.",
+                "Votre commande est en cours de fabrication selon les dimensions et coloris choisis.",
+                "Votre commande est emballée et en attente de prise en charge par le transporteur.",
+                "Votre commande est en transit et acheminée vers votre adresse de livraison.",
+                "Votre commande a été remise avec succès. Contactez-nous en cas de besoin.",
+            ];
 
-            GenerateDetailedSteps(d.dates_etapes, currentStep, ORDER_STEPS)
-
-
-            const STEPS = ORDER_STEPS.map(step => ({
-                label: step,
-                isCurrent: (step === currentStep),
-                isDone: (ORDER_STEPS.indexOf(step) < ORDER_STEPS.indexOf(currentStep)),
-                date: d[step] || ""  // tu peux brancher les dates plus tard si tu veux
-            }));
-
-            renderTimeline(STEPS);
+            GenerateDetailedSteps(d.dates_etapes, currentStep, ORDER_STEPS, STEPS_DESCRIPTION)
 
         }
 
-        // -----------------------------------------------------------
-        // TIMELINE dynamique en jQuery
-        // -----------------------------------------------------------
 
-        function renderTimeline(steps) {
-
-            const $stepsContainer = $("#stepsContainer");
-            const $progressFill = $("#progressFill");
-            const $stageMsg = $("#stageMsg");
-
-            $stepsContainer.empty();
-
-            const completed = steps.filter(s => s.isDone).length;
-            const pct = Math.round((completed / steps.length) * 100);
-
-            steps.forEach((s, idx) => {
-
-                const className = s.isDone
-                    ? "done"
-                    : s.isCurrent
-                        ? "current"
-                        : "pending";
-
-                const html = `
-        <div class="step ${className}">
-            <div class="dot">${s.isDone ? "✓" : s.isCurrent ? idx + 1 : ""}</div>
-            <div class="label">${s.label}</div>
-            <div class="date">${s.date ? formatDate(s.date) : ""}</div>
-        </div>`;
-
-                $stepsContainer.append(html);
-            });
-
-            $progressFill.css("width", pct + "%");
-            $stageMsg.text(getStageMessage(pct));
-        }
-
-
-        function GenerateDetailedSteps(dates, current_step, steps) {
+        // Nouvel affichage
+        function GenerateDetailedSteps(dates, current_step, steps, descriptions) {
             let html = "";
             var circle_style = ""
 
@@ -316,7 +268,7 @@
             </div>
             <div class="text-content">
                 <h4>${step}${date}</h4>
-                <p>Description de l'étape et infos complémentaires</p>
+                <p>${descriptions[i]}</p>
             </div>
         </div>
         <div class="progession-bar${" " + circle_style}"><div><div class="inner-bar"></div></div></div>
