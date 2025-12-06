@@ -1,6 +1,6 @@
  /* --- Reset & layout --- */
  :root {
-     --primary: #1e88e5;
+     --primary: #2d4472;
      --accent: #2b66a8;
      --muted: #6b7280;
      --bg: #f4f6f8;
@@ -134,7 +134,7 @@
 
  .step.done .dot {
      background: var(--primary);
-     border-color: rgba(22, 163, 74, 0.15)
+     border-color: rgb(58 100 162);
  }
 
  .step.current .dot {
