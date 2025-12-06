@@ -27,6 +27,8 @@
      line-height: 1.4;
  }
 
+
+
  .page {
      max-width: var(--max-width);
      margin: 28px auto;
@@ -47,13 +49,18 @@
  .logo {
      width: 72px;
      height: 72px;
-     background: rgba(255, 255, 255, 0.12);
      display: flex;
      align-items: center;
      justify-content: center;
      border-radius: 8px;
      font-weight: 700;
      letter-spacing: 0.6px;
+     cursor: pointer;
+ }
+
+ .logo:hover {
+     background: rgba(255, 255, 255, 0.12);
+
  }
 
  .logo img {
@@ -80,6 +87,15 @@
 
  #data_synch .muted {
      color: rgba(255, 255, 255, 0.6);
+ }
+
+ h3 {
+     margin: 0;
+     margin-top: 2rem;
+ }
+
+ h3:first-child {
+     margin: 0;
  }
 
  /* Main container */
@@ -219,7 +235,11 @@
  .actions {
      display: flex;
      gap: 10px;
-     margin-top: 12px
+     margin-top: 12px;
+ }
+
+ .actions>* {
+     flex: 1;
  }
 
  .btn {
@@ -253,14 +273,14 @@
 
 
  /* POPUP DETAILS */
- #popup-details-order .close {
+ #popup .close {
      position: absolute;
      right: 1rem;
      top: 1rem;
      cursor: pointer;
  }
 
- #popup-details-order .popup-content {
+ #popup .popup-content {
      position: absolute;
      top: 50%;
      left: 50%;
@@ -275,7 +295,7 @@
      border: solid 2px #E7E8EB;
  }
 
- #popup-details-order {
+ #popup {
      z-index: 10;
      position: fixed;
      top: 0;
@@ -291,17 +311,17 @@
      border: 1px solid rgba(255, 255, 255, 0.3);
  }
 
- #popup-details-order h3 {
+ #popup h3 {
      margin: 0;
  }
 
- #popup-details-order #progress-container {
+ #progress-container {
      display: flex;
      flex-direction: column;
      gap: 0;
  }
 
- #popup-details-order .step-container {
+ #progress-container .step-container {
      display: flex;
      flex-direction: row;
      align-items: stretch;
@@ -309,18 +329,18 @@
      min-height: 5rem;
  }
 
- #popup-details-order .step-container:hover {
+ #progress-container .step-container:hover {
      background-color: #F9FAFC;
      outline: 2px #E7E8EB solid;
  }
 
- #popup-details-order .step-container span {
+ #progress-container .step-container span {
      flex: 1;
  }
 
 
  /* STEPS DOTS */
- #popup-details-order .dots-container {
+ #progress-container .dots-container {
      display: flex;
      position: relative;
      align-items: center;
@@ -328,7 +348,7 @@
      width: 60px;
  }
 
- #popup-details-order .circle-1 {
+ #progress-container .circle-1 {
      background-color: var(--primary);
      display: flex;
      justify-content: center;
@@ -341,7 +361,7 @@
      margin: 10px;
  }
 
- #popup-details-order .circle-2 {
+ #progress-container .circle-2 {
      background-color: white;
      border-radius: 100%;
      height: 12px;
@@ -352,7 +372,7 @@
 
 
  /* PRESENT STEP */
- #popup-details-order .step-container.present .circle-1 {
+ #progress-container .step-container.present .circle-1 {
      background-color: #fff;
      border: var(--primary) solid 2px;
      box-shadow: 0px 0px 0px 4px rgba(0, 47, 92, 0);
@@ -371,11 +391,11 @@
 
  }
 
- #popup-details-order .step-container.present .circle-2 {
+ #progress-container .step-container.present .circle-2 {
      background-color: var(--primary);
  }
 
- #popup-details-order .progession-bar.present div .inner-bar {
+ #progress-container .progession-bar.present div .inner-bar {
      animation: growBar 1s ease-out forwards infinite;
  }
 
@@ -390,35 +410,35 @@
  }
 
  /* FUTURE STEP */
- #popup-details-order .step-container.future .circle-1 {
+ #progress-container .step-container.future .circle-1 {
      background-color: #fff;
      border: rgba(128, 128, 128, 0.2) solid 2px;
  }
 
- #popup-details-order .step-container.future .circle-2 {
+ #progress-container .step-container.future .circle-2 {
      background-color: rgba(128, 128, 128, 0.2);
  }
 
- #popup-details-order .progession-bar.future div .inner-bar {
+ #progress-container .progession-bar.future div .inner-bar {
      background-color: transparent;
      border: 1px dashed rgba(128, 128, 128, 0.2);
  }
 
- #popup-details-order .progession-bar.future>div {
+ #progress-container .progession-bar.future>div {
      background-color: transparent;
  }
 
  /* BAR ========== */
 
 
- #popup-details-order .progession-bar {
+ #progress-container .progession-bar {
      height: 0px;
      position: relative;
      z-index: 0;
      width: 60px;
  }
 
- #popup-details-order .progession-bar>div {
+ #progress-container .progession-bar>div {
      position: absolute;
      bottom: -2rem;
      top: -2rem;
@@ -429,11 +449,11 @@
      display: flex;
  }
 
- #popup-details-order .progession-bar:last-child>div {
+ #progress-container .progession-bar:last-child>div {
      bottom: 0;
  }
 
- #popup-details-order .progession-bar .inner-bar {
+ #progress-container .progession-bar .inner-bar {
      width: 100%;
      height: 100%;
      background-color: var(--primary);
@@ -446,18 +466,18 @@
 
 
 
- #popup-details-order .text-content {
+ #progress-container .text-content {
      display: flex;
      flex-direction: column;
      margin-top: 15px;
  }
 
- #popup-details-order h4,
- #popup-details-order p {
+ #progress-container h4,
+ #progress-container p {
      margin: 0;
  }
 
- #popup-details-order p {
+ #progress-container p {
      font-size: 12px;
      color: var(--muted);
  }

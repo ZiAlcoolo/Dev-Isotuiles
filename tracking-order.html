@@ -12,24 +12,24 @@
 
 <body>
 
-    <div id="popup-details-order" style="display: none;">
+    <!-- <div id="popup" style="display: none;">
         <div class="popup-content">
-            <img class="close" onclick="$('#popup-details-order').hide()" width="20" height="20"
+            <img class="close" onclick="$('#popup').hide()" width="20" height="20"
                 src="https://img.icons8.com/ios/50/delete-sign--v1.png" alt="close popup" />
-            <h3>Suivi complet de votre commande</h3>
+            <h3>Titre popup</h3>
             <p class="muted" style="margin-top:12px">
                 Votre commande est en cours d'expédition ou proche de la livraison.
             </p>
 
-            <div id="progress-container">
-                <p>Chargement des informations en cours</p>
-            </div>
         </div>
-    </div>
+    </div> -->
 
     <div class="page">
         <div class="header">
-            <div class="logo"><img src="./media/logo-colored.png"></div>
+            <div class="logo" onclick="window.open('https://isotuiles.fr/', '_blank')">
+                <img src="./media/logo-white.webp" alt="Logo Isotuiles">
+            </div>
+
             <div style="flex: 1;">
                 <h1>Suivi de votre commande</h1>
                 <div class="meta">
@@ -47,16 +47,37 @@
                 <div class="card">
                     <h3>Progression de la commande</h3>
                     <div class="muted" id="stageMsg"></div>
-                    <div class="timeline">
+                    <!-- <div class="timeline">
                         <div class="progress-line">
                             <div class="progress-fill" id="progressFill"></div>
                         </div>
                         <div class="progress-bar" id="stepsContainer"></div>
 
 
+                    </div> -->
+
+
+                    <div id="progress-container">
+                        <p>Chargement des informations en cours</p>
                     </div>
 
-                    <h3 style="margin-top:20px">Détails de la commande</h3>
+                    <h3>Informations transport</h3>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:stretch">
+                        <div style="flex:1">
+                            <div class="muted">Delai Livraison</div>
+                            <div id="delaiLivraisonStatus">—</div>
+                        </div>
+                        <div style="flex:1">
+                            <div class="muted">Statut transport</div>
+                            <div id="transportStatus">—</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside>
+                <div class="card summary">
+                    <h3>Détails de la commande</h3>
                     <table class="details">
                         <tr>
                             <td class="label">Modèle</td>
@@ -80,19 +101,7 @@
                         </tr>
                     </table>
 
-                    <h3 style="margin-top:18px">Informations transport</h3>
-                    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
-                        <div style="flex:1">
-                            <div class="muted">Statut transport</div>
-                            <div id="transportStatus">—</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <aside>
-                <div class="card summary">
-                    <h3>Récapitulatif</h3>
+                    <h3 style="margin-top:20px">Récapitulatif</h3>
 
                     <div class="row">
                         <div>Client</div>
@@ -103,12 +112,8 @@
                         <div class="value" id="devisValue">—</div>
                     </div>
                     <div class="row">
-                        <div>Acompte reçu</div>
+                        <div>Acompte payé</div>
                         <div class="value" id="acompteValue">—</div>
-                    </div>
-                    <div class="row">
-                        <div>Solde payé</div>
-                        <div class="value" id="soldeValue">—</div>
                     </div>
                     <div class="row">
                         <div>Reste dû</div>
@@ -118,8 +123,6 @@
                     <div class="actions">
                         <a id="contactBtn" class="btn btn-outline" href="https://isotuiles.fr/pages/conctactez-nous"
                             target="_blank">Contacter le service</a>
-                        <a id="openLinkBtn" class="btn btn-primary" onclick="$('#popup-details-order').show()">Voir le
-                            suivi complet</a>
                     </div>
 
                     <div class="muted" style="margin-top:12px">
@@ -178,7 +181,6 @@
                 client: data["Nom client"],
                 devis: Number(data["Montant devis"] || 0),
                 acompte: Number(data["Acompte payé"] || 0),
-                solde: Number(data["Solde payé"] || 0),
 
                 modele: data["Modèle de panneau"] || "—",
                 epaisseur: data["Épaisseur"] || "—",
@@ -189,6 +191,8 @@
                 // Dates timeline
                 etape: data["Étape actuelle"] || "Commande enregistrée",
                 dates_etapes: [data["Date Commande enregistrée"], data["Date Production"], data["Date Prêt à être expédié"], data["Date En cours de livraison"], data["Date Livré"]],
+
+                delai_livraison: data["Délai Livraison"],
 
                 trackingUrl: data["URL suivi client"] || "#",
             };
@@ -206,8 +210,7 @@
             $("#clientValue").text(d.client);
             $("#devisValue").text(formatCurrency(d.devis));
             $("#acompteValue").text(formatCurrency(d.acompte));
-            $("#soldeValue").text(formatCurrency(d.solde));
-            $("#resteValue").text(formatCurrency(d.devis - d.acompte - d.solde));
+            $("#resteValue").text(formatCurrency(d.devis - d.acompte));
 
             $("#modele").text(d.modele);
             $("#epaisseur").text(d.epaisseur);
@@ -231,6 +234,9 @@
             // -------------------------
             const currentStep = d.etape;
             $("#transportStatus").text(d.currentStep === "En cours de livraison" || d.currentStep === "Livré" ? "Expédié" : "Non expédié");
+            if (d.delai_livraison) {
+                $("#delaiLivraisonStatus").html(`<b>${d.delai_livraison}</b>`);
+            }
 
             const ORDER_STEPS = [
                 "Commande enregistrée",
@@ -299,7 +305,7 @@
             steps.forEach((step, i) => {
                 const date = dates && dates[i] ? `<span> - ${FormattedDate(new Date(dates[i]))}</span>` : "";
 
-                circle_style = step === current_step ? "present" : circle_style === "present" ? "future" : circle_style === "future"?"future":"past";
+                circle_style = step === current_step ? "present" : circle_style === "present" ? "future" : circle_style === "future" ? "future" : "past";
 
                 html += `
         <div class="step-container${" " + circle_style}">
