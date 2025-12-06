@@ -297,7 +297,7 @@
             var circle_style = ""
 
             steps.forEach((step, i) => {
-                const date = dates && dates[i] ? `<span> - ${FormattedDate(new Date(dates[i]), true)}</span>` : "";
+                const date = dates && dates[i] ? `<span> - ${FormattedDate(new Date(dates[i]))}</span>` : "";
 
                 circle_style = step === current_step ? "present" : circle_style === "present" ? "future" : circle_style === "future"?"future":"past";
 
