@@ -233,7 +233,7 @@
             // TIMELINE
             // -------------------------
             const currentStep = d.etape;
-            $("#transportStatus").text(d.currentStep === "En cours de livraison" || d.currentStep === "Livré" ? "Expédié" : "Non expédié");
+            $("#transportStatus").text(currentStep === "En cours de livraison" || currentStep === "Livré" ? "Expédié" : "Non expédié");
             if (d.delai_livraison) {
                 $("#delaiLivraisonStatus").html(`<b>${d.delai_livraison}</b>`);
             }
