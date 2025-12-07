@@ -2,20 +2,20 @@ const faq_json = {
     "faq": [
         {
             "id": 1,
-            "question": "Conditions de paiement",
+            "question": "Quelles sont les conditions de paiement ?",
             "answer": [
-                "Acompte de 50 % à la signature.",
-                "Le solde est à régler le jour de la livraison, avant déchargement.",
-                "Méthodes de paiement acceptées : Virement bancaire, Carte bancaire."
+                "Acompte de 50 % à régler à la commande.",
+                "Solde à régler le jour de la livraison, avant déchargement.",
+                "Méthodes acceptées : Virement bancaire, Carte bancaire."
             ],
             "category": "Paiement"
         },
         {
             "id": 2,
-            "question": "Modalités de réception",
+            "question": "Quelles sont les modalités de réception de la marchandise ?",
             "answer": [
-                "Le déchargement de la marchandise est à la charge du client.",
-                "Prévoir personnel ou engins de manutention nécessaires pour assurer la réception."
+                "Le déchargement est à la charge du client.",
+                "Prévoir personnel ou engins pour une réception sécurisée."
             ],
             "category": "Livraison"
         },
@@ -132,25 +132,6 @@ const faq_json = {
                 "Si le problème persiste, contactez-nous : nous vérifierons auprès de l’usine ou du transporteur."
             ],
             "category": "Suivi"
-        },
-        {
-            "id": 15,
-            "question": "Quelles sont les conditions de paiement ?",
-            "answer": [
-                "Acompte de 50 % à régler à la commande.",
-                "Solde à régler le jour de la livraison, avant déchargement.",
-                "Méthodes acceptées : Virement bancaire, Carte bancaire."
-            ],
-            "category": "Paiement"
-        },
-        {
-            "id": 16,
-            "question": "Quelles sont les modalités de réception de la marchandise ?",
-            "answer": [
-                "Le déchargement est à la charge du client.",
-                "Prévoir personnel ou engins pour une réception sécurisée."
-            ],
-            "category": "Livraison"
         }
     ]
 }
