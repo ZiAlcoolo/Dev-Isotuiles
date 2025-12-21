@@ -1,4 +1,4 @@
- /* --- Reset & layout --- */
+      /* --- Reset & layout --- */
  :root {
      --primary: #2d4472;
      --accent: #2b66a8;
@@ -17,26 +17,44 @@
      box-sizing: border-box
  }
 
- body {
+/*ADAPTATIONS STYLE SHOPIFY*/
+#main-suivi-commande div:empty{
+display:flex;
+}
+.card .row{
+margin:0
+}
+#main-suivi-commande .summary .row, #transportStatus, #delaiLivraisonStatus{
+font-size:1rem;
+}
+
+.page .header{
+font-size:1rem;
+color:white;
+}
+
+
+/*______________*/
+
+ #main-suivi-commande {
      margin: 0;
      font-family: "Inter", Roboto, Arial, sans-serif;
-     background: var(--bg);
      color: #111827;
      -webkit-font-smoothing: antialiased;
      -moz-osx-font-smoothing: grayscale;
      line-height: 1.4;
+    
  }
 
 
-
- .page {
+ #main-suivi-commande.page {
      max-width: var(--max-width);
      margin: 28px auto;
      padding: 20px;
  }
 
  /* Header */
- .header {
+ #main-suivi-commande .header {
      background: linear-gradient(90deg, var(--primary), var(--accent));
      color: white;
      padding: 20px;
@@ -46,7 +64,7 @@
      align-items: center;
  }
 
- .logo {
+ #main-suivi-commande .logo {
      width: 72px;
      height: 72px;
      display: flex;
@@ -58,48 +76,50 @@
      cursor: pointer;
  }
 
- .logo:hover {
+ #main-suivi-commande .logo:hover {
      background: rgba(255, 255, 255, 0.12);
 
  }
 
- .logo img {
+ #main-suivi-commande .logo img {
      height: auto;
      width: 100%;
  }
 
- .header h1 {
+ #main-suivi-commande .header h1 {
      margin: 0;
-     font-size: 18px
+     font-size: 1.5rem;
+color:white;
+font-weight:bolder;
  }
 
- .header .meta {
+ #main-suivi-commande .header .meta {
      opacity: 0.95;
      font-size: 14px
  }
 
- #data_synch {
+ #main-suivi-commande #data_synch {
      display: flex;
      flex-direction: column;
      justify-content: right;
      text-align: right;
  }
 
- #data_synch .muted {
+ #main-suivi-commande #data_synch .muted {
      color: rgba(255, 255, 255, 0.6);
  }
 
- h3 {
+ #main-suivi-commande h3 {
      margin: 0;
      margin-top: 2rem;
  }
 
- h3:first-child {
+ #main-suivi-commande h3:first-child {
      margin: 0;
  }
 
  /* Main container */
- .grid {
+ #main-suivi-commande .grid {
      display: grid;
      grid-template-columns: 1fr 360px;
      gap: var(--gap);
@@ -107,7 +127,7 @@
  }
 
  /* Card */
- .card {
+ #main-suivi-commande .card {
      background: var(--card-bg);
      padding: 18px;
      border-radius: 12px;
@@ -115,54 +135,54 @@
  }
 
  /* Right column */
- .summary h3 {
+ #main-suivi-commande .summary h3 {
      margin: 0 0 8px 0
  }
 
- .summary .row {
+ #main-suivi-commande .summary .row {
      display: flex;
      justify-content: space-between;
      padding: 8px 0;
      border-bottom: 1px dashed #eef2f7
  }
 
- .summary .row:last-child {
+ #main-suivi-commande .summary .row:last-child {
      border-bottom: none
  }
 
- .summary .value {
+ #main-suivi-commande .summary .value {
      font-weight: 600
  }
 
- table.details {
+ #main-suivi-commande table.details {
      width: 100%;
      border-collapse: collapse;
      margin-top: 10px
  }
 
- table.details td {
+ #main-suivi-commande table.details td {
      padding: 8px 6px;
      border-top: 1px solid #f3f6f9;
      font-size: 13px;
      color: #263238
  }
 
- table.details td.label {
+ #main-suivi-commande table.details td.label {
      color: var(--muted);
      width: 38%
  }
 
- .actions {
+ #main-suivi-commande .actions {
      display: flex;
      gap: 10px;
      margin-top: 12px;
  }
 
- .actions>* {
+ #main-suivi-commande .actions>* {
      flex: 1;
  }
 
- .btn {
+ #main-suivi-commande .btn {
      display: inline-block;
      padding: 10px 14px;
      border-radius: 8px;
@@ -174,18 +194,18 @@
      text-align: center;
  }
 
- .btn-primary {
+ #main-suivi-commande .btn-primary {
      background: var(--primary);
      color: white
  }
 
- .btn-outline {
+ #main-suivi-commande .btn-outline {
      background: transparent;
      border: 1px solid #e6eef9;
      color: var(--accent)
  }
 
- .muted {
+ #main-suivi-commande .muted {
      color: var(--muted);
      font-size: 13px;
      margin-top: 10px
@@ -193,14 +213,14 @@
 
 
  /* POPUP DETAILS */
- #popup .close {
+ #main-suivi-commande #popup .close {
      position: absolute;
      right: 1rem;
      top: 1rem;
      cursor: pointer;
  }
 
- #popup .popup-content {
+ #main-suivi-commande #popup .popup-content {
      position: absolute;
      top: 50%;
      left: 50%;
@@ -215,7 +235,7 @@
      border: solid 2px #E7E8EB;
  }
 
- #popup {
+ #main-suivi-commande #popup {
      z-index: 10;
      position: fixed;
      top: 0;
@@ -231,17 +251,17 @@
      border: 1px solid rgba(255, 255, 255, 0.3);
  }
 
- #popup h3 {
+ #main-suivi-commande #popup h3 {
      margin: 0;
  }
 
- #progress-container {
+ #main-suivi-commande #progress-container {
      display: flex;
      flex-direction: column;
      gap: 0;
  }
 
- #progress-container .step-container {
+ #main-suivi-commande #progress-container .step-container {
      display: flex;
      flex-direction: row;
      align-items: stretch;
@@ -249,18 +269,18 @@
      min-height: 5rem;
  }
 
- #progress-container .step-container:hover {
+ #main-suivi-commande #progress-container .step-container:hover {
      background-color: #F9FAFC;
      outline: 2px #E7E8EB solid;
  }
 
- #progress-container .step-container span {
+ #main-suivi-commande #progress-container .step-container span {
      flex: 1;
  }
 
 
  /* STEPS DOTS */
- #progress-container .dots-container {
+ #main-suivi-commande #progress-container .dots-container {
      display: flex;
      position: relative;
      align-items: center;
@@ -268,7 +288,7 @@
      width: 60px;
  }
 
- #progress-container .circle-1 {
+ #main-suivi-commande #progress-container .circle-1 {
      background-color: var(--primary);
      display: flex;
      justify-content: center;
@@ -281,7 +301,7 @@
      margin: 10px;
  }
 
- #progress-container .circle-2 {
+ #main-suivi-commande #progress-container .circle-2 {
      background-color: white;
      border-radius: 100%;
      height: 12px;
@@ -292,7 +312,7 @@
 
 
  /* PRESENT STEP */
- #progress-container .step-container.present .circle-1 {
+ #main-suivi-commande #progress-container .step-container.present .circle-1 {
      background-color: #fff;
      border: var(--primary) solid 2px;
      box-shadow: 0px 0px 0px 4px rgba(0, 47, 92, 0);
@@ -311,11 +331,11 @@
 
  }
 
- #progress-container .step-container.present .circle-2 {
+ #main-suivi-commande #progress-container .step-container.present .circle-2 {
      background-color: var(--primary);
  }
 
- #progress-container .progession-bar.present div .inner-bar {
+ #main-suivi-commande #progress-container .progession-bar.present div .inner-bar {
      animation: growBar 1s ease-out forwards infinite;
  }
 
@@ -330,39 +350,39 @@
  }
 
  /* FUTURE STEP */
- #progress-container .step-container.future .text-content {
+ #main-suivi-commande #progress-container .step-container.future .text-content {
      opacity: .5;
  }
 
- #progress-container .step-container.future .circle-1 {
+ #main-suivi-commande #progress-container .step-container.future .circle-1 {
      background-color: #fff;
      border: rgba(128, 128, 128, 0.2) solid 2px;
  }
 
- #progress-container .step-container.future .circle-2 {
+ #main-suivi-commande #progress-container .step-container.future .circle-2 {
      background-color: rgba(128, 128, 128, 0.2);
  }
 
- #progress-container .progession-bar.future div .inner-bar {
+ #main-suivi-commande #progress-container .progession-bar.future div .inner-bar {
      background-color: transparent;
      border: 1px dashed rgba(128, 128, 128, 0.2);
  }
 
- #progress-container .progession-bar.future>div {
+ #main-suivi-commande #progress-container .progession-bar.future>div {
      background-color: transparent;
  }
 
  /* BAR ========== */
 
 
- #progress-container .progession-bar {
+ #main-suivi-commande #progress-container .progession-bar {
      height: 0px;
      position: relative;
      z-index: 0;
      width: 60px;
  }
 
- #progress-container .progession-bar>div {
+ #main-suivi-commande #progress-container .progession-bar>div {
      position: absolute;
      bottom: -2rem;
      top: -2rem;
@@ -373,11 +393,11 @@
      display: flex;
  }
 
- #progress-container .progession-bar:last-child>div {
+ #main-suivi-commande #progress-container .progession-bar:last-child>div {
      display: none;
  }
 
- #progress-container .progession-bar .inner-bar {
+ #main-suivi-commande #progress-container .progession-bar .inner-bar {
      width: 100%;
      height: 100%;
      background-color: var(--primary);
@@ -391,91 +411,91 @@
 
 
 
-     #progress-container .text-content {
-         display: flex;
+ #main-suivi-commande #progress-container .text-content {
+     display: flex;
+     flex-direction: column;
+     margin-top: 15px;
+ }
+
+ #main-suivi-commande #progress-container h4,
+ #main-suivi-commande #progress-container p {
+     margin: 0;
+ }
+
+ #main-suivi-commande #progress-container p {
+     font-size: .8rem;
+     color: var(--muted);
+ }
+
+
+
+
+ /* FAQ */
+ #main-suivi-commande #faq_commande {
+     margin-top: var(--gap);
+     font-family: Arial, Helvetica, sans-serif;
+ }
+
+ #main-suivi-commande .faq-item {
+     background-color: var(--bg);
+     padding: 10px 15px;
+     border-radius: 15px;
+     box-sizing: border-box;
+     margin-top: 1rem;
+     position: relative;
+     cursor: pointer;
+     outline: solid 2px rgba(231, 231, 231, 0);
+ }
+
+ #main-suivi-commande .faq-item:hover {
+     outline: solid 2px rgb(231, 231, 231);
+     opacity: .6;
+     transition: opacity .5s, outline .3s;
+ }
+
+ #main-suivi-commande .faq-item .faq-header {
+     display: flex;
+     flex-direction: row;
+     align-items: start;
+     justify-content: space-between;
+ }
+
+ #main-suivi-commande .faq-item .faq-header h4 {
+     margin: .5rem 0;
+     font-size: .9rem;
+ }
+
+ #main-suivi-commande .faq-item .faq-header span {
+     font-size: .8rem;
+
+ }
+
+
+ #main-suivi-commande .faq-item p {
+     margin: 0;
+     font-size: .8rem;
+ }
+
+
+
+ @media (max-width:920px) {
+     #main-suivi-commande .grid {
+         grid-template-columns: 1fr;
+         padding-bottom: 20px
+     }
+
+     #main-suivi-commande .header {
          flex-direction: column;
-         margin-top: 15px;
+         align-items: flex-start;
+         gap: 10px
      }
 
-     #progress-container h4,
-     #progress-container p {
-         margin: 0;
+     #main-suivi-commande .logo {
+         width: 56px;
+         height: 56px
      }
 
-     #progress-container p {
-         font-size: 12px;
-         color: var(--muted);
+     #main-suivi-commande #faq_commande {
+         margin-top: 0;
      }
-
-
-
-
-     /* FAQ */
-     #faq_commande {
-         margin-top: var(--gap);
-         font-family: Arial, Helvetica, sans-serif;
-     }
-
-     .faq-item {
-         background-color: var(--bg);
-         padding: 10px 15px;
-         border-radius: 15px;
-         box-sizing: border-box;
-         margin-top: 1rem;
-         position: relative;
-         cursor: pointer;
-         outline: solid 2px rgba(231, 231, 231, 0);
-     }
-
-     .faq-item:hover {
-         outline: solid 2px rgb(231, 231, 231);
-         opacity: .6;
-         transition: opacity .5s, outline .3s;
-     }
-
-     .faq-item .faq-header {
-         display: flex;
-         flex-direction: row;
-         align-items: start;
-         justify-content: space-between;
-     }
-
-     .faq-item .faq-header h4 {
-         margin: .5rem 0;
-         font-size: .9rem;
-     }
-
-     .faq-item .faq-header span {
-         font-size: .8rem;
-
-     }
-
-
-     .faq-item p {
-         margin: 0;
-         font-size: .8rem;
-     }
-
-
-
-     @media (max-width:920px) {
-         .grid {
-             grid-template-columns: 1fr;
-             padding-bottom: 20px
-         }
-
-         .header {
-             flex-direction: column;
-             align-items: flex-start;
-             gap: 10px
-         }
-
-         .logo {
-             width: 56px;
-             height: 56px
-         }
-
-         #faq_commande {
-             margin-top: 0;
-         }
-     }
+ }
