@@ -441,7 +441,7 @@ font-weight:bolder;
      padding: 10px 15px;
      border-radius: 15px;
      box-sizing: border-box;
-     margin-top: 1rem;
+     margin-top: .5rem;
      position: relative;
      cursor: pointer;
      outline: solid 2px rgba(231, 231, 231, 0);
