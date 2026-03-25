@@ -1,2497 +1,1315 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Devis en ligne — Isotuiles</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Oswald:wght@200..700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-    <style>
-        :root {
-            --primary-color: #002F5C;
-            --primary-light: #2b66a8;
-            --primary-dark: #02192e;
-            --select-light: #fdfeff;
-            --select-color: #e1e6ff;
-            --stone: #ebeff5;
-            --stone-mid: #d5dae8;
-            --stone-dark: #6b7280;
-            --ink: #12171a;
-            --ink-soft: #758199;
-            --ink-muted: #6b7280;
-            --white: #FDFAF7;
-            --success: #4A7C59;
-            --shadow: 0 4px 24px rgba(26, 22, 18, .10);
-            --shadow-lg: 0 12px 48px rgba(26, 22, 18, .15);
-            --gradient-background: linear-gradient(90deg, rgba(1, 46, 90, 1) 13%, rgba(1, 134, 196, 1) 86%);
-            --r: 16px;
-            --rs: 10px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0
-        }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--stone);
-            color: var(--ink);
-            min-height: 100vh;
-            line-height: 1.5
-        }
-
-        /* HEADER */
-        .hdr {
-            background: var(--gradient-background);
-            padding: 18px 32px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100
-        }
-
-        .logo img {
-            height: 3rem;
-        }
-
-        .back {
-            color: white;
-            font-size: 13px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: color .2s
-        }
-
-        .back:hover {
-            color: var(--white)
-        }
-
-        /* PROGRESS */
-        .pgwrap {
-            background: var(--stone-mid);
-            padding: 0 32px
-        }
-
-        .pgsteps {
-            display: flex;
-            max-width: 920px;
-            margin: 0 auto
-        }
-
-        .pgstep {
-            flex: 1;
-            padding: 13px 4px 11px;
-            font-size: 10.5px;
-            font-weight: 500;
-            letter-spacing: .7px;
-            text-transform: uppercase;
-            color: var(--ink-muted);
-            text-align: center;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all .25s;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis
-        }
-
-        .pgstep.active {
-            color: var(--primary-light);
-            border-bottom-color: var(--primary-light)
-        }
-
-        .pgstep.done {
-            color: var(--stone-dark);
-            border-bottom-color: var(--stone-dark)
-        }
-
-        .sn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--ink);
-            border: 1.5px solid currentColor;
-            font-size: 9px;
-            margin-right: 4px;
-            margin-bottom: -2px
-        }
-
-        .pgstep.done .sn {
-            background: var(--stone-dark);
-            border-color: var(--stone-dark);
-            color: var(--ink)
-        }
-
-        .pgstep.active .sn {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white
-        }
-
-        /* CONTAINER */
-        .ctn {
-            max-width: 920px;
-            margin: 0 auto;
-            padding: 40px 24px 100px
-        }
-
-        /* STEP CARD */
-        .sc {
-            background: var(--white);
-            border-radius: var(--r);
-            padding: 40px;
-            box-shadow: var(--shadow);
-            display: none;
-            animation: fi .3s ease
-        }
-
-        .sc.active {
-            display: block
-        }
-
-        @keyframes fi {
-            from {
-                opacity: 0;
-                transform: translateY(12px)
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0)
-            }
-        }
-
-        .eyebrow {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: var(--primary-color);
-            margin-bottom: 8px
-        }
-
-        .stitle {
-            font-family: 'Arial', serif;
-            font-size: 28px;
-            margin-bottom: 6px;
-            line-height: 1.2
-        }
-
-        .ssub {
-            color: var(--ink-muted);
-            font-size: 14px;
-            margin-bottom: 32px
-        }
-
-        .divider {
-            height: 1px;
-            background: var(--stone-mid);
-            margin: 28px 0
-        }
-
-        .slabel {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--ink-soft);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px
-        }
-
-        .slabel::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--stone-mid)
-        }
-
-        /* TYPE CARDS */
-        .tgrid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px
-        }
-
-        .tc {
-            border: 2px solid var(--stone-mid);
-            border-radius: var(--rs);
-            padding: 24px 16px;
-            cursor: pointer;
-            transition: all .2s;
-            text-align: center;
-            background: var(--stone);
-            position: relative;
-            overflow: hidden
-        }
-
-        .tc:hover {
-            border-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow)
-        }
-
-        .tc.sel {
-            border-color: var(--primary-color);
-            background: var(--select-light)
-        }
-
-        .tc.sel::after {
-            content: '✓';
-            position: absolute;
-            top: 10px;
-            right: 12px;
-            width: 22px;
-            height: 22px;
-            background: var(--primary-color);
-            color: white;
-            border-radius: 50%;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center
-        }
-
-        .tico {
-            width: 10vw;
-            height: 10vw;
-            margin: 0 auto 12px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--stone-mid);
-            font-size: 26px
-        }
-
-        .tico img {
-            width: 90%;
-            filter: grayscale();
-        }
-
-        .tc.sel .tico {
-            background: var(--primary-color)
-        }
-
-        .tname {
-            font-weight: 600;
-            font-size: 15px;
-            margin-bottom: 4px
-        }
-
-        .tdesc {
-            font-size: 12px;
-            color: var(--ink-muted);
-            line-height: 1.4
-        }
-
-        .tprice {
-            margin-top: 10px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--primary-dark)
-        }
-
-        /* COLORS */
-        .cgrid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 12px;
-            margin-bottom: 28px
-        }
-
-        .cc {
-            border: 2px solid var(--stone-mid);
-            border-radius: var(--rs);
-            cursor: pointer;
-            transition: all .2s;
-            overflow: hidden
-        }
-
-        .cc:hover {
-            border-color: var(--primary-light);
-            transform: translateY(-2px)
-        }
-
-        .cc.sel {
-            border-color: var(--primary-color)
-        }
-
-        .cswatch {
-            height: 64px;
-            width: 100%
-        }
-
-        .clabel {
-            padding: 8px 10px;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--ink-soft);
-            background: var(--white)
-        }
-
-        /* THICKNESS */
-        .thgrid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px
-        }
-
-        .thc {
-            border: 2px solid var(--stone-mid);
-            border-radius: var(--rs);
-            padding: 18px 20px;
-            cursor: pointer;
-            transition: all .2s;
-            background: var(--stone)
-        }
-
-        .thc:hover {
-            border-color: var(--primary-light)
-        }
-
-        .thc.sel {
-            border-color: var(--primary-color);
-            background: var(--select-light)
-        }
-
-        .thname {
-            font-weight: 700;
-            font-size: 16px;
-            margin-bottom: 2px
-        }
-
-        .thr {
-            font-size: 12px;
-            color: var(--ink-muted)
-        }
-
-        .thuse {
-            font-size: 12px;
-            color: var(--ink-soft);
-            margin-top: 6px
-        }
-
-        /* DIM */
-        .mtabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 28px;
-            background: var(--stone);
-            padding: 6px;
-            border-radius: var(--rs)
-        }
-
-        .mtab {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: transparent;
-            border-radius: 8px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--ink-muted);
-            cursor: pointer;
-            transition: all .2s
-        }
-
-        .mtab.active {
-            background: var(--white);
-            color: var(--primary-dark);
-            box-shadow: var(--shadow)
-        }
-
-        .dm {
-            display: none
-        }
-
-        .dm.active {
-            display: block
-        }
-
-        .pan-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr auto auto;
-            gap: 12px;
-            align-items: end;
-            margin-bottom: 12px;
-            padding: 16px;
-            background: var(--stone);
-            border-radius: var(--rs);
-            border: 1.5px solid var(--stone-mid)
-        }
-
-        .pan-hint {
-            background: transparent !important;
-            border-style: dashed !important;
-            cursor: pointer;
-            color: var(--ink-muted);
-            font-size: 13px;
-            grid-template-columns: 1fr !important;
-            padding: 12px !important;
-            text-align: center
-        }
-
-        .pan-hint:hover {
-            border-color: var(--primary-color) !important;
-            color: var(--primary-color)
-        }
-
-        label.fl {
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: .5px;
-            text-transform: uppercase;
-            color: var(--ink-muted);
-            display: block;
-            margin-bottom: 6px
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 11px 14px;
-            border: 2px solid var(--stone-mid);
-            border-radius: 8px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 15px;
-            color: var(--ink);
-            background: var(--white);
-            outline: none;
-            transition: border-color .2s
-        }
-
-        input[type=number] {
-            -moz-appearance: textfield
-        }
-
-        input[type=number]::-webkit-inner-spin-button {
-            -webkit-appearance: none
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            border-color: var(--primary-color)
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px
-        }
-
-        .fhint {
-            font-size: 12px;
-            color: var(--ink-muted);
-            margin-top: 4px
-        }
-
-        .fg {
-            margin-bottom: 20px
-        }
-
-        .btnrm {
-            width: 36px;
-            height: 36px;
-            border: 1.5px solid var(--stone-dark);
-            background: transparent;
-            border-radius: 8px;
-            cursor: pointer;
-            color: var(--ink-muted);
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all .2s
-        }
-
-        .btnrm:hover {
-            border-color: #c0392b;
-            color: #c0392b
-        }
-
-        .drbox {
-            background: linear-gradient(135deg, var(--select-light), var(--select-color));
-            border: 1.5px solid var(--primary-light);
-            border-radius: var(--rs);
-            padding: 20px 24px;
-            margin-top: 20px;
-            display: flex;
-            gap: 32px;
-            flex-wrap: wrap
-        }
-
-        .drl {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: .8px;
-            color: var(--primary-dark)
-        }
-
-        .drv {
-            font-family: 'Oswald', serif;
-            font-size: 26px
-        }
-
-        .drs {
-            font-size: 12px;
-            color: var(--ink-muted);
-            margin-top: 2px
-        }
-
-        .lgrid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 8px;
-            margin-top: 16px
-        }
-
-        .lbtn {
-            padding: 10px 6px;
-            border: 2px solid var(--stone-mid);
-            background: var(--stone);
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            text-align: center;
-            transition: all .2s;
-            color: var(--ink-soft)
-        }
-
-        .lbtn:hover {
-            border-color: var(--primary-light)
-        }
-
-        .lbtn.sel {
-            border-color: var(--primary-color);
-            background: var(--select-light);
-            color: var(--primary-dark);
-            font-weight: 700
-        }
-
-        .lbtn .lp {
-            display: block;
-            font-size: 10px;
-            color: var(--ink-muted);
-            margin-top: 2px;
-            font-weight: 400
-        }
-
-        .lbtn.sel .lp {
-            color: var(--primary-color)
-        }
-
-        /* ACC */
-        .agrid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px
-        }
-
-        .ar {
-            border: 2px solid var(--stone-mid);
-            border-radius: var(--rs);
-            padding: 16px;
-            background: var(--stone);
-            transition: border-color .2s
-        }
-
-        .ar.sel {
-            border-color: var(--primary-color);
-            background: var(--select-light)
-        }
-
-        .ahdr {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px
-        }
-
-        .achk {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--stone-dark);
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all .2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0
-        }
-
-        .achk.chk {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-            font-size: 12px
-        }
-
-        .aname {
-            font-weight: 600;
-            font-size: 14px;
-            flex: 1
-        }
-
-        .apt {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--primary-dark)
-        }
-
-        .adesc {
-            font-size: 12px;
-            color: var(--ink-muted);
-            margin-bottom: 10px;
-            line-height: 1.4
-        }
-
-        .aqrow {
-            display: flex;
-            align-items: center;
-            gap: 8px
-        }
-
-        .aqlbl {
-            font-size: 12px;
-            color: var(--ink-muted)
-        }
-
-        .qctrl {
-            display: flex;
-            align-items: center;
-            gap: 4px
-        }
-
-        .qbtn {
-            width: 28px;
-            height: 28px;
-            border: 1.5px solid var(--stone-dark);
-            background: var(--white);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all .2s;
-            color: var(--ink-soft)
-        }
-
-        .qbtn:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color)
-        }
-
-        .qdsp {
-            min-width: 36px;
-            text-align: center;
-            font-size: 15px;
-            font-weight: 600
-        }
-
-        .asugg {
-            display: inline-block;
-            background: var(--primary-color);
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: .5px;
-            text-transform: uppercase;
-            padding: 2px 7px;
-            border-radius: 20px;
-            margin-left: 4px;
-            vertical-align: middle
-        }
-
-        /* LIVRAISON */
-        .lgrd2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 24px
-        }
-
-        .lvres {
-            background: linear-gradient(135deg, var(--select-light), var(--select-color));
-            border: 1.5px solid var(--primary-light);
-            border-radius: var(--rs);
-            padding: 20px 24px;
-            margin-top: 20px;
-            display: none
-        }
-
-        .lvres.show {
-            display: block
-        }
-
-        /* CLIENT */
-        .clgrid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px
-        }
-
-        .clgrid .full {
-            grid-column: 1/-1
-        }
-
-        .rstar {
-            color: var(--primary-color);
-            margin-left: 2px
-        }
-
-        .ierr {
-            border-color: #c0392b !important
-        }
-
-        .emsg {
-            font-size: 12px;
-            color: #c0392b;
-            margin-top: 4px;
-            display: none
-        }
-
-        .emsg.show {
-            display: block
-        }
-
-        /* RECAP */
-        .rsec {
-            margin-bottom: 24px
-        }
-
-        .rsect {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--ink-muted);
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1.5px solid var(--stone-mid)
-        }
-
-        .rline {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            padding: 8px 0;
-            font-size: 14px;
-            border-bottom: 1px solid var(--stone-mid);
-            gap: 12px
-        }
-
-        .rline:last-child {
-            border-bottom: none
-        }
-
-        .rll {
-            color: var(--ink-soft)
-        }
-
-        .rld {
-            font-size: 12px;
-            color: var(--ink-muted);
-            margin-top: 2px
-        }
-
-        .rlp {
-            font-weight: 600;
-            white-space: nowrap
-        }
-
-        .rtbox {
-            background: var(--ink);
-            border-radius: var(--rs);
-            padding: 24px 28px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 24px;
-            flex-wrap: wrap;
-            gap: 16px
-        }
-
-        .rtlbl {
-            color: var(--stone-dark);
-            font-size: 13px;
-            letter-spacing: .5px
-        }
-
-        .rtht {
-            font-family: 'Oswald', serif;
-            font-size: 36px;
-            color: white
-        }
-
-        .rttva {
-            color: var(--ink-muted);
-            font-size: 12px;
-            margin-top: 2px
-        }
-
-        .racomp {
-            background: var(--primary-color);
-            color: white;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600
-        }
-
-        .rctag {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-top: 24px
-        }
-
-        /* BUTTONS */
-        .btn {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 10px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            justify-content: center;
-            text-decoration: none
-        }
-
-        .btn-p {
-            background: var(--primary-color);
-            color: white
-        }
-
-        .btn-p:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px #e1e6ff
-        }
-
-        .btn-p:disabled {
-            background: var(--stone-dark);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none
-        }
-
-        .btn-s {
-            background: var(--stone);
-            color: var(--ink-soft);
-            border: 2px solid var(--stone-mid)
-        }
-
-        .btn-s:hover {
-            border-color: var(--stone-dark)
-        }
-
-        .btn-g {
-            background: transparent;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color)
-        }
-
-        .btn-g:hover {
-            background: var(--primary-color);
-            color: white
-        }
-
-        .btn-ok {
-            background: var(--success);
-            color: white
-        }
-
-        .btn-ok:hover {
-            background: #3A6347;
-            transform: translateY(-1px)
-        }
-
-        .btn-lg {
-            padding: 18px 36px;
-            font-size: 17px;
-            border-radius: 12px;
-            width: 100%
-        }
-
-        .navbtns {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 36px;
-            gap: 12px
-        }
-
-        .navbtns .btn {
-            min-width: 130px
-        }
-
-        /* INFO BOX */
-        .ibox {
-            background: linear-gradient(135deg, #EEF4F0, #E0EDE4);
-            border: 1.5px solid #9DC4AA;
-            border-radius: var(--rs);
-            padding: 16px 20px;
-            margin-top: 16px
-        }
-
-        .ibox p {
-            font-size: 13px;
-            color: #3A6348;
-            line-height: 1.6
-        }
-
-        /* FLOATING */
-        .flt {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--ink);
-            color: var(--white);
-            border-radius: 14px;
-            padding: 14px 20px;
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            box-shadow: var(--shadow-lg);
-            z-index: 50;
-            min-width: 200px
-        }
-
-        .flt.show {
-            display: flex
-        }
-
-        .flt-lbl {
-            font-size: 11px;
-            color: var(--stone-dark);
-            text-transform: uppercase;
-            letter-spacing: .8px
-        }
-
-        .flt-p {
-            font-family: 'Oswald', serif;
-            font-size: 24px
-        }
-
-        .flt-s {
-            font-size: 11px;
-            color: var(--ink-muted)
-        }
-
-        /* TOAST */
-        .toast {
-            position: fixed;
-            top: 80px;
-            right: 24px;
-            background: var(--success);
-            color: white;
-            padding: 14px 20px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 500;
-            opacity: 0;
-            transform: translateX(20px);
-            transition: all .3s;
-            z-index: 200
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateX(0)
-        }
-
-        .toast.err {
-            background: #c0392b
-        }
-
-        /* PDF OVERLAY */
-        .pdfov {
-            position: fixed;
-            inset: 0;
-            background: rgba(26, 22, 18, .6);
-            z-index: 300;
-            display: none;
-            align-items: center;
-            justify-content: center
-        }
-
-        .pdfov.show {
-            display: flex
-        }
-
-        .pdfspin {
-            background: var(--white);
-            border-radius: var(--r);
-            padding: 40px 48px;
-            text-align: center;
-            box-shadow: var(--shadow-lg)
-        }
-
-        .pdfspin h3 {
-            font-family: 'Oswald', serif;
-            font-size: 22px;
-            margin-bottom: 8px
-        }
-
-        .pdfspin p {
-            color: var(--ink-muted);
-            font-size: 14px
-        }
-
-        .sdots {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 20px
-        }
-
-        .sdot {
-            width: 10px;
-            height: 10px;
-            background: var(--primary-color);
-            border-radius: 50%;
-            animation: bce 1.2s infinite
-        }
-
-        .sdot:nth-child(2) {
-            animation-delay: .2s
-        }
-
-        .sdot:nth-child(3) {
-            animation-delay: .4s
-        }
-
-        @keyframes bce {
-
-            0%,
-            80%,
-            100% {
-                transform: scale(.6);
-                opacity: .4
-            }
-
-            40% {
-                transform: scale(1);
-                opacity: 1
-            }
-        }
-
-        @media(max-width:640px) {
-            .sc {
-                padding: 24px 16px
-            }
-
-            .tgrid,
-            .rctag,
-            .clgrid {
-                grid-template-columns: 1fr
-            }
-
-            .clgrid .full {
-                grid-column: 1
-            }
-
-            .agrid,
-            .lgrd2 {
-                grid-template-columns: 1fr
-            }
-
-            .pan-row {
-                grid-template-columns: 1fr 1fr
-            }
-
-            .hdr {
-                padding: 14px 16px
-            }
-
-            .ctn {
-                padding: 24px 12px 100px
-            }
-
-            .pgstep span:not(.sn) {
-                display: none
-            }
-
-            .rtbox {
-                flex-direction: column;
-                align-items: flex-start
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="./devis-v1.css">
 </head>
-
 <body>
 
-    <header class="hdr">
-        <div class="logo"><img
-                src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/logo-white.webp?v=1730804827"></div>
-        <a href="https://isotuiles.fr" class="back">← Retour à la boutique</a>
-    </header>
+<header class="hdr">
+    <div class="logo"><img src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/logo-white.webp?v=1730804827"></div>
+    <a href="https://isotuiles.fr" class="back">← Retour à la boutique</a>
+</header>
 
-    <div class="pgwrap">
-        <div class="pgsteps">
-            <div class="pgstep active" onclick="tryStep(1)"><span class="sn">1</span> Produit</div>
-            <div class="pgstep" onclick="tryStep(2)"><span class="sn">2</span> Coloris</div>
-            <div class="pgstep" onclick="tryStep(3)"><span class="sn">3</span> Dimensions</div>
-            <div class="pgstep" onclick="tryStep(4)"><span class="sn">4</span> Accessoires</div>
-            <div class="pgstep" onclick="tryStep(5)"><span class="sn">5</span> Livraison</div>
-            <div class="pgstep" onclick="tryStep(6)"><span class="sn">6</span> Vos infos</div>
-            <div class="pgstep" onclick="tryStep(7)"><span class="sn">7</span> Récapitulatif</div>
+<div class="pgwrap">
+    <div class="pgsteps">
+        <div class="pgstep active" onclick="tryStep(1)"><span class="sn">1</span> Produit</div>
+        <div class="pgstep" onclick="tryStep(2)"><span class="sn">2</span> Coloris</div>
+        <div class="pgstep" onclick="tryStep(3)"><span class="sn">3</span> Dimensions</div>
+        <div class="pgstep" onclick="tryStep(4)"><span class="sn">4</span> Accessoires</div>
+        <div class="pgstep" onclick="tryStep(5)"><span class="sn">5</span> Livraison</div>
+        <div class="pgstep" onclick="tryStep(6)"><span class="sn">6</span> Vos infos</div>
+        <div class="pgstep" onclick="tryStep(7)"><span class="sn">7</span> Récapitulatif</div>
+    </div>
+</div>
+
+<div class="ctn">
+
+<!-- ══ ÉTAPE 1 ══ -->
+<div class="sc active" id="step-1">
+    <div class="eyebrow">Étape 1 sur 7</div>
+    <h1 class="stitle">Quel type de toiture ?</h1>
+    <p class="ssub">Choisissez la gamme de panneaux qui correspond à votre projet.</p>
+    <div class="tgrid">
+        <div class="tc" onclick="selType('romane-canal','Romane Canal',this)">
+            <div class="tico"><img src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/romane-canal-illustration.png?v=1774001720"></div>
+            <div class="tname">Romane Canal</div>
+            <div class="tdesc">Imitation tuile romane. Idéal pour maisons, extensions, bâtiments résidentiels.</div>
+            <div class="tprice">À partir de 49 €/m² HT</div>
+        </div>
+        <div class="tc" onclick="selType('tuile-plate','Tuile Plate',this)">
+            <div class="tico"><img src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/tuiles-plates-illustration.png?v=1774001720"></div>
+            <div class="tname">Tuiles Plates</div>
+            <div class="tdesc">Imitation tuile plate. Rendu visuel contemporain, contraintes architecturales.</div>
+            <div class="tprice">À partir de 34,50 €/m² HT</div>
+        </div>
+        <div class="tc" onclick="selType('bac-acier','Bac Acier',this)">
+            <div class="tico"><img src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/bac-acier-illustration.png?v=1774001720"></div>
+            <div class="tname">Bac Acier</div>
+            <div class="tdesc">Toiture industrielle, agricole ou commerciale. Plusieurs épaisseurs d'isolation.</div>
+            <div class="tprice">À partir de 20,50 €/m² HT</div>
         </div>
     </div>
-
-    <div class="ctn">
-
-        <!-- ══ ÉTAPE 1 ══ -->
-        <div class="sc active" id="step-1">
-            <div class="eyebrow">Étape 1 sur 7</div>
-            <h1 class="stitle">Quel type de toiture ?</h1>
-            <p class="ssub">Choisissez la gamme de panneaux qui correspond à votre projet.</p>
-            <div class="tgrid">
-                <div class="tc" onclick="selType('romane-canal','Romane Canal',this)">
-                    <div class="tico"><img
-                            src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/romane-canal-illustration.png?v=1774001720">
-                    </div>
-                    <div class="tname">Romane Canal</div>
-                    <div class="tdesc">Imitation tuile romane. Idéal pour maisons, extensions, bâtiments résidentiels.
-                    </div>
-                    <div class="tprice">À partir de 49 €/m² HT</div>
-                </div>
-                <div class="tc" onclick="selType('tuile-plate','Tuile Plate',this)">
-                    <div class="tico"><img
-                            src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/tuiles-plates-illustration.png?v=1774001720">
-                    </div>
-                    <div class="tname">Tuiles Plates</div>
-                    <div class="tdesc">Imitation tuile plate. Rendu contemporain, contraintes architecturales.</div>
-                    <div class="tprice">À partir de 34,50 €/m² HT</div>
-                </div>
-                <div class="tc" onclick="selType('bac-acier','Bac Acier',this)">
-                    <div class="tico"><img
-                            src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/bac-acier-illustration.png?v=1774001720">
-                    </div>
-                    <div class="tname">Bac Acier</div>
-                    <div class="tdesc">Toiture industrielle, agricole ou commerciale. Plusieurs épaisseurs d'isolation.
-                    </div>
-                    <div class="tprice">À partir de 20,50 €/m² HT</div>
-                </div>
-            </div>
-            <div class="navbtns" style="justify-content:flex-end">
-                <button class="btn btn-p" id="bn1" onclick="goNext(1)" disabled>Continuer →</button>
-            </div>
-        </div>
-
-        <!-- ══ ÉTAPE 2 ══ -->
-        <div class="sc" id="step-2">
-            <div class="eyebrow">Étape 2 sur 7</div>
-            <h1 class="stitle">Coloris & épaisseur</h1>
-            <p class="ssub">Choisissez l'aspect et les performances thermiques souhaités.</p>
-
-            <div id="col-rc">
-                <div class="slabel">Coloris disponibles</div>
-                <div class="cgrid">
-                    <div class="cc" onclick="selColor('terracotta','Terracotta',this,'rc')">
-                        <div class="cswatch" style="background:linear-gradient(135deg,#c96a31,#A85A35)"></div>
-                        <div class="clabel">Terracotta</div>
-                    </div>
-                    <div class="cc" onclick="selColor('gris-anthracite','Gris Anthracite',this,'rc')">
-                        <div class="cswatch" style="background:linear-gradient(135deg,#484848,#2E2E2E)"></div>
-                        <div class="clabel">Gris Anthracite</div>
-                    </div>
-                    <div class="cc" onclick="selColor('rouge-vieillie','Rouge Vieillie',this,'rc')">
-                        <div class="cswatch"
-                            style="background:linear-gradient(50deg,#ba684f 10%, #724437 40%, #724437 70%, #ba684f 90%);;">
-                        </div>
-                        <div class="clabel">Rouge Vieillie</div>
-                    </div>
-                    <div class="cc" onclick="selColor('pastel-vieillie','Pastel Vieillie',this,'rc')">
-                        <div class="cswatch"
-                            style="background: linear-gradient(50deg, rgba(135, 113, 84, 1) 10%, rgba(102, 79, 56, 1) 40%, rgba(102, 79, 56, 1) 60%, rgba(135, 113, 84, 1) 90%)">
-                        </div>
-                        <div class="clabel">Pastel Vieillie</div>
-                    </div>
-                </div>
-            </div>
-            <div id="col-tp" style="display:none">
-                <div class="slabel">Coloris disponibles</div>
-                <div class="cgrid">
-                    <div class="cc" onclick="selColor('gris-anthracite-tp','Gris Anthracite RAL 7016',this,'tp')">
-                        <div class="cswatch" style="background:linear-gradient(135deg,#3B4044,#252525)"></div>
-                        <div class="clabel">Gris Anthracite RAL 7016</div>
-                    </div>
-                    <div class="cc" onclick="selColor('gris-ombre','Gris Terre d\'Ombre RAL 7022',this,'tp')">
-                        <div class="cswatch" style="background:linear-gradient(135deg,#4C4C47,#3C3530)"></div>
-                        <div class="clabel">Gris Terre d'Ombre RAL 7022</div>
-                    </div>
-                    <div class="cc" onclick="selColor('terracotta-tp','Terracotta',this,'tp')">
-                        <div class="cswatch" style="background:linear-gradient(135deg,#c96a31,#A85A35)"></div>
-                        <div class="clabel">Terracotta</div>
-                    </div>
-                </div>
-            </div>
-            <div id="col-ba" style="display:none">
-                <div class="slabel">Coloris disponibles</div>
-                <div class="cgrid">
-                    <div class="cc" onclick="selColor('ba-blanc','Blanc RAL 9010',this,'ba')">
-                        <div class="cswatch" style="background:#EFEEE5;border:1px solid #ddd"></div>
-                        <div class="clabel">Blanc RAL 9010</div>
-                    </div>
-                    <div class="cc" onclick="selColor('ba-metal-argente','Métal argenté RAL 9006',this,'ba')">
-                        <div class="cswatch" style="background:#9A9D9D"></div>
-                        <div class="clabel">Métal argenté RAL 9006</div>
-                    </div>
-                    <div class="cc" onclick="selColor('ba-metal-gris','Métal gris RAL 9007',this,'ba')">
-                        <div class="cswatch" style="background:#828280"></div>
-                        <div class="clabel">Métal gris RAL 9007</div>
-                    </div>
-                    <div class="cc" onclick="selColor('ba-gris-perle','Gris perle RAL 7038',this,'ba')">
-                        <div class="cswatch" style="background:#ADB0A9"></div>
-                        <div class="clabel">Gris perle RAL 7038</div>
-                    </div>
-                    <div class="cc" onclick="selColor('ba-gris-basalte','Gris basalte RAL 7012',this,'ba')">
-                        <div class="cswatch" style="background:#595E60"></div>
-                        <div class="clabel">Gris basalte RAL 7012</div>
-                    </div>
-                    <div class="cc" onclick="selColor('ba-gris-anthracite','Gris anthracite RAL 7016',this,'ba')">
-                        <div class="cswatch" style="background:#3B4044"></div>
-                        <div class="clabel">Gris anthracite RAL 7016</div>
-                    </div>
-                    <div class="cc" onclick="selColor('ba-gris-fonce','Gris foncé RAL 7022',this,'ba')">
-                        <div class="cswatch" style="background:#4C4C47"></div>
-                        <div class="clabel">Gris foncé RAL 7022</div>
-                    </div>
-                    <div class="cc" onclick="selColor('ba-noir','Noir profond RAL 9005',this,'ba')">
-                        <div class="cswatch" style="background:#131516"></div>
-                        <div class="clabel">Noir profond RAL 9005</div>
-                    </div>
-                    <div class="cc" onclick="selColor('ba-tuile-rouge','Tuile rouge RAL 8004',this,'ba')">
-                        <div class="cswatch" style="background:#814D37"></div>
-                        <div class="clabel">Tuile rouge RAL 8004</div>
-                    </div>
-                    <div class="cc" onclick="selColor('ba-rouge-fonce','Rouge foncé RAL 3009',this,'ba')">
-                        <div class="cswatch" style="background:#643730"></div>
-                        <div class="clabel">Rouge foncé RAL 3009</div>
-                    </div>
-                    <div class="cc" onclick="selColor('ba-rouge-feu','Rouge feu RAL 3000',this,'ba')">
-                        <div class="cswatch" style="background:#962A27"></div>
-                        <div class="clabel">Rouge feu RAL 3000</div>
-                    </div>
-                    <div class="cc" onclick="selColor('ba-creme','Crème RAL 1015',this,'ba')">
-                        <div class="cswatch" style="background:#DED3B6"></div>
-                        <div class="clabel">Crème RAL 1015</div>
-                    </div>
-                    <div class="cc" onclick="selColor('ba-jaune-zinc','Jaune zinc RAL 1018',this,'ba')">
-                        <div class="cswatch" style="background:#EBD346"></div>
-                        <div class="clabel">Jaune zinc RAL 1018</div>
-                    </div>
-                    <div class="cc" onclick="selColor('ba-bleu-gentiane','Bleu gentiane RAL 5010',this,'ba')">
-                        <div class="cswatch" style="background:#0E457A"></div>
-                        <div class="clabel">Bleu gentiane RAL 5010</div>
-                    </div>
-                    <div class="cc" onclick="selColor('ba-vert-fonce','Vert foncé RAL 6005',this,'ba')">
-                        <div class="cswatch" style="background:#234235"></div>
-                        <div class="clabel">Vert foncé RAL 6005</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Épaisseur Romane Canal : 2 choix -->
-            <div id="th-sw">
-                <div class="slabel">Épaisseur d'isolation</div>
-                <div class="thgrid">
-                    <div class="thc" onclick="selThick('40-80','40/80 mm',this)">
-                        <div class="thname">40/80 mm</div>
-                        <div class="thr">R = 2,73 m².K/W</div>
-                        <div class="thuse">Extensions, garages, bâtiments secondaires.</div>
-                    </div>
-                    <div class="thc" onclick="selThick('60-105','60/105 mm',this)">
-                        <div class="thname">60/105 mm</div>
-                        <div class="thr">R = 3,64 m².K/W</div>
-                        <div class="thuse">Habitation principale, RT2012 / RE2020.</div>
-                    </div>
-                </div>
-            </div>
-            <!-- Épaisseur Tuile Plate : unique 50/77 mm — sélection automatique, info seule -->
-            <div id="th-tp" style="display:none">
-                <div class="slabel">Épaisseur d'isolation</div>
-                <div class="thgrid" style="grid-template-columns:1fr">
-                    <div class="thc sel"
-                        style="cursor:default;border-color:var(--primary-color);background:var(--select-light)">
-                        <div class="thname">50/77 mm</div>
-                        <div class="thr">Épaisseur unique — sélectionnée automatiquement</div>
-                        <div class="thuse">Performances thermiques optimisées pour toiture résidentielle.</div>
-                    </div>
-                </div>
-            </div>
-            <!-- Épaisseur Bac Acier : 6 choix -->
-            <div id="th-ba" style="display:none">
-                <div class="slabel">Épaisseur d'isolation</div>
-                <div class="thgrid" style="grid-template-columns:repeat(3,1fr)">
-                    <div class="thc" onclick="selThick('30','30 mm',this)">
-                        <div class="thname">30 mm</div>
-                        <div class="thr">Isolation légère</div>
-                    </div>
-                    <div class="thc" onclick="selThick('40','40 mm',this)">
-                        <div class="thname">40 mm</div>
-                        <div class="thr">Standard</div>
-                    </div>
-                    <div class="thc" onclick="selThick('50','50 mm',this)">
-                        <div class="thname">50 mm</div>
-                        <div class="thr">Renforcée</div>
-                    </div>
-                    <div class="thc" onclick="selThick('60','60 mm',this)">
-                        <div class="thname">60 mm</div>
-                        <div class="thr">Bonne isolation</div>
-                    </div>
-                    <div class="thc" onclick="selThick('80','80 mm',this)">
-                        <div class="thname">80 mm</div>
-                        <div class="thr">Haute performance</div>
-                    </div>
-                    <div class="thc" onclick="selThick('100','100 mm',this)">
-                        <div class="thname">100 mm</div>
-                        <div class="thr">Très haute perf.</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="navbtns">
-                <button class="btn btn-s" onclick="goPrev(2)">← Retour</button>
-                <button class="btn btn-p" id="bn2" onclick="goNext(2)" disabled>Continuer →</button>
-            </div>
-        </div>
-
-        <!-- ══ ÉTAPE 3 ══ -->
-        <div class="sc" id="step-3">
-            <div class="eyebrow">Étape 3 sur 7</div>
-            <h1 class="stitle">Dimensions de la toiture</h1>
-            <p class="ssub">Nous calculerons le nombre de panneaux et la longueur optimale.</p>
-            <div class="mtabs">
-                <button class="mtab active" onclick="setMode('pan',this)">🏠 Par pan de toit</button>
-                <button class="mtab" onclick="setMode('surface',this)">📐 Surface en m²</button>
-                <button class="mtab" onclick="setMode('expert',this)">⚙️ Mode expert</button>
-            </div>
-
-            <!-- Pan -->
-            <div class="dm active" id="m-pan">
-                <div id="pans-list">
-                    <div class="pan-row">
-                        <div><label class="fl">Largeur du pan</label>
-                            <div style="display:flex;align-items:center;gap:6px"><input type="number"
-                                    placeholder="ex: 8" min="0.5" step="0.1" oninput="calcPans()"><span
-                                    style="font-size:13px;color:var(--ink-muted);white-space:nowrap">m</span></div>
-                        </div>
-                        <div><label class="fl">Longueur du pan (pente)</label>
-                            <div style="display:flex;align-items:center;gap:6px"><input type="number"
-                                    placeholder="ex: 5" min="0.5" step="0.1" oninput="calcPans()"><span
-                                    style="font-size:13px;color:var(--ink-muted);white-space:nowrap">m</span></div>
-                        </div>
-                        <div><label class="fl">Qté</label><input type="number" value="1" min="1" max="8"
-                                oninput="calcPans()" style="width:70px"></div>
-                        <div style="padding-top:22px"><button class="btnrm" onclick="rmPan(this)">×</button></div>
-                    </div>
-                </div>
-                <div class="pan-row pan-hint" onclick="addPan()">+ Ajouter un autre pan de toit</div>
-                <p class="fhint" style="margin-top:12px">💡 Largeur utile = 1 m par panneau. La <strong>longueur du
-                        pan</strong> est la longueur de la pente (rampant). Prévoyez +20 à 30 cm de débordement en bas
-                    de pente.</p>
-            </div>
-
-            <!-- Surface -->
-            <div class="dm" id="m-surface">
-                <div class="fg"><label class="fl">Surface totale à couvrir (m²)</label><input type="number" id="surf-in"
-                        placeholder="ex: 80" min="1" oninput="calcSurf()">
-                    <div class="fhint">Incluez une marge de 5 à 10 % pour découpes et débordements.</div>
-                </div>
-                <div class="fg"><label class="fl">Longueur des panneaux souhaitée</label><select id="surf-len"
-                        onchange="calcSurf()">
-                        <option value="">— Choisir une longueur —</option>
-                    </select>
-                    <div class="fhint">Choisissez la longueur correspondant à votre pente + débordement.</div>
-                </div>
-            </div>
-
-            <!-- Expert -->
-            <div class="dm" id="m-expert">
-                <div class="fg"><label class="fl">Nombre de panneaux</label><input type="number" id="exp-qty"
-                        placeholder="ex: 40" min="1" oninput="calcExpert()"></div>
-                <div class="fg"><label class="fl">Longueur de chaque panneau</label>
-                    <div class="lgrid" id="exp-lgrid"></div>
-                </div>
-            </div>
-
-            <div class="drbox" id="dr-box" style="display:none">
-                <div>
-                    <div class="drl">Surface totale</div>
-                    <div class="drv" id="dr-surf">—</div>
-                    <div class="drs">m² calculés</div>
-                </div>
-                <div>
-                    <div class="drl">Nb. panneaux</div>
-                    <div class="drv" id="dr-pan">—</div>
-                    <div class="drs">panneaux</div>
-                </div>
-                <div>
-                    <div class="drl">Longueur choisie</div>
-                    <div class="drv" id="dr-len">—</div>
-                    <div class="drs">mm par panneau</div>
-                </div>
-                <div>
-                    <div class="drl">Estimation panneaux</div>
-                    <div class="drv" id="dr-price">—</div>
-                    <div class="drs">€ HT (indicatif)</div>
-                </div>
-            </div>
-
-            <div class="navbtns">
-                <button class="btn btn-s" onclick="goPrev(3)">← Retour</button>
-                <button class="btn btn-p" id="bn3" onclick="goNext(3)" disabled>Continuer →</button>
-            </div>
-        </div>
-
-        <!-- ══ ÉTAPE 4 ══ -->
-        <div class="sc" id="step-4">
-            <div class="eyebrow">Étape 4 sur 7</div>
-            <h1 class="stitle">Accessoires de pose</h1>
-            <p class="ssub">Quantités suggérées selon vos dimensions. Ajustez si nécessaire.</p>
-            <div class="agrid" id="acc-grid"></div>
-            <div class="ibox" style="margin-top:20px">
-                <p><strong>Comment sont calculées les suggestions ?</strong><br>Faîtage selon largeur du bâtiment ;
-                    rives selon périmètre ; vis à raison de 4 par panneau, vendues par boîtes de 100.</p>
-            </div>
-            <div class="navbtns">
-                <button class="btn btn-s" onclick="goPrev(4)">← Retour</button>
-                <button class="btn btn-p" onclick="goNext(4)">Continuer →</button>
-            </div>
-        </div>
-
-        <!-- ══ ÉTAPE 5 ══ -->
-        <div class="sc" id="step-5">
-            <div class="eyebrow">Étape 5 sur 7</div>
-            <h1 class="stitle">Livraison</h1>
-            <p class="ssub">Le tarif dépend de votre département et du volume de la commande.</p>
-            <div class="lgrd2">
-                <div class="fg">
-                    <label class="fl">Département de livraison</label>
-                    <select id="dept-sel" onchange="calcLiv()">
-                        <option value="">— Sélectionnez votre département —</option>
-                        <optgroup label="Zone A — Sud-Ouest (tarif préférentiel)">
-                            <option value="33">33 — Gironde</option>
-                            <option value="40">40 — Landes</option>
-                            <option value="47">47 — Lot-et-Garonne</option>
-                            <option value="64">64 — Pyrénées-Atlantiques</option>
-                            <option value="24">24 — Dordogne</option>
-                            <option value="17">17 — Charente-Maritime</option>
-                            <option value="16">16 — Charente</option>
-                            <option value="19">19 — Corrèze</option>
-                            <option value="23">23 — Creuse</option>
-                            <option value="87">87 — Haute-Vienne</option>
-                        </optgroup>
-                        <optgroup label="Zone B — Grand Sud-Ouest">
-                            <option value="31">31 — Haute-Garonne</option>
-                            <option value="32">32 — Gers</option>
-                            <option value="65">65 — Hautes-Pyrénées</option>
-                            <option value="82">82 — Tarn-et-Garonne</option>
-                            <option value="81">81 — Tarn</option>
-                            <option value="46">46 — Lot</option>
-                            <option value="12">12 — Aveyron</option>
-                            <option value="15">15 — Cantal</option>
-                            <option value="43">43 — Haute-Loire</option>
-                            <option value="63">63 — Puy-de-Dôme</option>
-                        </optgroup>
-                        <optgroup label="Zone C — Centre, Méditerranée, Nord">
-                            <option value="75">75 — Paris / Île-de-France</option>
-                            <option value="69">69 — Rhône</option>
-                            <option value="13">13 — Bouches-du-Rhône</option>
-                            <option value="34">34 — Hérault</option>
-                            <option value="06">06 — Alpes-Maritimes</option>
-                            <option value="44">44 — Loire-Atlantique</option>
-                            <option value="67">67 — Bas-Rhin</option>
-                            <option value="59">59 — Nord</option>
-                        </optgroup>
-                        <optgroup label="Zone D — Autres / éloignés">
-                            <option value="other">Autre département</option>
-                        </optgroup>
-                    </select>
-                </div>
-                <div class="fg">
-                    <label class="fl">Accès au chantier</label>
-                    <select id="acc-sel" onchange="calcLiv()">
-                        <option value="">— Type d'accès —</option>
-                        <option value="standard">Standard — camion 19T</option>
-                        <option value="difficile">Accès difficile — camion grue</option>
-                        <option value="hayon">Hayon élévateur requis</option>
-                    </select>
-                </div>
-            </div>
-            <div class="lvres" id="lv-res">
-                <div style="font-weight:600;font-size:14px;margin-bottom:12px;color:var(--primary-dark)">Estimation de
-                    livraison</div>
-                <div style="display:flex;gap:32px;flex-wrap:wrap;align-items:flex-end">
-                    <div>
-                        <div style="font-family:'Oswald',serif;font-size:32px" id="lv-price">—</div>
-                        <div style="font-size:12px;color:var(--ink-muted)">€ HT — tarif estimatif</div>
-                    </div>
-                    <div>
-                        <div style="font-size:13px;color:var(--ink-soft)">Volume : <strong id="lv-vol">—</strong> m³
-                        </div>
-                        <div style="font-size:13px;color:var(--ink-soft);margin-top:4px">Poids : <strong
-                                id="lv-kg">—</strong> kg</div>
-                    </div>
-                </div>
-                <div style="font-size:12px;color:var(--ink-muted);margin-top:12px;font-style:italic">⚠️ Estimation —
-                    tarif définitif confirmé par notre équipe logistique.</div>
-            </div>
-            <div class="ibox">
-                <p><strong>📦 Informations livraison :</strong><br>Livraison par camion plateau sur toute la France
-                    métropolitaine.<br>Délai habituel : <strong>5 à 6 semaines</strong> après confirmation de
-                    commande.<br><br><strong>⚡ Commandes &gt; 300 m² :</strong> délai réduit possible —
-                    contactez-nous.<br><br>Acompte de <strong>50 % à la commande</strong> — solde réglé avant
-                    déchargement.</p>
-            </div>
-            <div class="navbtns">
-                <button class="btn btn-s" onclick="goPrev(5)">← Retour</button>
-                <button class="btn btn-p" onclick="goNext(5)">Continuer →</button>
-            </div>
-        </div>
-
-        <!-- ══ ÉTAPE 6 — COORDONNÉES CLIENT ══ -->
-        <div class="sc" id="step-6">
-            <div class="eyebrow">Étape 6 sur 7</div>
-            <h1 class="stitle">Vos coordonnées</h1>
-            <p class="ssub">Ces informations figureront sur votre devis PDF et permettront à notre équipe de vous
-                recontacter.</p>
-            <div class="clgrid">
-                <div class="fg"><label class="fl">Prénom <span class="rstar">*</span></label><input type="text"
-                        id="c-prenom" placeholder="Jean" oninput="valClient()">
-                    <div class="emsg" id="e-prenom">Champ requis.</div>
-                </div>
-                <div class="fg"><label class="fl">Nom <span class="rstar">*</span></label><input type="text" id="c-nom"
-                        placeholder="Dupont" oninput="valClient()">
-                    <div class="emsg" id="e-nom">Champ requis.</div>
-                </div>
-                <div class="fg"><label class="fl">Email <span class="rstar">*</span></label><input type="email"
-                        id="c-email" placeholder="jean.dupont@email.fr" oninput="valClient()">
-                    <div class="emsg" id="e-email">Adresse email invalide.</div>
-                </div>
-                <div class="fg"><label class="fl">Téléphone <span class="rstar">*</span></label><input type="tel"
-                        id="c-tel" placeholder="06 12 34 56 78" oninput="valClient()">
-                    <div class="emsg" id="e-tel">Numéro requis.</div>
-                </div>
-                <div class="fg full"><label class="fl">Adresse du chantier <span class="rstar">*</span></label><input
-                        type="text" id="c-adr" placeholder="12 rue de la Tuile, 33000 Bordeaux" oninput="valClient()">
-                    <div class="emsg" id="e-adr">Champ requis.</div>
-                </div>
-                <div class="fg"><label class="fl">Société (optionnel)</label><input type="text" id="c-soc"
-                        placeholder="Entreprise SARL"></div>
-                <div class="fg"><label class="fl">Date souhaitée de livraison</label><input type="text" id="c-dliv"
-                        placeholder="ex: Septembre 2025"></div>
-                <div class="fg full"><label class="fl">Remarques / informations complémentaires</label><textarea
-                        id="c-rem" placeholder="Accès particulier, configurations spécifiques, questions…"></textarea>
-                </div>
-            </div>
-            <div class="navbtns">
-                <button class="btn btn-s" onclick="goPrev(6)">← Retour</button>
-                <button class="btn btn-p" id="bn6" onclick="goNext(6)" disabled>Voir le récapitulatif →</button>
-            </div>
-        </div>
-
-        <!-- ══ ÉTAPE 7 — RÉCAPITULATIF ══ -->
-        <div class="sc" id="step-7">
-            <div class="eyebrow">Étape 7 sur 7</div>
-            <h1 class="stitle">Récapitulatif du devis</h1>
-            <p class="ssub">Vérifiez votre commande avant de la valider ou d'enregistrer votre devis.</p>
-            <div class="rsec">
-                <div class="rsect">Panneaux</div>
-                <div id="rc-pan"></div>
-            </div>
-            <div class="rsec">
-                <div class="rsect">Accessoires</div>
-                <div id="rc-acc"></div>
-            </div>
-            <div class="rsec">
-                <div class="rsect">Livraison</div>
-                <div id="rc-liv"></div>
-            </div>
-            <div class="rtbox">
-                <div>
-                    <div class="rtlbl">Total estimé HT</div>
-                    <div class="rtht" id="rc-tot">—</div>
-                    <div class="rttva">TVA 20 % : <span id="rc-tva">—</span> &nbsp;|&nbsp; TTC : <span
-                            id="rc-ttc">—</span></div>
-                </div>
-                <div style="text-align:right">
-                    <div style="color:var(--stone-dark);font-size:12px;margin-bottom:6px">Acompte à verser (50 %)</div>
-                    <div class="racomp" id="rc-ac">—</div>
-                </div>
-            </div>
-            <div class="rctag">
-                <button class="btn btn-ok btn-lg" onclick="addCart()">🛒 Ajouter au panier</button>
-                <button class="btn btn-g btn-lg" onclick="genPDF()">📄 Télécharger le devis PDF</button>
-            </div>
-            <div class="navbtns"><button class="btn btn-s" onclick="goPrev(7)">← Modifier</button></div>
-        </div>
-
-    </div><!-- /ctn -->
-
-    <div class="flt" id="flt">
-        <div class="flt-lbl">Estimation en cours</div>
-        <div class="flt-p" id="flt-p">0 €</div>
-        <div class="flt-s">HT — hors livraison</div>
+    <div class="navbtns" style="justify-content:flex-end">
+        <button class="btn btn-p" id="bn1" onclick="goNext(1)" disabled>Continuer →</button>
     </div>
-    <div class="toast" id="toast"></div>
-    <div class="pdfov" id="pdfov">
-        <div class="pdfspin">
-            <h3>Génération du devis PDF…</h3>
-            <p>Votre document est en cours de création.</p>
-            <div class="sdots">
-                <div class="sdot"></div>
-                <div class="sdot"></div>
-                <div class="sdot"></div>
+</div>
+
+<!-- ══ ÉTAPE 2 ══ -->
+<div class="sc" id="step-2">
+    <div class="eyebrow">Étape 2 sur 7</div>
+    <h1 class="stitle">Coloris & épaisseur</h1>
+    <p class="ssub">Choisissez l'aspect et les performances thermiques souhaités.</p>
+
+    <div id="col-rc">
+        <div class="slabel">Coloris disponibles</div>
+        <div class="cgrid">
+            <div class="cc" onclick="selColor('terracotta','Terracotta',this,'rc')">
+                <div class="cswatch" style="background:linear-gradient(135deg,#c96a31,#A85A35)"></div>
+                <div class="clabel">Terracotta</div>
+            </div>
+            <div class="cc" onclick="selColor('gris-anthracite','Gris Anthracite',this,'rc')">
+                <div class="cswatch" style="background:linear-gradient(135deg,#484848,#2E2E2E)"></div>
+                <div class="clabel">Gris Anthracite</div>
+            </div>
+            <div class="cc" onclick="selColor('rouge-vieillie','Rouge Vieillie',this,'rc')">
+                <div class="cswatch" style="background:linear-gradient(50deg,#ba684f 10%,#724437 40%,#724437 70%,#ba684f 90%)"></div>
+                <div class="clabel">Rouge Vieillie</div>
+            </div>
+            <div class="cc" onclick="selColor('pastel-vieillie','Pastel Vieillie',this,'rc')">
+                <div class="cswatch" style="background:linear-gradient(50deg,rgba(135,113,84,1) 10%,rgba(102,79,56,1) 40%,rgba(102,79,56,1) 60%,rgba(135,113,84,1) 90%)"></div>
+                <div class="clabel">Pastel Vieillie</div>
             </div>
         </div>
     </div>
+    <div id="col-tp" style="display:none">
+        <div class="slabel">Coloris disponibles</div>
+        <div class="cgrid">
+            <div class="cc" onclick="selColor('gris-anthracite-tp','Gris Anthracite RAL 7016',this,'tp')">
+                <div class="cswatch" style="background:linear-gradient(135deg,#3B4044,#252525)"></div>
+                <div class="clabel">Gris Anthracite RAL 7016</div>
+            </div>
+            <div class="cc" onclick="selColor('gris-ombre','Gris Terre d\'Ombre RAL 7022',this,'tp')">
+                <div class="cswatch" style="background:linear-gradient(135deg,#4C4C47,#3C3530)"></div>
+                <div class="clabel">Gris Terre d'Ombre RAL 7022</div>
+            </div>
+            <div class="cc" onclick="selColor('terracotta-tp','Terracotta',this,'tp')">
+                <div class="cswatch" style="background:linear-gradient(135deg,#c96a31,#A85A35)"></div>
+                <div class="clabel">Terracotta</div>
+            </div>
+        </div>
+    </div>
+    <div id="col-ba" style="display:none">
+        <div class="slabel">Coloris disponibles</div>
+        <div class="cgrid">
+            <div class="cc" onclick="selColor('ba-blanc','Blanc RAL 9010',this,'ba')"><div class="cswatch" style="background:#EFEEE5;border:1px solid #ddd"></div><div class="clabel">Blanc RAL 9010</div></div>
+            <div class="cc" onclick="selColor('ba-metal-argente','Métal argenté RAL 9006',this,'ba')"><div class="cswatch" style="background:#9A9D9D"></div><div class="clabel">Métal argenté RAL 9006</div></div>
+            <div class="cc" onclick="selColor('ba-metal-gris','Métal gris RAL 9007',this,'ba')"><div class="cswatch" style="background:#828280"></div><div class="clabel">Métal gris RAL 9007</div></div>
+            <div class="cc" onclick="selColor('ba-gris-perle','Gris perle RAL 7038',this,'ba')"><div class="cswatch" style="background:#ADB0A9"></div><div class="clabel">Gris perle RAL 7038</div></div>
+            <div class="cc" onclick="selColor('ba-gris-basalte','Gris basalte RAL 7012',this,'ba')"><div class="cswatch" style="background:#595E60"></div><div class="clabel">Gris basalte RAL 7012</div></div>
+            <div class="cc" onclick="selColor('ba-gris-anthracite','Gris anthracite RAL 7016',this,'ba')"><div class="cswatch" style="background:#3B4044"></div><div class="clabel">Gris anthracite RAL 7016</div></div>
+            <div class="cc" onclick="selColor('ba-gris-fonce','Gris foncé RAL 7022',this,'ba')"><div class="cswatch" style="background:#4C4C47"></div><div class="clabel">Gris foncé RAL 7022</div></div>
+            <div class="cc" onclick="selColor('ba-noir','Noir profond RAL 9005',this,'ba')"><div class="cswatch" style="background:#131516"></div><div class="clabel">Noir profond RAL 9005</div></div>
+            <div class="cc" onclick="selColor('ba-tuile-rouge','Tuile rouge RAL 8004',this,'ba')"><div class="cswatch" style="background:#814D37"></div><div class="clabel">Tuile rouge RAL 8004</div></div>
+            <div class="cc" onclick="selColor('ba-rouge-fonce','Rouge foncé RAL 3009',this,'ba')"><div class="cswatch" style="background:#643730"></div><div class="clabel">Rouge foncé RAL 3009</div></div>
+            <div class="cc" onclick="selColor('ba-rouge-feu','Rouge feu RAL 3000',this,'ba')"><div class="cswatch" style="background:#962A27"></div><div class="clabel">Rouge feu RAL 3000</div></div>
+            <div class="cc" onclick="selColor('ba-creme','Crème RAL 1015',this,'ba')"><div class="cswatch" style="background:#DED3B6"></div><div class="clabel">Crème RAL 1015</div></div>
+            <div class="cc" onclick="selColor('ba-jaune-zinc','Jaune zinc RAL 1018',this,'ba')"><div class="cswatch" style="background:#EBD346"></div><div class="clabel">Jaune zinc RAL 1018</div></div>
+            <div class="cc" onclick="selColor('ba-bleu-gentiane','Bleu gentiane RAL 5010',this,'ba')"><div class="cswatch" style="background:#0E457A"></div><div class="clabel">Bleu gentiane RAL 5010</div></div>
+            <div class="cc" onclick="selColor('ba-vert-fonce','Vert foncé RAL 6005',this,'ba')"><div class="cswatch" style="background:#234235"></div><div class="clabel">Vert foncé RAL 6005</div></div>
+        </div>
+    </div>
 
-    <script>
-        // ══════════════════════════════════════════════════════════════
-        //  DONNÉES
-        // ══════════════════════════════════════════════════════════════
-        // ─────────────────────────────────────────────────────────────
-        //  GRILLE TARIFAIRE — source : Tarifs_site.xlsx
-        //  Dégressivité sur la surface totale commandée (m²) par type.
-        //  Structure byTier : [ [surfaceMin, prix_40-80, prix_60-105_ou_null], ... ]
-        //  Pour Bac Acier : byTierBA = [ [surfMin, {30:p,40:p,50:p,60:p,80:p,100:p}], ... ]
-        // ─────────────────────────────────────────────────────────────
+    <div class="divider"></div>
 
-        // Romane Canal — Couleurs Unies (Terracotta, Gris Anthracite)
-        const TIERS_RC_UNIES = [
-            [0, 56.00, 58.50],
-            [25, 52.00, 54.50],
-            [50, 49.00, 51.50],
-            [75, 46.00, 48.50],
-            [100, 41.00, 43.50],
-            [150, 39.00, 41.50],
-        ];
-        // Romane Canal — Couleurs Vieillies (Rouge Vieillie, Pastel Vieillie)
-        const TIERS_RC_VIEILLIE = [
-            [0, 59.00, 61.50],
-            [25, 55.00, 57.50],
-            [50, 52.00, 54.50],
-            [75, 49.00, 51.50],
-            [100, 44.00, 46.50],
-            [150, 42.00, 44.50],
-        ];
-        // Tuiles Plates — Couleurs Unies, épaisseur unique 50/77 mm
-        const TIERS_TP = [
-            [0, 56.00],
-            [25, 52.00],
-            [50, 49.00],
-            [75, 46.00],
-            [100, 41.00],
-            [150, 39.00],
-        ];
-        // Bac Acier — par épaisseur
-        const TIERS_BA = [
-            [20, { 30: 47.30, 40: 48.90, 50: 50.90, 60: 53.60, 80: 56.00, 100: 58.30 }],
-            [50, { 30: 29.50, 40: 31.10, 50: 34.20, 60: 37.90, 80: 40.30, 100: 42.60 }],
-            [150, { 30: 24.80, 40: 26.40, 50: 29.00, 60: 31.70, 80: 34.10, 100: 36.40 }],
-            [300, { 30: 22.90, 40: 24.50, 50: 27.10, 60: 29.80, 80: 32.20, 100: 34.50 }],
-            [500, { 30: 20.50, 40: 22.10, 50: 24.70, 60: 27.40, 80: 29.80, 100: 32.10 }],
-        ];
+    <div id="th-sw">
+        <div class="slabel">Épaisseur d'isolation</div>
+        <div class="thgrid">
+            <div class="thc" onclick="selThick('40-80','40/80 mm',this)">
+                <div class="thname">40/80 mm</div><div class="thr">R = 2,73 m².K/W</div>
+                <div class="thuse">Extensions, garages, bâtiments secondaires.</div>
+            </div>
+            <div class="thc" onclick="selThick('60-105','60/105 mm',this)">
+                <div class="thname">60/105 mm</div><div class="thr">R = 3,64 m².K/W</div>
+                <div class="thuse">Habitation principale, RT2012 / RE2020.</div>
+            </div>
+        </div>
+    </div>
+    <div id="th-tp" style="display:none">
+        <div class="slabel">Épaisseur d'isolation</div>
+        <div class="thgrid" style="grid-template-columns:1fr">
+            <div class="thc sel" style="cursor:default;border-color:var(--primary-color);background:var(--select-light)">
+                <div class="thname">50/77 mm</div>
+                <div class="thr">Épaisseur unique — sélectionnée automatiquement</div>
+                <div class="thuse">Performances thermiques optimisées pour toiture résidentielle.</div>
+            </div>
+        </div>
+    </div>
+    <div id="th-ba" style="display:none">
+        <div class="slabel">Épaisseur d'isolation</div>
+        <div class="thgrid" style="grid-template-columns:repeat(3,1fr)">
+            <div class="thc" onclick="selThick('30','30 mm',this)"><div class="thname">30 mm</div><div class="thr">Isolation légère</div></div>
+            <div class="thc" onclick="selThick('40','40 mm',this)"><div class="thname">40 mm</div><div class="thr">Standard</div></div>
+            <div class="thc" onclick="selThick('50','50 mm',this)"><div class="thname">50 mm</div><div class="thr">Renforcée</div></div>
+            <div class="thc" onclick="selThick('60','60 mm',this)"><div class="thname">60 mm</div><div class="thr">Bonne isolation</div></div>
+            <div class="thc" onclick="selThick('80','80 mm',this)"><div class="thname">80 mm</div><div class="thr">Haute performance</div></div>
+            <div class="thc" onclick="selThick('100','100 mm',this)"><div class="thname">100 mm</div><div class="thr">Très haute perf.</div></div>
+        </div>
+    </div>
 
-        // Mapping coloris → groupe de tarif
-        const COLOR_TIER_GROUP = {
-            // Romane Canal
-            'terracotta': 'rc-unies',
-            'gris-anthracite': 'rc-unies',
-            'rouge-vieillie': 'rc-vieillie',
-            'pastel-vieillie': 'rc-vieillie',
-            // Tuiles Plates
-            'gris-anthracite-tp': 'tp',
-            'gris-ombre': 'tp',
-            'terracotta-tp': 'tp',
-            // Bac Acier
-            'gris-anthracite-ba': 'ba',
-            'gris-basalte': 'ba',
-            'gris-perle': 'ba',
-            'blanc': 'ba',
-            'rouge-feu': 'ba',
-            'vert': 'ba',
-        };
+    <div class="navbtns">
+        <button class="btn btn-s" onclick="goPrev(2)">← Retour</button>
+        <button class="btn btn-p" id="bn2" onclick="goNext(2)" disabled>Continuer →</button>
+    </div>
+</div>
 
-        // ─────────────────────────────────────────────────────────────
-        //  VARIANT IDs SHOPIFY
-        //  Structure : VARIANTS[type][color][thickness][longueurMm] = variantId
-        //  → Les IDs null seront complétés produit par produit
-        // ─────────────────────────────────────────────────────────────
-        const VARIANTS = {
-            'romane-canal': {
-                // ── Terracotta — product_id: 14636746572099 ──────────────
-                'terracotta': {
-                    '40-80': {
-                        2100: 52960045105475, 2450: 52960045138243, 2800: 52960045171011, 3150: 52960045203779,
-                        3500: 52960045236547, 3850: 52960045269315, 4200: 52960045302083, 4550: 52960045334851,
-                        4900: 52960045367619, 5250: 52960045400387, 5600: 52960045433155, 5950: 52960045465923,
-                        6300: 52960045498691, 6650: 52960045531459, 7000: 52960045564227, 7350: 52960045596995,
-                        7700: 52960045629763, 8050: 52960045662531, 8400: 52960045695299, 8750: 52960045728067,
-                        9100: 52960045760835, 9450: 52960045793603, 9800: 52960045826371, 10150: 52960045859139,
-                        10500: 52960045891907, 10850: 52960045924675, 11200: 52960045957443, 11550: 52960045990211,
-                        11900: 52960046022979, 12250: 52960046055747,
-                    },
-                    '60-105': {
-                        2100: 52965014241603, 2450: 52965014274371, 2800: 52965014307139, 3150: 52965014339907,
-                        3500: 52965014372675, 3850: 52965014405443, 4200: 52965014438211, 4550: 52965014470979,
-                        4900: 52965014503747, 5250: 52965014536515, 5600: 52965014569283, 5950: 52965014602051,
-                        6300: 52965014634819, 6650: 52965014667587, 7000: 52965014700355, 7350: 52965014733123,
-                        7700: 52965014765891, 8050: 52965014798659, 8400: 52965014831427, 8750: 52965014864195,
-                        9100: 52965014896963, 9450: 52965014929731, 9800: 52965014962499, 10150: 52965014995267,
-                        10500: 52965015028035, 10850: 52965015060803, 11200: 52965015093571, 11550: 52965015126339,
-                        11900: 52965015159107, 12250: 52965015191875,
-                    },
-                },
-                // ── Gris Anthracite — TODO: ajouter product .json ────────
-                'gris-anthracite': { '40-80': null, '60-105': null },
-                'rouge-vieillie': { '40-80': null, '60-105': null },
-                'pastel-vieillie': { '40-80': null, '60-105': null },
+<!-- ══ ÉTAPE 3 ══ -->
+<div class="sc" id="step-3">
+    <div class="eyebrow">Étape 3 sur 7</div>
+    <h1 class="stitle">Dimensions de la toiture</h1>
+    <p class="ssub">Nous calculerons le nombre de panneaux et la longueur optimale.</p>
+    <div class="mtabs">
+        <button class="mtab active" onclick="setMode('expert',this)">⚙️ Mode expert</button>
+        <button class="mtab" onclick="setMode('pan',this)">🏠 Par pan de toit</button>
+        <button class="mtab" onclick="setMode('surface',this)">📐 Surface en m²</button>
+    </div>
+
+    <!-- Expert -->
+    <div class="dm active" id="m-expert">
+        <div class="fg"><label class="fl">Nombre de panneaux</label>
+            <input type="number" id="exp-qty" placeholder="ex: 40" min="1" oninput="calcExpert()">
+        </div>
+        <div class="fg"><label class="fl">Longueur de chaque panneau</label>
+            <div class="lgrid" id="exp-lgrid"></div>
+        </div>
+    </div>
+
+    <!-- Par pan de toit -->
+    <div class="dm" id="m-pan">
+        <div id="pans-list">
+            <div class="pan-row">
+                <div><label class="fl">Largeur du pan</label>
+                    <div style="display:flex;align-items:center;gap:6px">
+                        <input type="number" placeholder="ex: 8" min="0.5" step="0.1" oninput="calcPans()">
+                        <span style="font-size:13px;color:var(--ink-muted);white-space:nowrap">m</span>
+                    </div>
+                </div>
+                <div><label class="fl">Longueur du pan (pente)</label>
+                    <div style="display:flex;align-items:center;gap:6px">
+                        <input type="number" placeholder="ex: 5" min="0.5" step="0.1" oninput="calcPans()">
+                        <span style="font-size:13px;color:var(--ink-muted);white-space:nowrap">m</span>
+                    </div>
+                </div>
+                <div><label class="fl">Qté</label>
+                    <input type="number" value="1" min="1" max="8" oninput="calcPans()" style="width:70px">
+                </div>
+                <div style="padding-top:22px"><button class="btnrm" onclick="rmPan(this)">×</button></div>
+            </div>
+        </div>
+        <div class="pan-row pan-hint" onclick="addPan()">+ Ajouter un autre pan de toit</div>
+        <p class="fhint" style="margin-top:12px">💡 Largeur utile = 1 m par panneau. La <strong>longueur du pan</strong> est la longueur de la pente (rampant). Prévoyez +20 à 30 cm de débordement en bas de pente.</p>
+    </div>
+
+    <!-- Surface en m² -->
+    <div class="dm" id="m-surface">
+        <div class="fg">
+            <label class="fl">Surface totale à couvrir (m²)</label>
+            <input type="number" id="surf-in" placeholder="ex: 80" min="1" oninput="calcSurf()">
+            <div class="fhint">Incluez une marge de 5 à 10 % pour découpes et débordements.</div>
+        </div>
+        <div class="fg">
+            <label class="fl">Longueur des panneaux souhaitée</label>
+            <select id="surf-len" onchange="calcSurf()">
+                <option value="">— Choisir une longueur —</option>
+            </select>
+            <div class="fhint">Choisissez la longueur correspondant à votre pente + débordement.</div>
+        </div>
+    </div>
+
+    <div class="drbox" id="dr-box" style="display:none">
+        <div><div class="drl">Surface totale</div><div class="drv" id="dr-surf">—</div><div class="drs">m² calculés</div></div>
+        <div><div class="drl">Nb. panneaux</div><div class="drv" id="dr-pan">—</div><div class="drs">panneaux</div></div>
+        <div><div class="drl">Longueur choisie</div><div class="drv" id="dr-len">—</div><div class="drs">mm par panneau</div></div>
+        <div><div class="drl">Estimation panneaux</div><div class="drv" id="dr-price">—</div><div class="drs">€ HT (indicatif)</div></div>
+    </div>
+
+    <div class="navbtns">
+        <button class="btn btn-s" onclick="goPrev(3)">← Retour</button>
+        <button class="btn btn-p" id="bn3" onclick="goNext(3)" disabled>Continuer →</button>
+    </div>
+</div>
+
+<!-- ══ ÉTAPE 4 ══ -->
+<div class="sc" id="step-4">
+    <div class="eyebrow">Étape 4 sur 7</div>
+    <h1 class="stitle">Accessoires de pose</h1>
+    <p class="ssub">Quantités suggérées selon vos dimensions. Ajustez si nécessaire.</p>
+    <div id="acc-loading" style="text-align:center;padding:40px;color:var(--ink-muted);font-size:14px">
+        ⏳ Chargement des accessoires…
+    </div>
+    <div class="agrid" id="acc-grid" style="display:none"></div>
+    <div class="ibox" id="acc-info" style="margin-top:20px;display:none">
+        <p><strong>Comment sont calculées les suggestions ?</strong><br>
+        Les quantités sont estimées automatiquement selon vos dimensions. Ajustez-les si besoin.</p>
+    </div>
+    <div class="navbtns">
+        <button class="btn btn-s" onclick="goPrev(4)">← Retour</button>
+        <button class="btn btn-p" onclick="goNext(4)">Continuer →</button>
+    </div>
+</div>
+
+<!-- ══ ÉTAPE 5 — LIVRAISON + ADRESSE ══ -->
+<div class="sc" id="step-5">
+    <div class="eyebrow">Étape 5 sur 7</div>
+    <h1 class="stitle">Livraison</h1>
+    <p class="ssub">Renseignez l'adresse du chantier et les conditions d'accès pour estimer les frais de transport.</p>
+
+    <div class="slabel" style="margin-bottom:16px">Adresse de livraison du chantier</div>
+    <div class="clgrid" style="margin-bottom:28px">
+        <div class="fg" style="grid-column:1/-1">
+            <label class="fl">N° et nom de rue <span class="rstar">*</span></label>
+            <input type="text" id="c-rue" placeholder="12 rue de la Tuile" oninput="valLivraison()">
+            <div class="emsg" id="e-rue">Champ requis.</div>
+        </div>
+        <div class="fg" style="grid-column:1/-1">
+            <label class="fl">Complément d'adresse</label>
+            <input type="text" id="c-complement" placeholder="Bâtiment B, lieu-dit Les Pins…">
+        </div>
+        <div class="fg">
+            <label class="fl">Code postal <span class="rstar">*</span></label>
+            <input type="text" id="c-cp" placeholder="33000" maxlength="5" oninput="valLivraison(); autoFillDept()">
+            <div class="emsg" id="e-cp">Code postal invalide.</div>
+        </div>
+        <div class="fg">
+            <label class="fl">Ville <span class="rstar">*</span></label>
+            <input type="text" id="c-ville" placeholder="Bordeaux" oninput="valLivraison()">
+            <div class="emsg" id="e-ville">Champ requis.</div>
+        </div>
+        <div class="fg">
+            <label class="fl">Pays</label>
+            <select id="c-pays">
+                <option value="France" selected>France</option>
+                <option value="Belgique">Belgique</option>
+                <option value="Suisse">Suisse</option>
+                <option value="Luxembourg">Luxembourg</option>
+                <option value="Espagne">Espagne</option>
+                <option value="Autre">Autre</option>
+            </select>
+        </div>
+        <div class="fg">
+            <label class="fl">Département <span class="rstar">*</span></label>
+            <select id="dept-sel" onchange="calcLiv(); valLivraison()">
+                <option value="">— Sélectionnez votre département —</option>
+                <optgroup label="Zone A — Sud-Ouest (tarif préférentiel)">
+                    <option value="33">33 — Gironde</option><option value="40">40 — Landes</option>
+                    <option value="47">47 — Lot-et-Garonne</option><option value="64">64 — Pyrénées-Atlantiques</option>
+                    <option value="24">24 — Dordogne</option><option value="17">17 — Charente-Maritime</option>
+                    <option value="16">16 — Charente</option><option value="19">19 — Corrèze</option>
+                    <option value="23">23 — Creuse</option><option value="87">87 — Haute-Vienne</option>
+                </optgroup>
+                <optgroup label="Zone B — Grand Sud-Ouest">
+                    <option value="31">31 — Haute-Garonne</option><option value="32">32 — Gers</option>
+                    <option value="65">65 — Hautes-Pyrénées</option><option value="82">82 — Tarn-et-Garonne</option>
+                    <option value="81">81 — Tarn</option><option value="46">46 — Lot</option>
+                    <option value="12">12 — Aveyron</option><option value="15">15 — Cantal</option>
+                    <option value="43">43 — Haute-Loire</option><option value="63">63 — Puy-de-Dôme</option>
+                </optgroup>
+                <optgroup label="Zone C — Centre, Méditerranée, Nord">
+                    <option value="75">75 — Paris / Île-de-France</option><option value="69">69 — Rhône</option>
+                    <option value="13">13 — Bouches-du-Rhône</option><option value="34">34 — Hérault</option>
+                    <option value="06">06 — Alpes-Maritimes</option><option value="44">44 — Loire-Atlantique</option>
+                    <option value="67">67 — Bas-Rhin</option><option value="59">59 — Nord</option>
+                </optgroup>
+                <optgroup label="Zone D — Autres / éloignés">
+                    <option value="other">Autre département</option>
+                </optgroup>
+            </select>
+        </div>
+    </div>
+
+    <div class="slabel" style="margin-bottom:16px">Conditions d'accès au chantier</div>
+    <div style="margin-bottom:24px">
+        <div class="fg" style="max-width:400px">
+            <label class="fl">Type d'accès <span class="rstar">*</span></label>
+            <select id="acc-sel" onchange="calcLiv(); valLivraison()">
+                <option value="">— Type d'accès —</option>
+                <option value="standard">Standard — camion 19T</option>
+                <option value="difficile">Accès difficile — camion grue</option>
+                <option value="hayon">Hayon élévateur requis</option>
+            </select>
+            <div class="emsg" id="e-acces">Champ requis.</div>
+        </div>
+    </div>
+
+    <div class="lvres" id="lv-res">
+        <div style="font-weight:600;font-size:14px;margin-bottom:12px;color:var(--primary-dark)">Estimation de livraison</div>
+        <div style="display:flex;gap:32px;flex-wrap:wrap;align-items:flex-end">
+            <div>
+                <div style="font-family:'Oswald',serif;font-size:32px" id="lv-price">—</div>
+                <div style="font-size:12px;color:var(--ink-muted)">€ HT — tarif estimatif</div>
+            </div>
+            <div>
+                <div style="font-size:13px;color:var(--ink-soft)">Volume : <strong id="lv-vol">—</strong> m³</div>
+                <div style="font-size:13px;color:var(--ink-soft);margin-top:4px">Poids : <strong id="lv-kg">—</strong> kg</div>
+            </div>
+        </div>
+        <div style="font-size:12px;color:var(--ink-muted);margin-top:12px;font-style:italic">⚠️ Estimation — tarif définitif confirmé par notre équipe logistique.</div>
+    </div>
+    <div class="ibox">
+        <p><strong>📦 Informations livraison :</strong><br>Livraison par camion plateau sur toute la France métropolitaine.<br>
+        Délai habituel : <strong>5 à 6 semaines</strong> après confirmation de commande.<br><br>
+        <strong>⚡ Commandes &gt; 300 m² :</strong> délai réduit possible — contactez-nous.<br><br>
+        Acompte de <strong>50 % à la commande</strong> — solde réglé avant déchargement.</p>
+    </div>
+    <div class="navbtns">
+        <button class="btn btn-s" onclick="goPrev(5)">← Retour</button>
+        <button class="btn btn-p" id="bn5" onclick="goNext(5)" disabled>Continuer →</button>
+    </div>
+</div>
+
+<!-- ══ ÉTAPE 6 — COORDONNÉES CLIENT (sans adresse ni date livraison) ══ -->
+<div class="sc" id="step-6">
+    <div class="eyebrow">Étape 6 sur 7</div>
+    <h1 class="stitle">Vos coordonnées</h1>
+    <p class="ssub">Ces informations figureront sur votre devis PDF et permettront à notre équipe de vous recontacter.</p>
+    <div class="clgrid">
+        <div class="fg">
+            <label class="fl">Prénom <span class="rstar">*</span></label>
+            <input type="text" id="c-prenom" placeholder="Jean" oninput="valClient()">
+            <div class="emsg" id="e-prenom">Champ requis.</div>
+        </div>
+        <div class="fg">
+            <label class="fl">Nom <span class="rstar">*</span></label>
+            <input type="text" id="c-nom" placeholder="Dupont" oninput="valClient()">
+            <div class="emsg" id="e-nom">Champ requis.</div>
+        </div>
+        <div class="fg">
+            <label class="fl">Email <span class="rstar">*</span></label>
+            <input type="email" id="c-email" placeholder="jean.dupont@email.fr" oninput="valClient()">
+            <div class="emsg" id="e-email">Adresse email invalide.</div>
+        </div>
+        <div class="fg">
+            <label class="fl">Téléphone <span class="rstar">*</span></label>
+            <input type="tel" id="c-tel" placeholder="06 12 34 56 78" oninput="valClient()">
+            <div class="emsg" id="e-tel">Numéro requis.</div>
+        </div>
+        <div class="fg">
+            <label class="fl">Société (optionnel)</label>
+            <input type="text" id="c-soc" placeholder="Entreprise SARL">
+        </div>
+        <div class="fg full">
+            <label class="fl">Remarques / informations complémentaires</label>
+            <textarea id="c-rem" placeholder="Accès particulier, configurations spécifiques, questions…"></textarea>
+        </div>
+    </div>
+    <div class="navbtns">
+        <button class="btn btn-s" onclick="goPrev(6)">← Retour</button>
+        <button class="btn btn-p" id="bn6" onclick="goNext(6)" disabled>Voir le récapitulatif →</button>
+    </div>
+</div>
+
+<!-- ══ ÉTAPE 7 — RÉCAPITULATIF ══ -->
+<div class="sc" id="step-7">
+    <div class="eyebrow">Étape 7 sur 7</div>
+    <h1 class="stitle">Récapitulatif du devis</h1>
+    <p class="ssub">Vérifiez votre commande avant de la valider ou d'enregistrer votre devis.</p>
+    <div class="rsec"><div class="rsect">Panneaux</div><div id="rc-pan"></div></div>
+    <div class="rsec"><div class="rsect">Accessoires</div><div id="rc-acc"></div></div>
+    <div class="rsec"><div class="rsect">Livraison</div><div id="rc-liv"></div></div>
+    <div class="rtbox">
+        <div>
+            <div class="rtlbl">Total estimé HT</div>
+            <div class="rtht" id="rc-tot">—</div>
+            <div class="rttva">TVA 20 % : <span id="rc-tva">—</span> &nbsp;|&nbsp; TTC : <span id="rc-ttc">—</span></div>
+        </div>
+        <div style="text-align:right">
+            <div style="color:var(--stone-dark);font-size:12px;margin-bottom:6px">Acompte à verser (50 %)</div>
+            <div class="racomp" id="rc-ac">—</div>
+        </div>
+    </div>
+    <div class="rctag">
+        <button class="btn btn-ok btn-lg" onclick="addCart()">🛒 Ajouter au panier</button>
+        <button class="btn btn-g btn-lg" onclick="genPDF()">📄 Télécharger le devis PDF</button>
+    </div>
+    <div class="navbtns"><button class="btn btn-s" onclick="goPrev(7)">← Modifier</button></div>
+</div>
+
+</div><!-- /ctn -->
+
+<div class="flt" id="flt">
+    <div class="flt-lbl">Estimation en cours</div>
+    <div class="flt-p" id="flt-p">0 €</div>
+    <div class="flt-s">HT — hors livraison</div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="pdfov" id="pdfov">
+    <div class="pdfspin">
+        <h3>Génération du devis PDF…</h3>
+        <p>Votre document est en cours de création.</p>
+        <div class="sdots"><div class="sdot"></div><div class="sdot"></div><div class="sdot"></div></div>
+    </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  GRILLE TARIFAIRE (source : Tarifs_site.xlsx)
+// ══════════════════════════════════════════════════════════════
+const TIERS_RC_UNIES = [
+    [0,56.00,58.50],[25,52.00,54.50],[50,49.00,51.50],
+    [75,46.00,48.50],[100,41.00,43.50],[150,39.00,41.50],
+];
+const TIERS_RC_VIEILLIE = [
+    [0,59.00,61.50],[25,55.00,57.50],[50,52.00,54.50],
+    [75,49.00,51.50],[100,44.00,46.50],[150,42.00,44.50],
+];
+const TIERS_TP = [
+    [0,56.00],[25,52.00],[50,49.00],[75,46.00],[100,41.00],[150,39.00],
+];
+const TIERS_BA = [
+    [20, {30:47.30,40:48.90,50:50.90,60:53.60,80:56.00,100:58.30}],
+    [50, {30:29.50,40:31.10,50:34.20,60:37.90,80:40.30,100:42.60}],
+    [150,{30:24.80,40:26.40,50:29.00,60:31.70,80:34.10,100:36.40}],
+    [300,{30:22.90,40:24.50,50:27.10,60:29.80,80:32.20,100:34.50}],
+    [500,{30:20.50,40:22.10,50:24.70,60:27.40,80:29.80,100:32.10}],
+];
+
+const COLOR_TIER_GROUP = {
+    'terracotta':'rc-unies','gris-anthracite':'rc-unies',
+    'rouge-vieillie':'rc-vieillie','pastel-vieillie':'rc-vieillie',
+    'gris-anthracite-tp':'tp','gris-ombre':'tp','terracotta-tp':'tp',
+    'ba-blanc':'ba','ba-metal-argente':'ba','ba-metal-gris':'ba',
+    'ba-gris-perle':'ba','ba-gris-basalte':'ba','ba-gris-anthracite':'ba',
+    'ba-gris-fonce':'ba','ba-noir':'ba','ba-tuile-rouge':'ba',
+    'ba-rouge-fonce':'ba','ba-rouge-feu':'ba','ba-creme':'ba',
+    'ba-jaune-zinc':'ba','ba-bleu-gentiane':'ba','ba-vert-fonce':'ba',
+};
+
+// ══════════════════════════════════════════════════════════════
+//  VARIANT IDs SHOPIFY
+// ══════════════════════════════════════════════════════════════
+const VARIANTS = {
+    'romane-canal': {
+        'terracotta': {
+            '40-80': {
+                2100:52960045105475,2450:52960045138243,2800:52960045171011,3150:52960045203779,
+                3500:52960045236547,3850:52960045269315,4200:52960045302083,4550:52960045334851,
+                4900:52960045367619,5250:52960045400387,5600:52960045433155,5950:52960045465923,
+                6300:52960045498691,6650:52960045531459,7000:52960045564227,7350:52960045596995,
+                7700:52960045629763,8050:52960045662531,8400:52960045695299,8750:52960045728067,
+                9100:52960045760835,9450:52960045793603,9800:52960045826371,10150:52960045859139,
+                10500:52960045891907,10850:52960045924675,11200:52960045957443,11550:52960045990211,
+                11900:52960046022979,12250:52960046055747,
             },
-            'tuile-plate': {
-                'gris-anthracite-tp': { '40-80': null, '60-105': null },
-                'gris-ombre': { '40-80': null, '60-105': null },
-                'terracotta-tp': { '40-80': null, '60-105': null },
+            '60-105': {
+                2100:52965014241603,2450:52965014274371,2800:52965014307139,3150:52965014339907,
+                3500:52965014372675,3850:52965014405443,4200:52965014438211,4550:52965014470979,
+                4900:52965014503747,5250:52965014536515,5600:52965014569283,5950:52965014602051,
+                6300:52965014634819,6650:52965014667587,7000:52965014700355,7350:52965014733123,
+                7700:52965014765891,8050:52965014798659,8400:52965014831427,8750:52965014864195,
+                9100:52965014896963,9450:52965014929731,9800:52965014962499,10150:52965014995267,
+                10500:52965015028035,10850:52965015060803,11200:52965015093571,11550:52965015126339,
+                11900:52965015159107,12250:52965015191875,
             },
-            'bac-acier': {
-                // IDs à remplir via .json Shopify pour chaque produit coloris
-                // Structure : { épaisseur: { longueurMm: variantId } }
-                // Bac acier : pas de longueurs sur mesure → variant par épaisseur uniquement (ex: null = à brancher)
-                'ba-blanc': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-                'ba-metal-argente': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-                'ba-metal-gris': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-                'ba-gris-perle': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-                'ba-gris-basalte': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-                'ba-gris-anthracite': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-                'ba-gris-fonce': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-                'ba-noir': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-                'ba-tuile-rouge': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-                'ba-rouge-fonce': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-                'ba-rouge-feu': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-                'ba-creme': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-                'ba-jaune-zinc': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-                'ba-bleu-gentiane': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-                'ba-vert-fonce': { '30': null, '40': null, '50': null, '60': null, '80': null, '100': null },
-            },
-        };
+        },
+        'gris-anthracite':{'40-80':null,'60-105':null},
+        'rouge-vieillie':{'40-80':null,'60-105':null},
+        'pastel-vieillie':{'40-80':null,'60-105':null},
+    },
+    'tuile-plate': {
+        'gris-anthracite-tp':{'50-77':null},
+        'gris-ombre':{'50-77':null},
+        'terracotta-tp':{'50-77':null},
+    },
+    'bac-acier': {
+        'ba-blanc':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+        'ba-metal-argente':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+        'ba-metal-gris':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+        'ba-gris-perle':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+        'ba-gris-basalte':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+        'ba-gris-anthracite':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+        'ba-gris-fonce':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+        'ba-noir':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+        'ba-tuile-rouge':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+        'ba-rouge-fonce':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+        'ba-rouge-feu':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+        'ba-creme':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+        'ba-jaune-zinc':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+        'ba-bleu-gentiane':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+        'ba-vert-fonce':{'30':null,'40':null,'50':null,'60':null,'80':null,'100':null},
+    },
+};
 
-        // Variant IDs accessoires Shopify — à remplir
-        const ACC_VARIANT_IDS = {
-            'faitage': null,
-            'faitage-cm': null,
-            'faitage-f': null,
-            'rive-l': null,
-            'rive-u': null,
-            'cm-40': null,
-            'cm-60': null,
-            'vis-125': null,
-            'vis-150': null,
-            'vis-bac': null,
-            'fait-bac': null,
-            'omega': null,
-        };
+const ACC_VARIANT_IDS = {};
 
-        // Couleurs hexadécimales pour le swatch PDF (source : HTML fourni)
-        const CCOLOR = {
-            // Romane Canal
-            'terracotta': '#C4724A',
-            'gris-anthracite': '#4A4A4A',
-            'rouge-vieillie': '#8B3A2A',
-            'pastel-vieillie': '#D4B896',
-            // Tuiles Plates
-            'gris-anthracite-tp': '#3C3C3C',
-            'gris-ombre': '#5C5248',
-            'terracotta-tp': '#C4724A',
-            // Bac Acier — hex exacts issus de la liste coloris
-            'ba-blanc': '#EFEEE5',
-            'ba-metal-argente': '#9A9D9D',
-            'ba-metal-gris': '#828280',
-            'ba-gris-perle': '#ADB0A9',
-            'ba-gris-basalte': '#595E60',
-            'ba-gris-anthracite': '#3B4044',
-            'ba-gris-fonce': '#4C4C47',
-            'ba-noir': '#131516',
-            'ba-tuile-rouge': '#814D37',
-            'ba-rouge-fonce': '#643730',
-            'ba-rouge-feu': '#962A27',
-            'ba-creme': '#DED3B6',
-            'ba-jaune-zinc': '#EBD346',
-            'ba-bleu-gentiane': '#0E457A',
-            'ba-vert-fonce': '#234235',
-        };
+const CCOLOR = {
+    'terracotta':'#C4724A','gris-anthracite':'#4A4A4A',
+    'rouge-vieillie':'#8B3A2A','pastel-vieillie':'#D4B896',
+    'gris-anthracite-tp':'#3C3C3C','gris-ombre':'#5C5248','terracotta-tp':'#C4724A',
+    'ba-blanc':'#EFEEE5','ba-metal-argente':'#9A9D9D','ba-metal-gris':'#828280',
+    'ba-gris-perle':'#ADB0A9','ba-gris-basalte':'#595E60','ba-gris-anthracite':'#3B4044',
+    'ba-gris-fonce':'#4C4C47','ba-noir':'#131516','ba-tuile-rouge':'#814D37',
+    'ba-rouge-fonce':'#643730','ba-rouge-feu':'#962A27','ba-creme':'#DED3B6',
+    'ba-jaune-zinc':'#EBD346','ba-bleu-gentiane':'#0E457A','ba-vert-fonce':'#234235',
+};
 
-        const LENS = [2100, 2450, 2800, 3150, 3500, 3850, 4200, 4550, 4900, 5250,
-            5600, 5950, 6300, 6650, 7000, 7350, 7700, 8050, 8400, 8750,
-            9100, 9450, 9800, 10150, 10500, 10850, 11200, 11550, 11900, 12250];
-        // ─────────────────────────────────────────────────────────────
-        //  ACCESSOIRES — prix issus de Tarifs_site.xlsx
-        //  u = unité de vente ; co = conditionnement (nb pièces)
-        //  th = épaisseur restreinte (null = tous) ; tp = type panel
-        // ─────────────────────────────────────────────────────────────
-        const ACCS = {
-            // ── Panneau Sandwich (Romane Canal + Tuile Plate) ──────────
-            'faitage': { n: 'Faîtage double pans', d: 'Faîtage pour deux pans de toit. Longueur 2 m.', p: 22.00, u: 'ml', ic: '🔝', t: ['romane-canal', 'tuile-plate'], sg: true },
-            'faitage-cm': { n: 'Faîtage contre mur', d: 'Pour toits appentis ou adossés à un mur. L = 2 m.', p: 18.50, u: 'ml', ic: '🧱', t: ['romane-canal', 'tuile-plate'], sg: false },
-            'faitage-f': { n: 'Faîtage de fermeture', d: 'Ferme les extrémités latérales du faîte.', p: 18.50, u: 'ml', ic: '🔒', t: ['romane-canal', 'tuile-plate'], sg: false },
-            'rive-l': { n: 'Rive Latérale L', d: 'Finition des bords latéraux du toit. L = 2 m.', p: 17.00, u: 'ml', ic: '◁', t: ['romane-canal', 'tuile-plate'], sg: true },
-            'rive-u': { n: 'Rive Latérale U', d: 'Profil en U pour bords latéraux. L = 2 m.', p: 17.50, u: 'ml', ic: '◻', t: ['romane-canal', 'tuile-plate'], sg: false },
-            'cm-40': { n: 'Cache mousse ép. 40/80 mm', d: 'Obture les alvéoles en bas de pente. Vendu à l\'unité.', p: 10.80, u: 'pièce', ic: '🟫', t: ['romane-canal', 'tuile-plate'], sg: true, th: '40-80' },
-            'cm-60': { n: 'Cache mousse ép. 60/105 mm', d: 'Obture les alvéoles en bas de pente. Vendu à l\'unité.', p: 10.80, u: 'pièce', ic: '🟫', t: ['romane-canal', 'tuile-plate'], sg: true, th: '60-105' },
-            'cm-tp': { n: 'Cache mousse ép. 50/77 mm', d: 'Obture les alvéoles en bas de pente. Vendu à l\'unité.', p: 10.80, u: 'pièce', ic: '🟫', t: ['tuile-plate'], sg: true, th: '50-77' },
-            'vis-125': { n: 'Vis de fixation 125 mm', d: 'Boîte de 100 vis avec rondelles EPDM. Épaisseur 40/80 mm.', p: 54.00, u: 'boîte (100u)', ic: '🔩', t: ['romane-canal', 'tuile-plate'], sg: true, th: '40-80' },
-            'vis-150': { n: 'Vis de fixation 150 mm', d: 'Boîte de 100 vis avec rondelles EPDM. Épaisseur 60/105 mm.', p: 56.00, u: 'boîte (100u)', ic: '🔩', t: ['romane-canal', 'tuile-plate'], sg: true, th: '60-105' },
-            'vis-tp': { n: 'Vis de fixation 150 mm', d: 'Boîte de 100 vis avec rondelles EPDM. Épaisseur 50/77 mm.', p: 56.00, u: 'boîte (100u)', ic: '🔩', t: ['tuile-plate'], sg: true, th: '50-77' },
-            'goutiere': { n: 'Gouttière', d: 'Gouttière zinc. Longueur 2 m.', p: 22.00, u: 'ml', ic: '🌧️', t: ['romane-canal', 'tuile-plate'], sg: false },
-            'crochet': { n: 'Crochet de gouttière', d: 'Crochet de fixation. Vendu à l\'unité.', p: 2.00, u: 'pièce', ic: '🪝', t: ['romane-canal', 'tuile-plate'], sg: false },
-            'omega': { n: 'Profils Métalliques Oméga', d: 'Profilés de fixation. Longueur 3 m.', p: 28.00, u: 'ml', ic: '⚡', t: ['romane-canal', 'tuile-plate', 'bac-acier'], sg: false },
-            // ── Bac Acier ─────────────────────────────────────────────
-            'vis-bac': { n: 'Vis bac acier', d: 'Boîte de 100 vis avec rondelles EPDM.', p: 44.00, u: 'boîte (100u)', ic: '🔩', t: ['bac-acier'], sg: true },
-            'fait-bac': { n: 'Faîtière double crantée', d: 'Faîtière adaptée aux profils bac acier. L = 2 m.', p: 21.40, u: 'ml', ic: '🔝', t: ['bac-acier'], sg: true },
-            'rive-cm-ba': { n: 'Rive contre mur', d: 'Rive contre mur pour bac acier. L = 2 m.', p: 16.30, u: 'ml', ic: '🧱', t: ['bac-acier'], sg: false },
-            'rive-lat-ba': { n: 'Rive latérale', d: 'Rive latérale pour bac acier. L = 2 m.', p: 16.80, u: 'ml', ic: '◁', t: ['bac-acier'], sg: true },
-        };
+const LENS = [2100,2450,2800,3150,3500,3850,4200,4550,4900,5250,
+              5600,5950,6300,6650,7000,7350,7700,8050,8400,8750,
+              9100,9450,9800,10150,10500,10850,11200,11550,11900,12250];
 
-        const DZONES = {
-            A: { d: ['33', '40', '47', '64', '24', '17', '16', '19', '23', '87'], base: 280 },
-            B: { d: ['31', '32', '65', '82', '81', '46', '12', '15', '43', '63'], base: 380 },
-            C: { d: ['75', '69', '13', '34', '06', '44', '67', '59'], base: 520 },
-            D: { d: ['other'], base: 680 },
-        };
-        const ASURCH = { standard: 0, difficile: 200, hayon: 100 };
+const DZONES = {
+    A:{d:['33','40','47','64','24','17','16','19','23','87'],base:280},
+    B:{d:['31','32','65','82','81','46','12','15','43','63'],base:380},
+    C:{d:['75','69','13','34','06','44','67','59'],base:520},
+    D:{d:['other'],base:680},
+};
+const ASURCH = {standard:0,difficile:200,hayon:100};
 
-        // ══════════════════════════════════════════════════════════════
-        //  ÉTAT
-        // ══════════════════════════════════════════════════════════════
-        const S = {
-            step: 1, maxStep: 1,
-            type: null, typeName: null,
-            color: null, colorName: null,
-            thick: null, thickName: null,
-            dimMode: 'pan',
-            surf: 0, panQty: 0, panLen: 0,
-            accs: {},
-            dept: null, access: null, livPrice: 0, livVol: 0, livKg: 0,
-            client: {},
-            qnum: null,
-        };
+// ══════════════════════════════════════════════════════════════
+//  ACCESSOIRES — Chargement dynamique Google Sheets
+// ══════════════════════════════════════════════════════════════
+const API_URL = "https://script.google.com/macros/s/AKfycbwy-TPI__YNd_3wa8g4ThPG4MReZkfyoACXdYWSJ8e-4R8qllfZXKhShp1V1Mf5hskk/exec";
 
-        // ══════════════════════════════════════════════════════════════
-        //  UTILITAIRES
-        // ══════════════════════════════════════════════════════════════
+// Mapping codes Compatibilité → type interne + épaisseur
+// P1=Romane 40/80, P2=Romane 60/105, P3=Vieillie 40/80, P4=Vieillie 60/105
+// P5=Tuile Plate 50/77, P6=Bac Acier
+const COMPAT_MAP = {
+    'P1':{type:'romane-canal',thick:'40-80'},
+    'P2':{type:'romane-canal',thick:'60-105'},
+    'P3':{type:'romane-canal',thick:'40-80'},
+    'P4':{type:'romane-canal',thick:'60-105'},
+    'P5':{type:'tuile-plate', thick:'50-77'},
+    'P6':{type:'bac-acier',   thick:null},
+};
 
-        // Prix au m² selon surface totale commandée (dégressivité réelle)
-        function getPricePerM2(color, thick, surfM2) {
-            const group = COLOR_TIER_GROUP[color];
-            if (!group) return 0;
-            if (group === 'rc-unies') {
-                const t = TIERS_RC_UNIES.filter(r => surfM2 >= r[0]).pop();
-                return thick === '60-105' ? t[2] : t[1];
-            }
-            if (group === 'rc-vieillie') {
-                const t = TIERS_RC_VIEILLIE.filter(r => surfM2 >= r[0]).pop();
-                return thick === '60-105' ? t[2] : t[1];
-            }
-            if (group === 'tp') {
-                const t = TIERS_TP.filter(r => surfM2 >= r[0]).pop();
-                return t[1];
-            }
-            if (group === 'ba') {
-                const t = TIERS_BA.filter(r => surfM2 >= r[0]).pop();
-                return t ? (t[1][thick] || 0) : 0;
-            }
-            return 0;
+let ACCS_LOADED = {};
+let accsReady   = false;
+
+async function getCachedSheetData(sheetName, cacheDuration=30) {
+    const cKey = `cache_sheet_${sheetName}`;
+    const tKey = `${cKey}_timestamp`;
+    const now  = Date.now();
+    const cached = localStorage.getItem(cKey);
+    const ts     = localStorage.getItem(tKey);
+    if (cached && ts && (now - Number(ts)) / 60000 < cacheDuration) {
+        console.log(`🚀 [Cache] "${sheetName}"`);
+        return JSON.parse(cached);
+    }
+    console.log(`🌐 [API] Chargement "${sheetName}"…`);
+    try {
+        const r = await fetch(`${API_URL}?sheet=${encodeURIComponent(sheetName)}`);
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json();
+        localStorage.setItem(cKey, JSON.stringify(data));
+        localStorage.setItem(tKey, now.toString());
+        return data;
+    } catch(err) {
+        console.error('❌ Fetch API :', err);
+        return cached ? JSON.parse(cached) : null;
+    }
+}
+
+function parseAccessoire(raw) {
+    const codes = (raw['Compatibilité'] || '').split(',').map(s=>s.trim()).filter(Boolean);
+    const types = new Set(), thicks = new Set();
+    codes.forEach(c => {
+        const m = COMPAT_MAP[c];
+        if (m) { types.add(m.type); if (m.thick) thicks.add(m.thick); }
+    });
+    return {
+        id:   raw.id,
+        n:    raw.nom || raw.designation || '',
+        d:    raw.description || '',
+        p:    parseFloat(raw.prix_unitaire_ht) || 0,
+        u:    raw.unite || 'pièce',
+        img:  raw.image || '',
+        link: raw.lien || '',
+        sg:   raw['suggéré'] === true || String(raw['suggéré']).toLowerCase() === 'true',
+        type: raw.type || '',
+        th:   thicks.size === 1 ? [...thicks][0] : null,
+        t:    [...types],
+    };
+}
+
+async function init() {
+    try {
+        const raw = await getCachedSheetData("Accessoires", 30);
+        if (raw) {
+            ACCS_LOADED = {};
+            Object.values(raw).forEach(r => { if (r.id) ACCS_LOADED[r.id] = parseAccessoire(r); });
+            console.log(`✅ ${Object.keys(ACCS_LOADED).length} accessoires chargés`);
+        }
+    } catch(e) { console.error('Erreur init :', e); }
+    accsReady = true;
+}
+init();
+
+// ══════════════════════════════════════════════════════════════
+//  ÉTAT
+// ══════════════════════════════════════════════════════════════
+const S = {
+    step:1, maxStep:1,
+    type:null, typeName:null,
+    color:null, colorName:null,
+    thick:null, thickName:null,
+    dimMode:'expert',
+    surf:0, panQty:0, panLen:0,
+    accs:{},
+    dept:null, access:null, livPrice:0, livVol:0, livKg:0,
+    client:{},
+    qnum:null,
+};
+
+// ══════════════════════════════════════════════════════════════
+//  UTILITAIRES
+// ══════════════════════════════════════════════════════════════
+function getPricePerM2(color, thick, surfM2) {
+    const g = COLOR_TIER_GROUP[color];
+    if (!g) return 0;
+    if (g==='rc-unies')   { const t=TIERS_RC_UNIES.filter(r=>surfM2>=r[0]).pop();   return thick==='60-105'?t[2]:t[1]; }
+    if (g==='rc-vieillie'){ const t=TIERS_RC_VIEILLIE.filter(r=>surfM2>=r[0]).pop(); return thick==='60-105'?t[2]:t[1]; }
+    if (g==='tp')         { const t=TIERS_TP.filter(r=>surfM2>=r[0]).pop();          return t[1]; }
+    if (g==='ba')         { const t=TIERS_BA.filter(r=>surfM2>=r[0]).pop();          return t?(t[1][thick]||0):0; }
+    return 0;
+}
+
+function getVariantId(lenMm) {
+    const byColor = VARIANTS[S.type]?.[S.color];
+    if (!byColor) return null;
+    const byThick = byColor[S.thick];
+    if (!byThick || typeof byThick !== 'object') return null;
+    return byThick[lenMm] || null;
+}
+
+const f2 = n => parseFloat(n).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fN = n => parseFloat(n).toLocaleString('fr-FR');
+
+// ══════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════════════════════
+function tryStep(n) { if (n<=S.maxStep) activate(n); }
+function activate(n) {
+    document.querySelectorAll('.sc').forEach(e=>e.classList.remove('active'));
+    document.getElementById('step-'+n).classList.add('active');
+    document.querySelectorAll('.pgstep').forEach((e,i)=>{
+        e.classList.remove('active','done');
+        if(i+1<n) e.classList.add('done');
+        if(i+1===n) e.classList.add('active');
+    });
+    S.step=n; window.scrollTo({top:0,behavior:'smooth'}); updFlt();
+}
+function goNext(from) {
+    if(from===1) prepStep2();
+    if(from===2) buildLens();
+    if(from===3) buildAccs();
+    if(from===5) { saveLivraison(); buildRecap(); }
+    if(from===6) { saveClient(); buildRecap(); }
+    const n=from+1; S.maxStep=Math.max(S.maxStep,n); activate(n);
+}
+function goPrev(from) { activate(from-1); }
+
+// ══════════════════════════════════════════════════════════════
+//  ÉTAPE 1
+// ══════════════════════════════════════════════════════════════
+function selType(t,tn,el) {
+    document.querySelectorAll('.tc').forEach(c=>c.classList.remove('sel'));
+    el.classList.add('sel'); S.type=t; S.typeName=tn;
+    document.getElementById('bn1').disabled=false;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  ÉTAPE 2
+// ══════════════════════════════════════════════════════════════
+function prepStep2() {
+    ['rc','tp','ba'].forEach(k=>document.getElementById('col-'+k).style.display='none');
+    const map={'romane-canal':'rc','tuile-plate':'tp','bac-acier':'ba'};
+    document.getElementById('col-'+map[S.type]).style.display='';
+    document.getElementById('th-sw').style.display=S.type==='romane-canal'?'':'none';
+    document.getElementById('th-tp').style.display=S.type==='tuile-plate'?'':'none';
+    document.getElementById('th-ba').style.display=S.type==='bac-acier'?'':'none';
+    S.color=null; S.colorName=null; S.thick=null; S.thickName=null;
+    if(S.type==='tuile-plate'){S.thick='50-77';S.thickName='50/77 mm';}
+    document.querySelectorAll('.cc').forEach(c=>c.classList.remove('sel'));
+    document.querySelectorAll('#th-sw .thc,#th-ba .thc').forEach(c=>c.classList.remove('sel'));
+    document.getElementById('bn2').disabled=true;
+}
+function selColor(c,cn,el,grp) {
+    document.querySelectorAll('#col-'+grp+' .cc').forEach(x=>x.classList.remove('sel'));
+    el.classList.add('sel'); S.color=c; S.colorName=cn; chkS2();
+}
+function selThick(t,tn,el) {
+    el.closest('.thgrid').querySelectorAll('.thc').forEach(x=>x.classList.remove('sel'));
+    el.classList.add('sel'); S.thick=t; S.thickName=tn; chkS2();
+}
+function chkS2() {
+    const needsThick = S.type!=='tuile-plate';
+    document.getElementById('bn2').disabled=!(S.color&&(S.thick||!needsThick));
+}
+
+// ══════════════════════════════════════════════════════════════
+//  ÉTAPE 3 — DIMENSIONS
+//  ✅ CORRECTIF : nb panneaux = ceil(surface / longueur_panneau_m)
+//  Un panneau couvre 1m de largeur × L mètres de longueur = L m²
+//  Donc : nb panneaux nécessaires = surface_totale / longueur_panneau
+// ══════════════════════════════════════════════════════════════
+function buildLens() {
+    const sel=document.getElementById('surf-len');
+    sel.innerHTML='<option value="">— Choisir une longueur —</option>';
+    LENS.forEach(l=>{
+        const o=document.createElement('option'); o.value=l;
+        o.textContent=(l/1000).toFixed(3).replace(/\.?0+$/,'')+'  m  ('+l.toLocaleString('fr-FR')+' mm)';
+        sel.appendChild(o);
+    });
+    const grid=document.getElementById('exp-lgrid'); grid.innerHTML='';
+    LENS.forEach(l=>{
+        const p=getPricePerM2(S.color,S.thick,0);
+        const btn=document.createElement('div'); btn.className='lbtn'; btn.dataset.l=l;
+        btn.innerHTML=`${(l/1000).toFixed(2).replace('.',',')} m<span class="lp">dès ${f2(p)} €/m²</span>`;
+        btn.onclick=()=>{ grid.querySelectorAll('.lbtn').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); S.panLen=l; calcExpert(); };
+        grid.appendChild(btn);
+    });
+}
+
+function setMode(mode,tab) {
+    document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('active')); tab.classList.add('active');
+    document.querySelectorAll('.dm').forEach(m=>m.classList.remove('active'));
+    document.getElementById('m-'+mode).classList.add('active');
+    S.dimMode=mode; hideDR();
+}
+function addPan() {
+    const r=document.createElement('div'); r.className='pan-row';
+    r.innerHTML=`<div><label class="fl">Largeur du pan</label><div style="display:flex;align-items:center;gap:6px"><input type="number" placeholder="ex: 6" min="0.5" step="0.1" oninput="calcPans()"><span style="font-size:13px;color:var(--ink-muted);white-space:nowrap">m</span></div></div><div><label class="fl">Longueur du pan</label><div style="display:flex;align-items:center;gap:6px"><input type="number" placeholder="ex: 5" min="0.5" step="0.1" oninput="calcPans()"><span style="font-size:13px;color:var(--ink-muted);white-space:nowrap">m</span></div></div><div><label class="fl">Qté</label><input type="number" value="1" min="1" max="8" oninput="calcPans()" style="width:70px"></div><div style="padding-top:22px"><button class="btnrm" onclick="rmPan(this)">×</button></div>`;
+    document.getElementById('pans-list').appendChild(r);
+}
+function rmPan(btn) { if(document.querySelectorAll('#pans-list .pan-row').length>1){btn.closest('.pan-row').remove();calcPans();} }
+
+// ✅ CORRECTION calcPans : nb panneaux = ceil(surface_totale / longueur_panneau_m)
+function calcPans() {
+    const rows=document.querySelectorAll('#pans-list .pan-row');
+    let ts=0, ml=0;
+    rows.forEach(r=>{
+        const ins=r.querySelectorAll('input');
+        const w=parseFloat(ins[0].value)||0, l=parseFloat(ins[1].value)||0, q=parseInt(ins[2].value)||1;
+        ts+=w*l*q; if(l>ml) ml=l;
+    });
+    if(ts>0 && ml>0) {
+        const tgt=(ml+0.25)*1000;
+        const bl=LENS.find(l=>l>=tgt)||LENS[LENS.length-1];
+        // CORRECTION : 1 panneau = 1m × bl/1000 m = bl/1000 m²
+        // Nb panneaux = surface_totale / longueur_panneau
+        const nbPanneaux=Math.ceil(ts/(bl/1000));
+        showDR(ts, nbPanneaux, bl);
+    } else hideDR();
+}
+
+// ✅ CORRECTION calcSurf : nb panneaux = ceil(surface / longueur_panneau_m)
+function calcSurf() {
+    const s=parseFloat(document.getElementById('surf-in').value)||0;
+    const l=parseInt(document.getElementById('surf-len').value)||0;
+    if(s>0 && l>0) {
+        // CORRECTION : nb panneaux = surface / longueur_panneau (pas = surface)
+        const nbPanneaux=Math.ceil(s/(l/1000));
+        showDR(s, nbPanneaux, l);
+    } else hideDR();
+}
+
+// Mode expert : l'utilisateur saisit le nombre de panneaux directement
+function calcExpert() {
+    const q=parseInt(document.getElementById('exp-qty').value)||0;
+    if(q>0 && S.panLen>0) {
+        // Surface couverte = nb panneaux × longueur (largeur utile = 1m)
+        showDR(q*(S.panLen/1000), q, S.panLen);
+    } else hideDR();
+}
+
+function showDR(surf, qty, lenMm) {
+    S.surf=surf; S.panQty=qty; S.panLen=lenMm;
+    if(S.type==='bac-acier' && surf<20) {
+        document.getElementById('dr-box').style.display='flex';
+        document.getElementById('dr-surf').textContent=fN(surf.toFixed(1));
+        document.getElementById('dr-pan').textContent=qty;
+        document.getElementById('dr-len').textContent=fN(lenMm);
+        document.getElementById('dr-price').textContent='— (min. 20 m²)';
+        document.getElementById('bn3').disabled=true;
+        return;
+    }
+    const p=getPricePerM2(S.color,S.thick,surf);
+    // Coût = nb panneaux × longueur (m) × prix/m²
+    const tot=qty*(lenMm/1000)*p;
+    document.getElementById('dr-surf').textContent=fN(surf.toFixed(1));
+    document.getElementById('dr-pan').textContent=qty;
+    document.getElementById('dr-len').textContent=fN(lenMm);
+    document.getElementById('dr-price').textContent=f2(tot);
+    document.getElementById('dr-box').style.display='flex';
+    document.getElementById('bn3').disabled=false; updFlt();
+}
+function hideDR() { document.getElementById('dr-box').style.display='none'; document.getElementById('bn3').disabled=true; }
+
+// ══════════════════════════════════════════════════════════════
+//  ÉTAPE 4 — ACCESSOIRES (Google Sheets)
+// ══════════════════════════════════════════════════════════════
+function buildAccs() {
+    const g=document.getElementById('acc-grid');
+    const loading=document.getElementById('acc-loading');
+    const info=document.getElementById('acc-info');
+    g.innerHTML=''; S.accs={};
+    const tryBuild=(attempt)=>{
+        if(accsReady||attempt>50) {
+            loading.style.display='none'; g.style.display=''; info.style.display='';
+            _renderAccs(g);
+        } else { setTimeout(()=>tryBuild(attempt+1),100); }
+    };
+    tryBuild(0);
+}
+
+function _renderAccs(g) {
+    const accs=ACCS_LOADED;
+    if(Object.keys(accs).length===0) {
+        g.innerHTML='<div style="color:var(--ink-muted);font-size:14px;padding:20px">Aucun accessoire disponible.</div>';
+        return;
+    }
+    let rendered=0;
+    Object.entries(accs).forEach(([id,a])=>{
+        if(a.t.length>0 && !a.t.includes(S.type)) return;
+        if(a.th && a.th!==S.thick) return;
+
+        // Calcul des quantités suggérées
+        let sq=1;
+        const largBat=Math.sqrt(S.surf), penteM=S.panLen/1000;
+        if(a.type==='faitage')    sq=Math.max(1,Math.ceil(largBat));
+        if(a.type==='rive')       sq=Math.max(2,Math.ceil(penteM)*2);
+        if(a.type==='cache')      sq=Math.max(1,S.panQty);
+        if(a.type==='vis') {
+            const lot=a.u.includes('100')?100:(a.u.includes('250')?250:100);
+            sq=Math.max(1,Math.ceil(S.panQty*4/lot));
+        }
+        if(a.type==='gouttière')  sq=Math.max(1,Math.ceil(largBat));
+        if(a.n&&a.n.toLowerCase().includes('crochet')) sq=Math.max(4,Math.ceil(largBat*3));
+
+        S.accs[id]={qty:sq, chk:a.sg};
+
+        const imgHtml = a.img && !a.img.includes('illustration_accessoire')
+            ? `<img src="${a.img}" alt="${a.n}" loading="lazy">`
+            : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:28px">📦</div>';
+
+        const linkHtml = a.link
+            ? `<a class="link-acc" href="${a.link}" target="_blank" rel="noopener" title="Voir le produit"><img src="https://img.icons8.com/forma-regular/500/info.png" alt="info"></a>`
+            : '';
+
+        const d=document.createElement('div');
+        d.className='ar'+(a.sg?' sel':''); d.id='ar-'+id;
+        d.innerHTML=`
+            <div class="acc_container">
+                <div class="ahdr">
+                    <div class="achk${a.sg?' chk':''}" id="ck-${id}" onclick="togAcc('${id}')">${a.sg?'✓':''}</div>
+                    <div class="aname">${a.n}${a.sg?'<span class="asugg">Suggéré</span>':''}</div>
+                    <div class="apt">${f2(a.p)} €/${a.u}</div>
+                </div>
+                <div class="adesc">${a.d}</div>
+                <div class="aqrow">
+                    <span class="aqlbl">Qté :</span>
+                    <div class="qctrl">
+                        <button class="qbtn" onclick="chgQty('${id}',-1)">−</button>
+                        <span class="qdsp" id="qd-${id}">${sq}</span>
+                        <button class="qbtn" onclick="chgQty('${id}',1)">+</button>
+                    </div>
+                </div>
+            </div>
+            <div class="img-acc">${imgHtml}</div>
+            ${linkHtml}`;
+        g.appendChild(d);
+        rendered++;
+    });
+    if(rendered===0) {
+        g.innerHTML='<div style="color:var(--ink-muted);font-size:14px;padding:20px">Aucun accessoire pour cette configuration.</div>';
+    }
+}
+
+function togAcc(id) {
+    S.accs[id].chk=!S.accs[id].chk;
+    const ck=document.getElementById('ck-'+id), rw=document.getElementById('ar-'+id);
+    if(S.accs[id].chk){ck.classList.add('chk');ck.textContent='✓';rw.classList.add('sel');}
+    else{ck.classList.remove('chk');ck.textContent='';rw.classList.remove('sel');}
+    updFlt();
+}
+function chgQty(id,d) {
+    S.accs[id].qty=Math.max(0,S.accs[id].qty+d);
+    document.getElementById('qd-'+id).textContent=S.accs[id].qty;
+    if(S.accs[id].qty===0){
+        S.accs[id].chk=false;
+        const ck=document.getElementById('ck-'+id);
+        ck.classList.remove('chk'); ck.textContent='';
+        document.getElementById('ar-'+id).classList.remove('sel');
+    }
+    updFlt();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  ÉTAPE 5 — LIVRAISON + ADRESSE CHANTIER
+// ══════════════════════════════════════════════════════════════
+
+// Auto-remplissage département depuis le code postal (2 premiers chiffres)
+function autoFillDept() {
+    const cp=(document.getElementById('c-cp').value||'').trim();
+    if(cp.length>=2) {
+        const dNum=cp.substring(0,2);
+        const sel=document.getElementById('dept-sel');
+        for(let opt of sel.options) { if(opt.value===dNum){ sel.value=dNum; calcLiv(); break; } }
+    }
+}
+
+function valLivraison() {
+    const fields=[
+        {id:'c-rue',    err:'e-rue',    ok:v=>v.trim().length>2},
+        {id:'c-cp',     err:'e-cp',     ok:v=>/^\d{4,6}$/.test(v.trim())},
+        {id:'c-ville',  err:'e-ville',  ok:v=>v.trim().length>1},
+        {id:'dept-sel', err:null,       ok:v=>v!==''},
+        {id:'acc-sel',  err:'e-acces',  ok:v=>v!==''},
+    ];
+    let ok=true;
+    fields.forEach(f=>{
+        const el=document.getElementById(f.id);
+        const valid=f.ok(el.value);
+        if(f.err){ const em=document.getElementById(f.err); em.classList.toggle('show',!valid); }
+        el.classList.toggle('ierr',!valid);
+        if(!valid) ok=false;
+    });
+    document.getElementById('bn5').disabled=!ok;
+}
+
+function saveLivraison() {
+    S.client=S.client||{};
+    S.client.rue        = document.getElementById('c-rue').value.trim();
+    S.client.complement = document.getElementById('c-complement').value.trim();
+    S.client.cp         = document.getElementById('c-cp').value.trim();
+    S.client.ville      = document.getElementById('c-ville').value.trim();
+    S.client.pays       = document.getElementById('c-pays').value;
+    S.client.adr        = [S.client.rue, S.client.complement, S.client.cp+' '+S.client.ville,
+                           S.client.pays!=='France'?S.client.pays:null].filter(Boolean).join(', ');
+}
+
+function calcLiv() {
+    const dept=document.getElementById('dept-sel').value;
+    const acc=document.getElementById('acc-sel').value;
+    if(!dept||!acc) return;
+    S.dept=dept; S.access=acc;
+    const thMm=S.thick==='60-105'?105:S.thick==='40-80'?80:(parseInt(S.thick)||60);
+    const vol=parseFloat(((S.panQty*(S.panLen/1000)*1.0*(thMm/1000))*1.2).toFixed(2));
+    const kg=Math.round(S.panQty*(S.panLen/1000)*12);
+    S.livVol=vol; S.livKg=kg;
+    let zone='D';
+    for(const [z,data] of Object.entries(DZONES)){ if(data.d.includes(dept)){zone=z;break;} }
+    const vs=Math.max(0,(vol-5)*20);
+    S.livPrice=DZONES[zone].base+(ASURCH[acc]||0)+vs;
+    document.getElementById('lv-price').textContent=f2(S.livPrice)+' €';
+    document.getElementById('lv-vol').textContent=vol;
+    document.getElementById('lv-kg').textContent=fN(kg);
+    document.getElementById('lv-res').classList.add('show');
+    updFlt();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  ÉTAPE 6 — COORDONNÉES (sans adresse ni date livraison)
+// ══════════════════════════════════════════════════════════════
+function valClient() {
+    const fs=[
+        {id:'c-prenom',err:'e-prenom',ok:v=>v.trim().length>1},
+        {id:'c-nom',   err:'e-nom',   ok:v=>v.trim().length>1},
+        {id:'c-email', err:'e-email', ok:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)},
+        {id:'c-tel',   err:'e-tel',   ok:v=>v.replace(/\s/g,'').length>=10},
+    ];
+    let ok=true;
+    fs.forEach(f=>{
+        const el=document.getElementById(f.id), em=document.getElementById(f.err);
+        const valid=f.ok(el.value);
+        el.classList.toggle('ierr',!valid); em.classList.toggle('show',!valid);
+        if(!valid) ok=false;
+    });
+    document.getElementById('bn6').disabled=!ok;
+}
+function saveClient() {
+    S.client=S.client||{};
+    S.client.prenom = document.getElementById('c-prenom').value.trim();
+    S.client.nom    = document.getElementById('c-nom').value.trim();
+    S.client.email  = document.getElementById('c-email').value.trim();
+    S.client.tel    = document.getElementById('c-tel').value.trim();
+    S.client.soc    = document.getElementById('c-soc').value.trim();
+    S.client.rem    = document.getElementById('c-rem').value.trim();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  TOTAUX
+// ══════════════════════════════════════════════════════════════
+function totals() {
+    const psurf=S.panQty*(S.panLen/1000);
+    const p=getPricePerM2(S.color,S.thick,psurf);
+    const ptot=psurf*p;
+    let atot=0; const alines=[];
+    Object.entries(S.accs).forEach(([id,a])=>{
+        if(!a.chk||a.qty===0) return;
+        const ac=ACCS_LOADED[id]; if(!ac) return;
+        const sub=ac.p*a.qty; atot+=sub;
+        alines.push({name:ac.n,qty:a.qty,unit:ac.u,up:ac.p,sub});
+    });
+    const ht=ptot+atot+(S.livPrice||0);
+    return {p,psurf,ptot,atot,alines,ht,tva:ht*.2,ttc:ht*1.2,ac:ht*.5};
+}
+
+// ══════════════════════════════════════════════════════════════
+//  RECAP
+// ══════════════════════════════════════════════════════════════
+function buildRecap() {
+    if(!S.qnum){const d=new Date();S.qnum='ISO-'+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'-'+Math.floor(Math.random()*9000+1000);}
+    const T=totals();
+    const tn={'romane-canal':'Romane Canal','tuile-plate':'Tuile Plate','bac-acier':'Bac Acier'}[S.type];
+    const tierLabel=getTierLabel(T.psurf);
+    document.getElementById('rc-pan').innerHTML=`<div class="rline"><div><div class="rll">${tn} — ${S.colorName} — ép. ${S.thickName}</div><div class="rld">${S.panQty} panneaux × ${(S.panLen/1000).toFixed(3).replace(/\.?0+$/,'')} m — ${T.psurf.toFixed(1)} m² — <strong>${f2(T.p)} €/m²</strong> ${tierLabel}</div></div><div class="rlp">${f2(T.ptot)} €</div></div>`;
+    let aH='';
+    T.alines.forEach(l=>{aH+=`<div class="rline"><div><div class="rll">${l.name}</div><div class="rld">${l.qty} ${l.unit} × ${f2(l.up)} €</div></div><div class="rlp">${f2(l.sub)} €</div></div>`;});
+    document.getElementById('rc-acc').innerHTML=aH||'<div style="color:var(--ink-muted);font-size:13px;padding:8px 0">Aucun accessoire sélectionné.</div>';
+    const cl=S.client||{};
+    const dL=document.getElementById('dept-sel').options[document.getElementById('dept-sel').selectedIndex]?.text||'—';
+    const adrRec=[cl.rue,cl.complement,cl.cp&&cl.ville?cl.cp+' '+cl.ville:null].filter(Boolean).join(', ');
+    document.getElementById('rc-liv').innerHTML=`<div class="rline"><div><div class="rll">Transport — ${dL}</div><div class="rld">${adrRec||'—'} — Estimation, tarif définitif confirmé par logistique</div></div><div class="rlp">${f2(S.livPrice||0)} €</div></div>`;
+    document.getElementById('rc-tot').textContent=f2(T.ht)+' €';
+    document.getElementById('rc-tva').textContent=f2(T.tva)+' €';
+    document.getElementById('rc-ttc').textContent=f2(T.ttc)+' €';
+    document.getElementById('rc-ac').textContent=f2(T.ac)+' € HT';
+}
+
+function getTierLabel(surfM2) {
+    const g=COLOR_TIER_GROUP[S.color];
+    let tiers;
+    if(g==='rc-unies') tiers=TIERS_RC_UNIES;
+    else if(g==='rc-vieillie') tiers=TIERS_RC_VIEILLIE;
+    else if(g==='tp') tiers=TIERS_TP;
+    else if(g==='ba') tiers=TIERS_BA;
+    else return '';
+    const idx=tiers.map((t,i)=>({i,min:t[0]})).filter(t=>surfM2>=t.min).pop();
+    if(!idx) return '';
+    const min=tiers[idx.i][0], max=idx.i<tiers.length-1?tiers[idx.i+1][0]-1:null;
+    return `<span style="font-size:11px;background:var(--primary-color);color:white;padding:1px 6px;border-radius:10px;margin-left:4px">${max?`palier ${min}–${max} m²`:`palier +${min} m²`}</span>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  FLOATING
+// ══════════════════════════════════════════════════════════════
+function updFlt() {
+    if(S.step<3||!S.panQty){document.getElementById('flt').classList.remove('show');return;}
+    const psurf=S.panQty*(S.panLen/1000);
+    const p=getPricePerM2(S.color,S.thick,psurf);
+    let tot=psurf*p;
+    Object.entries(S.accs||{}).forEach(([id,a])=>{if(a.chk&&a.qty>0&&ACCS_LOADED[id]) tot+=ACCS_LOADED[id].p*a.qty;});
+    document.getElementById('flt-p').textContent=f2(tot)+' €';
+    document.getElementById('flt').classList.add('show');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  PANIER SHOPIFY
+// ══════════════════════════════════════════════════════════════
+async function addCart() {
+    const items=[], missing=[];
+    const vid=getVariantId(S.panLen);
+    if(vid) {
+        items.push({id:vid,quantity:S.panQty,properties:{'Type':S.typeName,'Coloris':S.colorName,'Épaisseur':S.thickName,'Longueur':(S.panLen/1000).toFixed(3).replace(/\.?0+$/,'')+'  m','N° Devis':S.qnum}});
+    } else { missing.push('Panneaux '+S.typeName+' '+S.colorName); }
+    Object.entries(S.accs).forEach(([id,a])=>{
+        if(!a.chk||a.qty===0) return;
+        const v=ACC_VARIANT_IDS[id];
+        if(v) items.push({id:v,quantity:a.qty});
+        else if(ACCS_LOADED[id]) missing.push(ACCS_LOADED[id].n);
+    });
+    if(missing.length>0&&items.length===0){showToast('⚠️ IDs Shopify manquants : '+missing.join(', '),true);return;}
+    if(items.length===0){showToast('⚠️ Aucun article à ajouter.',true);return;}
+    const btn=document.querySelector('.btn-ok');
+    if(btn){btn.disabled=true;btn.textContent='⏳ Ajout en cours…';}
+    try {
+        const r=await fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items})});
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        showToast(missing.length>0?'⚠️ Panier partiel — manquants : '+missing.join(', '):'✓ '+items.length+' article(s) ajouté(s) !');
+        setTimeout(()=>{window.location.href='/cart';},1200);
+    } catch(err) {
+        console.error(err);
+        showToast('❌ Erreur d\'ajout au panier.',true);
+        if(btn){btn.disabled=false;btn.textContent='🛒 Ajouter au panier';}
+    }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  PDF jsPDF
+// ══════════════════════════════════════════════════════════════
+async function genPDF() {
+    document.getElementById('pdfov').classList.add('show');
+    await new Promise(r=>setTimeout(r,400));
+    try {
+        const {jsPDF}=window.jspdf;
+        const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+        const T=totals(), W=210, M=16, CW=W-M*2;
+        let y=0;
+        const CLAY=[196,114,74],INK=[26,22,18],INKS=[74,63,53],MUT=[138,122,110],STO=[245,240,235],WHI=[253,250,247];
+        const sf=(style='normal',sz=10,col=INK)=>{doc.setFont('helvetica',style);doc.setFontSize(sz);doc.setTextColor(...col);};
+        const rct=(x,y,w,h,col,rr=0)=>{doc.setFillColor(...col);rr>0?doc.roundedRect(x,y,w,h,rr,rr,'F'):doc.rect(x,y,w,h,'F');};
+        const ln=(x1,y1,x2,y2,col=STO,lw=0.3)=>{doc.setDrawColor(...col);doc.setLineWidth(lw);doc.line(x1,y1,x2,y2);};
+
+        rct(0,0,W,42,INK);
+        doc.setFont('helvetica','bold');doc.setFontSize(24);doc.setTextColor(...WHI);
+        doc.text('Iso',M,18);const iw=doc.getTextWidth('Iso');
+        doc.setTextColor(...CLAY);doc.text('tuiles',M+iw,18);
+        sf('normal',9,MUT);doc.text('Panneaux sandwich & couverture — Direct usine',M,25);
+        sf('normal',8,[180,170,160]);
+        ['Zone d\'Activité de Gemeillan — 33480 Sainte-Hélène','Tél : 06 76 45 67 57 — Lun-Ven 08h-19h','isotuiles@gmail.com — isotuiles.fr'].forEach((l,i)=>doc.text(l,W-M,14+i*6,{align:'right'}));
+        rct(0,42,W,14,CLAY);
+        sf('bold',13,WHI);doc.text('DEVIS',M,51.5);
+        sf('normal',9,[253,240,230]);doc.text('N° '+S.qnum,M+24,51.5);
+        const td=new Date(),tv=new Date(td);tv.setDate(tv.getDate()+30);
+        const fd=d=>d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});
+        doc.text('Émis le '+fd(td)+'  |  Valable jusqu\'au '+fd(tv),W-M,51.5,{align:'right'});
+        y=64;
+
+        const cl=S.client||{};
+        const bH=52,sX=W-M-54;
+        rct(M,y,CW-58,bH,STO,3);
+        sf('bold',8,CLAY);doc.text('CLIENT / CHANTIER',M+6,y+9);
+        ln(M+6,y+11,M+CW-62,y+11,CLAY,0.4);
+        sf('bold',10,INK);doc.text(cl.soc||[cl.prenom,cl.nom].filter(Boolean).join(' '),M+6,y+18);
+        if(cl.soc){sf('normal',9,INKS);doc.text([cl.prenom,cl.nom].filter(Boolean).join(' '),M+6,y+24);}
+        sf('normal',9,INKS);
+        // Adresse décomposée dans le PDF
+        [cl.rue,cl.complement,[cl.cp,cl.ville].filter(Boolean).join(' '),cl.pays!=='France'?cl.pays:null,cl.tel,cl.email].filter(Boolean).forEach((l,i)=>doc.text(l,M+6,y+26+i*4.8));
+        rct(sX,y,54,bH,STO,3);
+        sf('bold',8,CLAY);doc.text('COLORIS CHOISI',sX+4,y+9);
+        ln(sX+4,y+11,sX+50,y+11,CLAY,0.4);
+        const hex=CCOLOR[S.color]||'#888';
+        doc.setFillColor(parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16));
+        doc.roundedRect(sX+4,y+14,46,22,2,2,'F');
+        doc.setDrawColor(200,190,180);doc.setLineWidth(0.3);doc.roundedRect(sX+4,y+14,46,22,2,2,'S');
+        sf('bold',8,INKS);doc.text(S.colorName||'—',sX+27,y+44,{align:'center',maxWidth:46});
+        y+=bH+10;
+
+        if(cl.rem){
+            rct(M,y,CW,13,[255,248,242],3);
+            doc.setDrawColor(...CLAY);doc.setLineWidth(0.5);doc.line(M,y,M,y+13);
+            sf('italic',8,INKS);doc.text(doc.splitTextToSize('📝 '+cl.rem,CW-10),M+5,y+6);
+            y+=17;
         }
 
-        // Récupère le variant ID Shopify pour les panneaux
-        function getVariantId(lenMm) {
-            const byColor = VARIANTS[S.type]?.[S.color];
-            if (!byColor) return null;
-            const byThick = byColor[S.thick];
-            if (!byThick || typeof byThick !== 'object') return null;
-            return byThick[lenMm] || null;
-        }
+        const stitle=(t,yy)=>{rct(M,yy,CW,8,INK,2);sf('bold',9,WHI);doc.text(t,M+5,yy+5.5);return yy+12;};
 
-        const f2 = n => parseFloat(n).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        const fN = n => parseFloat(n).toLocaleString('fr-FR');
+        y=stitle('PANNEAUX',y);
+        const tn={'romane-canal':'Romane Canal','tuile-plate':'Tuile Plate','bac-acier':'Bac Acier'}[S.type];
+        const grp=COLOR_TIER_GROUP[S.color];
+        let tierTbl=TIERS_RC_UNIES;
+        if(grp==='rc-vieillie') tierTbl=TIERS_RC_VIEILLIE;
+        else if(grp==='tp') tierTbl=TIERS_TP;
+        else if(grp==='ba') tierTbl=TIERS_BA;
+        const tidx=tierTbl.map((t,i)=>({i,min:t[0]})).filter(t=>T.psurf>=t.min).pop();
+        const tMin=tierTbl[tidx.i][0],tMax=tidx.i<tierTbl.length-1?tierTbl[tidx.i+1][0]-1:null;
+        const tierStr=tMax?`Palier ${tMin}–${tMax} m²`:`Palier +${tMin} m²`;
+        doc.autoTable({
+            startY:y,margin:{left:M,right:M},
+            head:[['Désignation','Coloris','Épaisseur','Quantité','Longueur','Surface','Prix/m² HT','Total HT']],
+            body:[[tn,S.colorName,S.thickName,S.panQty+' pann.',(S.panLen/1000).toFixed(3).replace(/\.?0+$/,'')+' m',T.psurf.toFixed(1)+' m²',f2(T.p)+' €\n'+tierStr,f2(T.ptot)+' €']],
+            styles:{fontSize:9,cellPadding:3.5,textColor:INK,lineColor:[220,213,206],lineWidth:0.3},
+            headStyles:{fillColor:CLAY,textColor:WHI,fontStyle:'bold',fontSize:8},
+            alternateRowStyles:{fillColor:STO},
+            columnStyles:{0:{cellWidth:32},1:{cellWidth:28},2:{cellWidth:20},3:{cellWidth:18,halign:'center'},4:{cellWidth:18,halign:'right'},5:{cellWidth:18,halign:'right'},6:{cellWidth:26,halign:'right'},7:{cellWidth:24,halign:'right',fontStyle:'bold'}},
+            theme:'grid',
+        });
+        y=doc.lastAutoTable.finalY+8;
 
-        // ══════════════════════════════════════════════════════════════
-        //  NAVIGATION
-        // ══════════════════════════════════════════════════════════════
-        function tryStep(n) { if (n <= S.maxStep) activate(n); }
-        function activate(n) {
-            document.querySelectorAll('.sc').forEach(e => e.classList.remove('active'));
-            document.getElementById('step-' + n).classList.add('active');
-            document.querySelectorAll('.pgstep').forEach((e, i) => {
-                e.classList.remove('active', 'done');
-                if (i + 1 < n) e.classList.add('done');
-                if (i + 1 === n) e.classList.add('active');
+        if(T.alines.length>0) {
+            y=stitle('ACCESSOIRES DE POSE',y);
+            doc.autoTable({
+                startY:y,margin:{left:M,right:M},
+                head:[['Désignation','Unité','Quantité','Prix unitaire HT','Total HT']],
+                body:T.alines.map(l=>[l.name,l.unit,l.qty,f2(l.up)+' €',f2(l.sub)+' €']),
+                styles:{fontSize:9,cellPadding:3.5,textColor:INK,lineColor:[220,213,206],lineWidth:0.3},
+                headStyles:{fillColor:CLAY,textColor:WHI,fontStyle:'bold',fontSize:8},
+                alternateRowStyles:{fillColor:STO},
+                columnStyles:{0:{cellWidth:72},1:{cellWidth:20},2:{cellWidth:22,halign:'center'},3:{cellWidth:36,halign:'right'},4:{cellWidth:28,halign:'right',fontStyle:'bold'}},
+                theme:'grid',
             });
-            S.step = n; window.scrollTo({ top: 0, behavior: 'smooth' }); updFlt();
-        }
-        function goNext(from) {
-            if (from === 1) { prepStep2(); }
-            if (from === 2) { buildLens(); }
-            if (from === 3) { buildAccs(); }
-            if (from === 5) { buildRecap(); }
-            if (from === 6) { saveClient(); buildRecap(); }
-            const n = from + 1; S.maxStep = Math.max(S.maxStep, n); activate(n);
-        }
-        function goPrev(from) { activate(from - 1); }
-
-        // ══════════════════════════════════════════════════════════════
-        //  ÉTAPE 1
-        // ══════════════════════════════════════════════════════════════
-        function selType(t, tn, el) {
-            document.querySelectorAll('.tc').forEach(c => c.classList.remove('sel'));
-            el.classList.add('sel'); S.type = t; S.typeName = tn;
-            document.getElementById('bn1').disabled = false;
+            y=doc.lastAutoTable.finalY+8;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        //  ÉTAPE 2
-        // ══════════════════════════════════════════════════════════════
-        function prepStep2() {
-            ['rc', 'tp', 'ba'].forEach(k => document.getElementById('col-' + k).style.display = 'none');
-            const map = { 'romane-canal': 'rc', 'tuile-plate': 'tp', 'bac-acier': 'ba' };
-            document.getElementById('col-' + map[S.type]).style.display = '';
-            // Afficher le bon sélecteur d'épaisseur
-            document.getElementById('th-sw').style.display = S.type === 'romane-canal' ? '' : 'none';
-            document.getElementById('th-tp').style.display = S.type === 'tuile-plate' ? '' : 'none';
-            document.getElementById('th-ba').style.display = S.type === 'bac-acier' ? '' : 'none';
-            S.color = null; S.colorName = null; S.thick = null; S.thickName = null;
-            // Tuile Plate : épaisseur unique, sélection automatique
-            if (S.type === 'tuile-plate') {
-                S.thick = '50-77'; S.thickName = '50/77 mm';
-            }
-            document.querySelectorAll('.cc').forEach(c => c.classList.remove('sel'));
-            document.querySelectorAll('#th-sw .thc, #th-ba .thc').forEach(c => c.classList.remove('sel'));
-            document.getElementById('bn2').disabled = S.type === 'tuile-plate' ? true : true; // besoin du coloris
-        }
-        function selColor(c, cn, el, grp) {
-            document.querySelectorAll('#col-' + grp + ' .cc').forEach(x => x.classList.remove('sel'));
-            el.classList.add('sel'); S.color = c; S.colorName = cn; chkS2();
-        }
-        function selThick(t, tn, el) {
-            el.closest('.thgrid').querySelectorAll('.thc').forEach(x => x.classList.remove('sel'));
-            el.classList.add('sel'); S.thick = t; S.thickName = tn; chkS2();
-        }
-        function chkS2() {
-            // Tuile Plate : épaisseur auto, on attend juste le coloris
-            const needsThick = S.type !== 'tuile-plate';
-            document.getElementById('bn2').disabled = !(S.color && (S.thick || !needsThick));
-        }
+        y=stitle('LIVRAISON',y);
+        const dL=document.getElementById('dept-sel').options[document.getElementById('dept-sel').selectedIndex]?.text||'—';
+        const aL={standard:'Accès standard (camion 19T)',difficile:'Accès difficile (camion grue)',hayon:'Hayon élévateur requis'}[S.access]||'—';
+        const adrPDF=[cl.rue,cl.complement,cl.cp&&cl.ville?cl.cp+' '+cl.ville:null].filter(Boolean).join(', ');
+        doc.autoTable({
+            startY:y,margin:{left:M,right:M},
+            head:[['Adresse de livraison','Type d\'accès','Volume est.','Poids est.','Montant HT']],
+            body:[[adrPDF||dL.replace(/^\d+ — /,'').trim(),aL,S.livVol+' m³',fN(S.livKg)+' kg',f2(S.livPrice||0)+' €']],
+            styles:{fontSize:9,cellPadding:3.5,textColor:INK,lineColor:[220,213,206],lineWidth:0.3},
+            headStyles:{fillColor:CLAY,textColor:WHI,fontStyle:'bold',fontSize:8},
+            alternateRowStyles:{fillColor:STO},
+            columnStyles:{0:{cellWidth:52},1:{cellWidth:44},2:{cellWidth:20,halign:'right'},3:{cellWidth:22,halign:'right'},4:{cellWidth:30,halign:'right',fontStyle:'bold'}},
+            theme:'grid',
+        });
+        y=doc.lastAutoTable.finalY+8;
+        sf('italic',8,MUT);doc.text('* Tarif estimatif — confirmé par notre équipe logistique avant validation.',M,y);y+=10;
 
-        // ══════════════════════════════════════════════════════════════
-        //  ÉTAPE 3
-        // ══════════════════════════════════════════════════════════════
-        function buildLens() {
-            const sel = document.getElementById('surf-len');
-            sel.innerHTML = '<option value="">— Choisir une longueur —</option>';
-            LENS.forEach(l => { const o = document.createElement('option'); o.value = l; o.textContent = (l / 1000).toFixed(3).replace(/\.?0+$/, '') + ' m  (' + l.toLocaleString('fr-FR') + ' mm)'; sel.appendChild(o); });
-            const grid = document.getElementById('exp-lgrid'); grid.innerHTML = '';
-            // En mode expert, le prix affiché est estimatif (surface inconnue → palier 0)
-            LENS.forEach(l => {
-                const p = getPricePerM2(S.color, S.thick, 0);
-                const btn = document.createElement('div'); btn.className = 'lbtn'; btn.dataset.l = l;
-                btn.innerHTML = `${(l / 1000).toFixed(2).replace('.', ',')} m<span class="lp">dès ${f2(p)} €/m²</span>`;
-                btn.onclick = () => { grid.querySelectorAll('.lbtn').forEach(b => b.classList.remove('sel')); btn.classList.add('sel'); S.panLen = l; calcExpert(); };
-                grid.appendChild(btn);
-            });
-        }
-        function setMode(mode, tab) {
-            document.querySelectorAll('.mtab').forEach(t => t.classList.remove('active')); tab.classList.add('active');
-            document.querySelectorAll('.dm').forEach(m => m.classList.remove('active')); document.getElementById('m-' + mode).classList.add('active');
-            S.dimMode = mode; hideDR();
-        }
-        function addPan() {
-            const r = document.createElement('div'); r.className = 'pan-row';
-            r.innerHTML = `<div><label class="fl">Largeur du pan</label><div style="display:flex;align-items:center;gap:6px"><input type="number" placeholder="ex: 6" min="0.5" step="0.1" oninput="calcPans()"><span style="font-size:13px;color:var(--ink-muted);white-space:nowrap">m</span></div></div><div><label class="fl">Longueur du pan</label><div style="display:flex;align-items:center;gap:6px"><input type="number" placeholder="ex: 5" min="0.5" step="0.1" oninput="calcPans()"><span style="font-size:13px;color:var(--ink-muted);white-space:nowrap">m</span></div></div><div><label class="fl">Qté</label><input type="number" value="1" min="1" max="8" oninput="calcPans()" style="width:70px"></div><div style="padding-top:22px"><button class="btnrm" onclick="rmPan(this)">×</button></div>`;
-            document.getElementById('pans-list').appendChild(r);
-        }
-        function rmPan(btn) { if (document.querySelectorAll('#pans-list .pan-row').length > 1) { btn.closest('.pan-row').remove(); calcPans(); } }
-        function calcPans() {
-            const rows = document.querySelectorAll('#pans-list .pan-row');
-            let ts = 0, ml = 0;
-            rows.forEach(r => { const i = r.querySelectorAll('input'); const w = parseFloat(i[0].value) || 0, l = parseFloat(i[1].value) || 0, q = parseInt(i[2].value) || 1; ts += w * l * q; if (l > ml) ml = l; });
-            if (ts > 0 && ml > 0) { const tgt = (ml + 0.25) * 1000; const bl = LENS.find(l => l >= tgt) || LENS[LENS.length - 1]; showDR(ts, Math.ceil(ts), bl); } else hideDR();
-        }
-        function calcSurf() { const s = parseFloat(document.getElementById('surf-in').value) || 0, l = parseInt(document.getElementById('surf-len').value) || 0; if (s > 0 && l > 0) showDR(s, Math.ceil(s), l); else hideDR(); }
-        function calcExpert() { const q = parseInt(document.getElementById('exp-qty').value) || 0; if (q > 0 && S.panLen > 0) showDR(q * (S.panLen / 1000), q, S.panLen); else hideDR(); }
+        if(y>228){doc.addPage();y=20;}
+        const tX=W-M-92,tW=92;
+        const rows=[{l:'Total HT',v:f2(T.ht)+' €',b:false},{l:'TVA (20 %)',v:f2(T.tva)+' €',b:false},{l:'Total TTC',v:f2(T.ttc)+' €',b:true}];
+        rct(tX,y,tW,rows.length*10+14,STO,3);
+        rows.forEach((r,i)=>{
+            const ly=y+10+i*10;
+            if(r.b) rct(tX,ly-4,tW,12,INK,2);
+            doc.setFont('helvetica',r.b?'bold':'normal');doc.setFontSize(r.b?11:9);doc.setTextColor(...(r.b?WHI:INKS));
+            doc.text(r.l,tX+6,ly+2);doc.setFont('helvetica','bold');doc.text(r.v,tX+tW-5,ly+2,{align:'right'});
+        });
+        y+=rows.length*10+22;
+        rct(tX,y,tW,18,CLAY,3);
+        sf('normal',8,[253,240,230]);doc.text('Acompte à verser (50 %)',tX+tW/2,y+6,{align:'center'});
+        sf('bold',13,WHI);doc.text(f2(T.ac)+' € HT',tX+tW/2,y+14,{align:'center'});
+        y+=26;
 
-        function showDR(surf, qty, lenMm) {
-            S.surf = surf; S.panQty = qty; S.panLen = lenMm;
-            // Bac Acier : minimum 20 m²
-            if (S.type === 'bac-acier' && surf < 20) {
-                document.getElementById('dr-box').style.display = 'flex';
-                document.getElementById('dr-surf').textContent = fN(surf.toFixed(1));
-                document.getElementById('dr-pan').textContent = qty;
-                document.getElementById('dr-len').textContent = fN(lenMm);
-                document.getElementById('dr-price').textContent = '— (min. 20 m²)';
-                document.getElementById('bn3').disabled = true;
-                return;
-            }
-            // Prix calculé sur la surface réelle commandée
-            const p = getPricePerM2(S.color, S.thick, surf);
-            const tot = qty * (lenMm / 1000) * p;
-            document.getElementById('dr-surf').textContent = fN(surf.toFixed(1));
-            document.getElementById('dr-pan').textContent = qty;
-            document.getElementById('dr-len').textContent = fN(lenMm);
-            console.log(f2(tot))
-            document.getElementById('dr-price').textContent = f2(tot);
-            document.getElementById('dr-box').style.display = 'flex';
-            document.getElementById('bn3').disabled = false; updFlt();
-        }
-        function hideDR() { document.getElementById('dr-box').style.display = 'none'; document.getElementById('bn3').disabled = true; }
+        if(y>240){doc.addPage();y=20;}
+        rct(M,y,CW-96,46,STO,3);
+        sf('bold',8,CLAY);doc.text('CONDITIONS DE VENTE',M+6,y+8);
+        ln(M+6,y+10,M+CW-100,y+10,CLAY,0.4);
+        sf('normal',7.5,INKS);
+        ['• Acompte de 50 % exigible à la commande pour mise en fabrication.',
+         '• Solde réglé impérativement avant le déchargement sur chantier.',
+         '• Délai de fabrication et livraison : 5 à 6 semaines standard.',
+         '• Prix indiqués hors taxes (HT). TVA en vigueur applicable.',
+         '• Devis valable 30 jours à compter de la date d\'émission.',
+         '• Panneaux fabriqués sur mesure — aucun retour accepté.'
+        ].forEach((c,i)=>doc.text(c,M+6,y+17+i*4.5));
 
-        // ══════════════════════════════════════════════════════════════
-        //  ÉTAPE 4
-        // ══════════════════════════════════════════════════════════════
-        function buildAccs() {
-            const g = document.getElementById('acc-grid'); g.innerHTML = ''; S.accs = {};
-            Object.entries(ACCS).forEach(([id, a]) => {
-                if (!a.t.includes(S.type)) return;
-                if (a.th && a.th !== S.thick) return;
-                // Quantités suggérées calculées intelligemment
-                let sq = 1;
-                const largBat = Math.sqrt(S.surf); // estimation côté bâtiment
-                if (id === 'faitage' || id === 'fait-bac') sq = Math.max(1, Math.ceil(largBat / 2));    // ml faîtage ≈ largeur/2
-                if (id === 'faitage-cm') sq = Math.max(1, Math.ceil(largBat / 2));
-                if (id === 'rive-l' || id === 'rive-lat-ba') sq = Math.max(2, Math.ceil(S.panLen / 1000 / 2) * 2 * 2); // 2 rives × hauteur pente
-                if (id === 'rive-u') sq = Math.max(2, Math.ceil(S.panLen / 1000 / 2) * 2 * 2);
-                if (id === 'cm-40' || id === 'cm-60' || id === 'cm-tp') sq = Math.max(1, S.panQty);        // 1 cache/panneau
-                if (id === 'vis-125' || id === 'vis-150' || id === 'vis-tp') sq = Math.max(1, Math.ceil(S.panQty * 4 / 100)); // 4 vis/panneau, boîtes 100
-                if (id === 'vis-bac') sq = Math.max(1, Math.ceil(S.panQty * 4 / 100));
-                if (id === 'goutiere') sq = Math.max(1, Math.ceil(largBat / 2));
-                if (id === 'crochet') sq = Math.max(4, Math.ceil(largBat / 2) * 3);
-                S.accs[id] = { qty: sq, chk: a.sg };
-                const d = document.createElement('div'); d.className = 'ar' + (a.sg ? ' sel' : ''); d.id = 'ar-' + id;
-                d.innerHTML = `<div class="ahdr"><div class="achk${a.sg ? ' chk' : ''}" id="ck-${id}" onclick="togAcc('${id}')">${a.sg ? '✓' : ''}</div><div class="aname">${a.ic} ${a.n}${a.sg ? '<span class="asugg">Suggéré</span>' : ''}</div><div class="apt">${f2(a.p)} €/${a.u}</div></div><div class="adesc">${a.d}</div><div class="aqrow"><span class="aqlbl">Qté :</span><div class="qctrl"><button class="qbtn" onclick="chgQty('${id}',-1)">−</button><span class="qdsp" id="qd-${id}">${sq}</span><button class="qbtn" onclick="chgQty('${id}',1)">+</button></div></div>`;
-                g.appendChild(d);
-            });
-        }
-        function togAcc(id) {
-            S.accs[id].chk = !S.accs[id].chk;
-            const ck = document.getElementById('ck-' + id), rw = document.getElementById('ar-' + id);
-            if (S.accs[id].chk) { ck.classList.add('chk'); ck.textContent = '✓'; rw.classList.add('sel'); }
-            else { ck.classList.remove('chk'); ck.textContent = ''; rw.classList.remove('sel'); }
-            updFlt();
-        }
-        function chgQty(id, d) {
-            S.accs[id].qty = Math.max(0, S.accs[id].qty + d);
-            document.getElementById('qd-' + id).textContent = S.accs[id].qty;
-            if (S.accs[id].qty === 0) { S.accs[id].chk = false; const ck = document.getElementById('ck-' + id); ck.classList.remove('chk'); ck.textContent = ''; document.getElementById('ar-' + id).classList.remove('sel'); }
-            updFlt();
+        const np=doc.getNumberOfPages();
+        for(let i=1;i<=np;i++){
+            doc.setPage(i);rct(0,287,W,10,INK);
+            sf('normal',7.5,MUT);
+            doc.text('Isotuiles — Zone d\'Activité de Gemeillan, 33480 Sainte-Hélène',M,293);
+            doc.text('Devis '+S.qnum+' | Page '+i+'/'+np,W-M,293,{align:'right'});
         }
 
-        // ══════════════════════════════════════════════════════════════
-        //  ÉTAPE 5
-        // ══════════════════════════════════════════════════════════════
-        function calcLiv() {
-            const dept = document.getElementById('dept-sel').value, acc = document.getElementById('acc-sel').value;
-            if (!dept || !acc) return; S.dept = dept; S.access = acc;
-            const thMm = S.thick === '60-105' ? 105 : S.thick === '40-80' ? 80 : (parseInt(S.thick) || 60);
-            const vol = parseFloat(((S.panQty * (S.panLen / 1000) * 1.0 * (thMm / 1000)) * 1.2).toFixed(2));
-            const kg = Math.round(S.panQty * (S.panLen / 1000) * 12);
-            S.livVol = vol; S.livKg = kg;
-            let zone = 'D';
-            for (const [z, data] of Object.entries(DZONES)) { if (data.d.includes(dept)) { zone = z; break; } }
-            const vs = Math.max(0, (vol - 5) * 20);
-            S.livPrice = DZONES[zone].base + (ASURCH[acc] || 0) + vs;
-            document.getElementById('lv-price').textContent = f2(S.livPrice) + ' €';
-            document.getElementById('lv-vol').textContent = vol;
-            document.getElementById('lv-kg').textContent = fN(kg);
-            document.getElementById('lv-res').classList.add('show'); updFlt();
-        }
+        const fn='Devis_Isotuiles_'+S.qnum+'_'+(cl.nom||'client')+'.pdf';
+        doc.save(fn);
+        document.getElementById('pdfov').classList.remove('show');
+        showToast('✓ Devis téléchargé : '+fn);
+    } catch(err) {
+        console.error(err);
+        document.getElementById('pdfov').classList.remove('show');
+        showToast('❌ Erreur génération PDF.',true);
+    }
+}
 
-        // ══════════════════════════════════════════════════════════════
-        //  ÉTAPE 6
-        // ══════════════════════════════════════════════════════════════
-        function valClient() {
-            const fs = [
-                { id: 'c-prenom', err: 'e-prenom', ok: v => v.trim().length > 1 },
-                { id: 'c-nom', err: 'e-nom', ok: v => v.trim().length > 1 },
-                { id: 'c-email', err: 'e-email', ok: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
-                { id: 'c-tel', err: 'e-tel', ok: v => v.replace(/\s/g, '').length >= 10 },
-                { id: 'c-adr', err: 'e-adr', ok: v => v.trim().length > 4 },
-            ];
-            let ok = true;
-            fs.forEach(f => {
-                const el = document.getElementById(f.id), em = document.getElementById(f.err), valid = f.ok(el.value);
-                el.classList.toggle('ierr', !valid); em.classList.toggle('show', !valid);
-                if (!valid) ok = false;
-            });
-            document.getElementById('bn6').disabled = !ok;
-        }
-        function saveClient() {
-            S.client = { prenom: document.getElementById('c-prenom').value.trim(), nom: document.getElementById('c-nom').value.trim(), email: document.getElementById('c-email').value.trim(), tel: document.getElementById('c-tel').value.trim(), adr: document.getElementById('c-adr').value.trim(), soc: document.getElementById('c-soc').value.trim(), dliv: document.getElementById('c-dliv').value.trim(), rem: document.getElementById('c-rem').value.trim() };
-        }
-
-        // ══════════════════════════════════════════════════════════════
-        //  TOTAUX
-        // ══════════════════════════════════════════════════════════════
-        function totals() {
-            // Prix basé sur la surface réelle commandée
-            const psurf = S.panQty * (S.panLen / 1000);
-            const p = getPricePerM2(S.color, S.thick, psurf);
-            const ptot = psurf * p;
-            let atot = 0; const alines = [];
-            Object.entries(S.accs).forEach(([id, a]) => {
-                if (!a.chk || a.qty === 0) return;
-                const ac = ACCS[id], sub = ac.p * a.qty; atot += sub;
-                alines.push({ name: ac.n, qty: a.qty, unit: ac.u, up: ac.p, sub });
-            });
-            const ht = ptot + atot + (S.livPrice || 0);
-            return { p, psurf, ptot, atot, alines, ht, tva: ht * .2, ttc: ht * 1.2, ac: ht * .5 };
-        }
-
-        // ══════════════════════════════════════════════════════════════
-        //  RECAP
-        // ══════════════════════════════════════════════════════════════
-        function buildRecap() {
-            if (!S.qnum) { const d = new Date(); S.qnum = 'ISO-' + d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '-' + Math.floor(Math.random() * 9000 + 1000); }
-            const T = totals();
-            const tn = { 'romane-canal': 'Romane Canal', 'tuile-plate': 'Tuile Plate', 'bac-acier': 'Bac Acier' }[S.type];
-            // Afficher le palier tarifaire appliqué
-            const tierLabel = getTierLabel(T.psurf);
-            document.getElementById('rc-pan').innerHTML = `<div class="rline"><div><div class="rll">${tn} — ${S.colorName} — ép. ${S.thickName}</div><div class="rld">${S.panQty} panneaux × ${(S.panLen / 1000).toFixed(3).replace(/\.?0+$/, '')} m — ${T.psurf.toFixed(1)} m² — <strong>${f2(T.p)} €/m²</strong> ${tierLabel}</div></div><div class="rlp">${f2(T.ptot)} €</div></div>`;
-            let aH = '';
-            T.alines.forEach(l => { aH += `<div class="rline"><div><div class="rll">${l.name}</div><div class="rld">${l.qty} ${l.unit} × ${f2(l.up)} €</div></div><div class="rlp">${f2(l.sub)} €</div></div>`; });
-            document.getElementById('rc-acc').innerHTML = aH || '<div style="color:var(--ink-muted);font-size:13px;padding:8px 0">Aucun accessoire sélectionné.</div>';
-            const dL = document.getElementById('dept-sel').options[document.getElementById('dept-sel').selectedIndex]?.text || '—';
-            document.getElementById('rc-liv').innerHTML = `<div class="rline"><div><div class="rll">Transport — ${dL}</div><div class="rld">Estimation — tarif définitif confirmé par logistique</div></div><div class="rlp">${f2(S.livPrice || 0)} €</div></div>`;
-            document.getElementById('rc-tot').textContent = f2(T.ht) + ' €';
-            document.getElementById('rc-tva').textContent = f2(T.tva) + ' €';
-            document.getElementById('rc-ttc').textContent = f2(T.ttc) + ' €';
-            document.getElementById('rc-ac').textContent = f2(T.ac) + ' € HT';
-        }
-
-        // Retourne un label lisible du palier tarifaire appliqué
-        function getTierLabel(surfM2) {
-            const group = COLOR_TIER_GROUP[S.color];
-            let tiers;
-            if (group === 'rc-unies') tiers = TIERS_RC_UNIES;
-            else if (group === 'rc-vieillie') tiers = TIERS_RC_VIEILLIE;
-            else if (group === 'tp') tiers = TIERS_TP;
-            else if (group === 'ba') tiers = TIERS_BA;
-            else return '';
-            const idx = tiers.map((t, i) => ({ i, min: t[0] })).filter(t => surfM2 >= t.min).pop();
-            if (!idx) return '';
-            const min = tiers[idx.i][0];
-            const max = idx.i < tiers.length - 1 ? tiers[idx.i + 1][0] - 1 : null;
-            const label = max ? `palier ${min}–${max} m²` : `palier +${min} m²`;
-            return `<span style="font-size:11px;background:var(--primary-color);color:white;padding:1px 6px;border-radius:10px;margin-left:4px">${label}</span>`;
-        }
-
-        // ══════════════════════════════════════════════════════════════
-        //  FLOATING
-        // ══════════════════════════════════════════════════════════════
-        function updFlt() {
-            if (S.step < 3 || !S.panQty) { document.getElementById('flt').classList.remove('show'); return; }
-            const psurf = S.panQty * (S.panLen / 1000);
-            const p = getPricePerM2(S.color, S.thick, psurf);
-            let tot = psurf * p;
-            Object.entries(S.accs || {}).forEach(([id, a]) => { if (a.chk && a.qty > 0) tot += ACCS[id].p * a.qty; });
-            document.getElementById('flt-p').textContent = f2(tot) + ' €';
-            document.getElementById('flt').classList.add('show');
-        }
-
-        // ══════════════════════════════════════════════════════════════
-        //  ACTIONS
-        // ══════════════════════════════════════════════════════════════
-        async function addCart() {
-            // ── Construire la liste des items ─────────────────────────
-            const items = [];
-            const missing = [];
-
-            // Panneaux
-            const panelVariantId = getVariantId(S.panLen);
-            if (panelVariantId) {
-                items.push({
-                    id: panelVariantId,
-                    quantity: S.panQty,
-                    properties: {
-                        'Type': S.typeName,
-                        'Coloris': S.colorName,
-                        'Épaisseur': S.thickName,
-                        'Longueur': (S.panLen / 1000).toFixed(3).replace(/\.?0+$/, '') + ' m',
-                        'N° Devis': S.qnum,
-                    }
-                });
-            } else {
-                missing.push('Panneaux ' + S.typeName + ' ' + S.colorName);
-            }
-
-            // Accessoires
-            Object.entries(S.accs).forEach(([id, a]) => {
-                if (!a.chk || a.qty === 0) return;
-                const vid = ACC_VARIANT_IDS[id];
-                if (vid) {
-                    items.push({ id: vid, quantity: a.qty });
-                } else {
-                    missing.push(ACCS[id].n);
-                }
-            });
-
-            // ── Avertissement si IDs manquants ───────────────────────
-            if (missing.length > 0 && items.length === 0) {
-                showToast('⚠️ IDs Shopify manquants pour : ' + missing.join(', ') + '. Veuillez contacter l\'équipe.', true);
-                return;
-            }
-
-            if (items.length === 0) {
-                showToast('⚠️ Aucun article à ajouter au panier.', true);
-                return;
-            }
-
-            // ── Appel /cart/add.js ────────────────────────────────────
-            const btn = document.querySelector('.btn-ok');
-            if (btn) { btn.disabled = true; btn.textContent = '⏳ Ajout en cours…'; }
-
-            try {
-                const resp = await fetch('/cart/add.js', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ items })
-                });
-
-                if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                const data = await resp.json();
-
-                if (missing.length > 0) {
-                    showToast('⚠️ Panier partiel — articles manquants : ' + missing.join(', '));
-                } else {
-                    showToast('✓ ' + items.length + ' article(s) ajouté(s) au panier !');
-                }
-
-                // Redirection vers le panier après 1,2s
-                setTimeout(() => { window.location.href = '/cart'; }, 1200);
-
-            } catch (err) {
-                console.error('Cart error:', err);
-                showToast('❌ Erreur d\'ajout au panier. Veuillez réessayer.', true);
-                if (btn) { btn.disabled = false; btn.textContent = '🛒 Ajouter au panier'; }
-            }
-        }
-
-        // ══════════════════════════════════════════════════════════════
-        //  PDF jsPDF
-        // ══════════════════════════════════════════════════════════════
-        async function genPDF() {
-            document.getElementById('pdfov').classList.add('show');
-            await new Promise(r => setTimeout(r, 400));
-            try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-                const T = totals();
-                const W = 210, M = 16, CW = W - M * 2;
-                let y = 0;
-
-                // Couleurs
-                const CLAY = [196, 114, 74], INK = [26, 22, 18], INKS = [74, 63, 53], MUT = [138, 122, 110];
-                const STO = [245, 240, 235], WHI = [253, 250, 247], SUC = [74, 124, 89];
-
-                const sf = (style = 'normal', sz = 10, col = INK) => { doc.setFont('helvetica', style); doc.setFontSize(sz); doc.setTextColor(...col); };
-                const rct = (x, y, w, h, col, rr = 0) => { doc.setFillColor(...col); rr > 0 ? doc.roundedRect(x, y, w, h, rr, rr, 'F') : doc.rect(x, y, w, h, 'F'); };
-                const ln = (x1, y1, x2, y2, col = STO, lw = 0.3) => { doc.setDrawColor(...col); doc.setLineWidth(lw); doc.line(x1, y1, x2, y2); };
-
-                // ── HEADER ──
-                rct(0, 0, W, 42, INK);
-                doc.setFont('helvetica', 'bold'); doc.setFontSize(24); doc.setTextColor(...WHI);
-                doc.text('Iso', M, 18);
-                const iw = doc.getTextWidth('Iso');
-                doc.setTextColor(...CLAY); doc.text('tuiles', M + iw, 18);
-                sf('normal', 9, MUT); doc.text('Panneaux sandwich & couverture — Direct usine', M, 25);
-                sf('normal', 8, [180, 170, 160]);
-                ['Zone d\'Activité de Gemeillan — 33480 Sainte-Hélène', 'Tél : 06 76 45 67 57 — Lun-Ven 08h-19h', 'isotuiles@gmail.com — isotuiles.fr'].forEach((l, i) => doc.text(l, W - M, 14 + i * 6, { align: 'right' }));
-
-                rct(0, 42, W, 14, CLAY);
-                sf('bold', 13, WHI); doc.text('DEVIS', M, 51.5);
-                sf('normal', 9, [253, 240, 230]); doc.text('N° ' + S.qnum, M + 24, 51.5);
-                const td = new Date(), tv = new Date(td); tv.setDate(tv.getDate() + 30);
-                const fd = d => d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                doc.text('Émis le ' + fd(td) + '  |  Valable jusqu\'au ' + fd(tv), W - M, 51.5, { align: 'right' });
-                y = 64;
-
-                // ── CLIENT + SWATCH ──
-                const bH = 46, sX = W - M - 54;
-                rct(M, y, CW - 58, bH, STO, 3);
-                sf('bold', 8, CLAY); doc.text('CLIENT / CHANTIER', M + 6, y + 9);
-                ln(M + 6, y + 11, M + CW - 62, y + 11, CLAY, 0.4);
-                const cl = S.client;
-                sf('bold', 10, INK); doc.text(cl.soc || [cl.prenom, cl.nom].filter(Boolean).join(' '), M + 6, y + 18);
-                if (cl.soc) { sf('normal', 9, INKS); doc.text([cl.prenom, cl.nom].filter(Boolean).join(' '), M + 6, y + 24); }
-                sf('normal', 9, INKS);
-                [cl.adr, cl.tel, cl.email, cl.dliv ? 'Livraison souhaitée : ' + cl.dliv : null].filter(Boolean).forEach((l, i) => doc.text(l, M + 6, y + 26 + i * 5.5));
-
-                rct(sX, y, 54, bH, STO, 3);
-                sf('bold', 8, CLAY); doc.text('COLORIS CHOISI', sX + 4, y + 9);
-                ln(sX + 4, y + 11, sX + 50, y + 11, CLAY, 0.4);
-                const hex = CCOLOR[S.color] || '#888';
-                doc.setFillColor(parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16));
-                doc.roundedRect(sX + 4, y + 14, 46, 19, 2, 2, 'F');
-                doc.setDrawColor(200, 190, 180); doc.setLineWidth(0.3); doc.roundedRect(sX + 4, y + 14, 46, 19, 2, 2, 'S');
-                sf('bold', 8, INKS); doc.text(S.colorName || '—', sX + 27, y + 40, { align: 'center', maxWidth: 46 });
-                y += bH + 10;
-
-                if (cl.rem) {
-                    rct(M, y, CW, 13, [255, 248, 242], 3);
-                    doc.setDrawColor(...CLAY); doc.setLineWidth(0.5); doc.line(M, y, M, y + 13);
-                    sf('italic', 8, INKS);
-                    doc.text(doc.splitTextToSize('📝 ' + cl.rem, CW - 10), M + 5, y + 6);
-                    y += 17;
-                }
-
-                // Section title helper
-                const stitle = (t, yy) => { rct(M, yy, CW, 8, INK, 2); sf('bold', 9, WHI); doc.text(t, M + 5, yy + 5.5); return yy + 12; };
-
-                // ── PANNEAUX ──
-                y = stitle('PANNEAUX', y);
-                const tn = { 'romane-canal': 'Romane Canal', 'tuile-plate': 'Tuile Plate', 'bac-acier': 'Bac Acier' }[S.type];
-                // Déterminer le libellé du palier tarifaire appliqué
-                const group = COLOR_TIER_GROUP[S.color];
-                let tierTbl = TIERS_RC_UNIES;
-                if (group === 'rc-vieillie') tierTbl = TIERS_RC_VIEILLIE;
-                else if (group === 'tp') tierTbl = TIERS_TP;
-                else if (group === 'ba') tierTbl = TIERS_BA;
-                const tidx = tierTbl.map((t, i) => ({ i, min: t[0] })).filter(t => T.psurf >= t.min).pop();
-                const tMin = tierTbl[tidx.i][0], tMax = tidx.i < tierTbl.length - 1 ? tierTbl[tidx.i + 1][0] - 1 : null;
-                const tierStr = tMax ? `Palier ${tMin}–${tMax} m²` : `Palier +${tMin} m²`;
-                doc.autoTable({
-                    startY: y, margin: { left: M, right: M },
-                    head: [['Désignation', 'Coloris', 'Épaisseur', 'Quantité', 'Longueur', 'Surface', 'Prix/m² HT', 'Total HT']],
-                    body: [[tn, S.colorName, S.thickName, S.panQty + ' pann.', (S.panLen / 1000).toFixed(3).replace(/\.?0+$/, '') + ' m', T.psurf.toFixed(1) + ' m²', f2(T.p) + ' €\n' + tierStr, f2(T.ptot) + ' €']],
-                    styles: { fontSize: 9, cellPadding: 3.5, textColor: INK, lineColor: [220, 213, 206], lineWidth: 0.3 },
-                    headStyles: { fillColor: CLAY, textColor: WHI, fontStyle: 'bold', fontSize: 8 },
-                    alternateRowStyles: { fillColor: STO },
-                    columnStyles: { 0: { cellWidth: 32 }, 1: { cellWidth: 28 }, 2: { cellWidth: 20 }, 3: { cellWidth: 18, halign: 'center' }, 4: { cellWidth: 18, halign: 'right' }, 5: { cellWidth: 18, halign: 'right' }, 6: { cellWidth: 26, halign: 'right' }, 7: { cellWidth: 24, halign: 'right', fontStyle: 'bold' } },
-                    theme: 'grid',
-                });
-                y = doc.lastAutoTable.finalY + 8;
-
-                // ── ACCESSOIRES ──
-                if (T.alines.length > 0) {
-                    y = stitle('ACCESSOIRES DE POSE', y);
-                    doc.autoTable({
-                        startY: y, margin: { left: M, right: M },
-                        head: [['Désignation', 'Unité', 'Quantité', 'Prix unitaire HT', 'Total HT']],
-                        body: T.alines.map(l => [l.name, l.unit, l.qty, f2(l.up) + ' €', f2(l.sub) + ' €']),
-                        styles: { fontSize: 9, cellPadding: 3.5, textColor: INK, lineColor: [220, 213, 206], lineWidth: 0.3 },
-                        headStyles: { fillColor: CLAY, textColor: WHI, fontStyle: 'bold', fontSize: 8 },
-                        alternateRowStyles: { fillColor: STO },
-                        columnStyles: { 0: { cellWidth: 72 }, 1: { cellWidth: 20 }, 2: { cellWidth: 22, halign: 'center' }, 3: { cellWidth: 36, halign: 'right' }, 4: { cellWidth: 28, halign: 'right', fontStyle: 'bold' } },
-                        theme: 'grid',
-                    });
-                    y = doc.lastAutoTable.finalY + 8;
-                }
-
-                // ── LIVRAISON ──
-                y = stitle('LIVRAISON', y);
-                const dL = document.getElementById('dept-sel').options[document.getElementById('dept-sel').selectedIndex]?.text || '—';
-                const aL = { standard: 'Accès standard (camion 19T)', difficile: 'Accès difficile (camion grue)', hayon: 'Hayon élévateur requis' }[S.access] || '—';
-                doc.autoTable({
-                    startY: y, margin: { left: M, right: M },
-                    head: [['Destination', 'Type d\'accès', 'Volume est.', 'Poids est.', 'Montant HT']],
-                    body: [[dL.replace(/^\d+ — /, '').trim(), aL, S.livVol + ' m³', fN(S.livKg) + ' kg', f2(S.livPrice || 0) + ' €']],
-                    styles: { fontSize: 9, cellPadding: 3.5, textColor: INK, lineColor: [220, 213, 206], lineWidth: 0.3 },
-                    headStyles: { fillColor: CLAY, textColor: WHI, fontStyle: 'bold', fontSize: 8 },
-                    alternateRowStyles: { fillColor: STO },
-                    columnStyles: { 0: { cellWidth: 44 }, 1: { cellWidth: 52 }, 2: { cellWidth: 22, halign: 'right' }, 3: { cellWidth: 24, halign: 'right' }, 4: { cellWidth: 36, halign: 'right', fontStyle: 'bold' } },
-                    theme: 'grid',
-                });
-                y = doc.lastAutoTable.finalY + 8;
-                sf('italic', 8, MUT); doc.text('* Tarif estimatif — confirmé par notre équipe logistique avant validation.', M, y); y += 10;
-
-                // ── TOTAUX ──
-                if (y > 228) { doc.addPage(); y = 20; }
-                const tX = W - M - 92, tW = 92;
-                const rows = [{ l: 'Total HT', v: f2(T.ht) + ' €', b: false }, { l: 'TVA (20 %)', v: f2(T.tva) + ' €', b: false }, { l: 'Total TTC', v: f2(T.ttc) + ' €', b: true }];
-                rct(tX, y, tW, rows.length * 10 + 14, STO, 3);
-                rows.forEach((r, i) => {
-                    const ly = y + 10 + i * 10;
-                    if (r.b) { rct(tX, ly - 4, tW, 12, INK, 2); }
-                    doc.setFont('helvetica', r.b ? 'bold' : 'normal'); doc.setFontSize(r.b ? 11 : 9); doc.setTextColor(...(r.b ? WHI : INKS));
-                    doc.text(r.l, tX + 6, ly + 2);
-                    doc.setFont('helvetica', 'bold'); doc.text(r.v, tX + tW - 5, ly + 2, { align: 'right' });
-                });
-                y += rows.length * 10 + 22;
-                rct(tX, y, tW, 18, CLAY, 3);
-                sf('normal', 8, [253, 240, 230]); doc.text('Acompte à verser (50 %)', tX + tW / 2, y + 6, { align: 'center' });
-                sf('bold', 13, WHI); doc.text(f2(T.ac) + ' € HT', tX + tW / 2, y + 14, { align: 'center' });
-                y += 26;
-
-                // ── CONDITIONS ──
-                if (y > 240) { doc.addPage(); y = 20; }
-                rct(M, y, CW - 96, 46, STO, 3);
-                sf('bold', 8, CLAY); doc.text('CONDITIONS DE VENTE', M + 6, y + 8);
-                ln(M + 6, y + 10, M + CW - 100, y + 10, CLAY, 0.4);
-                sf('normal', 7.5, INKS);
-                ['• Acompte de 50 % exigible à la commande pour mise en fabrication.',
-                    '• Solde réglé impérativement avant le déchargement sur chantier.',
-                    '• Délai de fabrication et livraison : 5 à 6 semaines standard.',
-                    '• Prix indiqués hors taxes (HT). TVA en vigueur applicable.',
-                    '• Devis valable 30 jours à compter de la date d\'émission.',
-                    '• Panneaux fabriqués sur mesure — aucun retour accepté.'].forEach((c, i) => doc.text(c, M + 6, y + 17 + i * 4.5));
-
-                // ── FOOTER ──
-                const np = doc.getNumberOfPages();
-                for (let i = 1; i <= np; i++) {
-                    doc.setPage(i); rct(0, 287, W, 10, INK);
-                    sf('normal', 7.5, MUT);
-                    doc.text('Isotuiles — Zone d\'Activité de Gemeillan, 33480 Sainte-Hélène', M, 293);
-                    doc.text('Devis ' + S.qnum + ' | Page ' + i + '/' + np, W - M, 293, { align: 'right' });
-                }
-
-                const fn = 'Devis_Isotuiles_' + S.qnum + '_' + (cl.nom || 'client') + '.pdf';
-                doc.save(fn);
-                document.getElementById('pdfov').classList.remove('show');
-                showToast('✓ Devis téléchargé : ' + fn);
-            } catch (err) {
-                console.error(err);
-                document.getElementById('pdfov').classList.remove('show');
-                showToast('❌ Erreur génération PDF.', true);
-            }
-        }
-
-        // ══════════════════════════════════════════════════════════════
-        //  TOAST
-        // ══════════════════════════════════════════════════════════════
-        function showToast(msg, err = false) {
-            const t = document.getElementById('toast');
-            t.textContent = msg; t.className = 'toast' + (err ? ' err' : '') + ' show';
-            setTimeout(() => t.classList.remove('show'), 4500);
-        }
-    </script>
+// ══════════════════════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════════════════════
+function showToast(msg,err=false) {
+    const t=document.getElementById('toast');
+    t.textContent=msg; t.className='toast'+(err?' err':'')+' show';
+    setTimeout(()=>t.classList.remove('show'),4500);
+}
+</script>
 </body>
-
 </html>
