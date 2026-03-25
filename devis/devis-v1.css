@@ -664,9 +664,14 @@
      right: 0px;
      top: 0px;
      background-color: var(--select-light);
-     border-radius: 0 10px 0 10px;
+     border-radius: 0 8px 0 8px;
      height: 25px;
      width: 25px;
+     transition: filter .2s ease-in;
+ }
+
+ .link-acc:hover {
+     filter: brightness(0.9);
  }
 
  .link-acc img {
@@ -676,14 +681,12 @@
  .img-acc {
      width: 10vw;
      max-width: 90px;
-     height: 10vw;
-     max-height: 90px;
+     aspect-ratio: 1;
      flex: 3;
      border-radius: 15px;
      overflow: hidden;
      padding: 5px;
      background-color: #fff;
-     cursor: pointer;
      transition: .4s ease transform;
  }
 
