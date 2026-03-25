@@ -11,1138 +11,8 @@
         rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-    <style>
-        :root {
-            --primary-color: #002F5C;
-            --primary-light: #2b66a8;
-            --primary-dark: #02192e;
-            --select-light: #fdfeff;
-            --select-color: #e1e6ff;
-            --stone: #ebeff5;
-            --stone-mid: #d5dae8;
-            --stone-dark: #6b7280;
-            --ink: #12171a;
-            --ink-soft: #758199;
-            --ink-muted: #6b7280;
-            --white: #FDFAF7;
-            --success: #4A7C59;
-            --shadow: 0 4px 24px rgba(26, 22, 18, .10);
-            --shadow-lg: 0 12px 48px rgba(26, 22, 18, .15);
-            --gradient-background: linear-gradient(90deg, rgba(1, 46, 90, 1) 13%, rgba(1, 134, 196, 1) 86%);
-            --r: 16px;
-            --rs: 10px;
-        }
+    <link rel="stylesheet" href="./devis-v1.css">
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0
-        }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--stone);
-            color: var(--ink);
-            min-height: 100vh;
-            line-height: 1.5
-        }
-
-        /* HEADER */
-        .hdr {
-            background: var(--gradient-background);
-            padding: 18px 32px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100
-        }
-
-        .logo img {
-            height: 3rem;
-        }
-
-        .back {
-            color: white;
-            font-size: 13px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: color .2s
-        }
-
-        .back:hover {
-            color: var(--white)
-        }
-
-        /* PROGRESS */
-        .pgwrap {
-            background: var(--stone-mid);
-            padding: 0 32px
-        }
-
-        .pgsteps {
-            display: flex;
-            max-width: 920px;
-            margin: 0 auto
-        }
-
-        .pgstep {
-            flex: 1;
-            padding: 13px 4px 11px;
-            font-size: 10.5px;
-            font-weight: 500;
-            letter-spacing: .7px;
-            text-transform: uppercase;
-            color: var(--ink-muted);
-            text-align: center;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all .25s;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis
-        }
-
-        .pgstep.active {
-            color: var(--primary-light);
-            border-bottom-color: var(--primary-light)
-        }
-
-        .pgstep.done {
-            color: var(--stone-dark);
-            border-bottom-color: var(--stone-dark)
-        }
-
-        .sn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--ink);
-            border: 1.5px solid currentColor;
-            font-size: 9px;
-            margin-right: 4px;
-            margin-bottom: -2px
-        }
-
-        .pgstep.done .sn {
-            background: var(--stone-dark);
-            border-color: var(--stone-dark);
-            color: var(--ink)
-        }
-
-        .pgstep.active .sn {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white
-        }
-
-        /* CONTAINER */
-        .ctn {
-            max-width: 920px;
-            margin: 0 auto;
-            padding: 40px 24px 100px
-        }
-
-        /* STEP CARD */
-        .sc {
-            background: var(--white);
-            border-radius: var(--r);
-            padding: 40px;
-            box-shadow: var(--shadow);
-            display: none;
-            animation: fi .3s ease
-        }
-
-        .sc.active {
-            display: block
-        }
-
-        @keyframes fi {
-            from {
-                opacity: 0;
-                transform: translateY(12px)
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0)
-            }
-        }
-
-        .eyebrow {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: var(--primary-color);
-            margin-bottom: 8px
-        }
-
-        .stitle {
-            font-family: 'Arial', serif;
-            font-size: 28px;
-            margin-bottom: 6px;
-            line-height: 1.2
-        }
-
-        .ssub {
-            color: var(--ink-muted);
-            font-size: 14px;
-            margin-bottom: 32px
-        }
-
-        .divider {
-            height: 1px;
-            background: var(--stone-mid);
-            margin: 28px 0
-        }
-
-        .slabel {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--ink-soft);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px
-        }
-
-        .slabel::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--stone-mid)
-        }
-
-        /* TYPE CARDS */
-        .tgrid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px
-        }
-
-        .tc {
-            border: 2px solid var(--stone-mid);
-            border-radius: var(--rs);
-            padding: 24px 16px;
-            cursor: pointer;
-            transition: all .2s;
-            text-align: center;
-            background: var(--stone);
-            position: relative;
-            overflow: hidden
-        }
-
-        .tc:hover {
-            border-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow)
-        }
-
-        .tc.sel {
-            border-color: var(--primary-color);
-            background: var(--select-light)
-        }
-
-        .tc.sel::after {
-            content: '✓';
-            position: absolute;
-            top: 10px;
-            right: 12px;
-            width: 22px;
-            height: 22px;
-            background: var(--primary-color);
-            color: white;
-            border-radius: 50%;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center
-        }
-
-        .tico {
-            width: 10vw;
-            height: 10vw;
-            margin: 0 auto 12px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--stone-mid);
-            font-size: 26px
-        }
-
-        .tico img {
-            width: 90%;
-            filter: grayscale();
-        }
-
-        .tc.sel .tico {
-            background: var(--primary-color)
-        }
-
-        .tname {
-            font-weight: 600;
-            font-size: 15px;
-            margin-bottom: 4px
-        }
-
-        .tdesc {
-            font-size: 12px;
-            color: var(--ink-muted);
-            line-height: 1.4
-        }
-
-        .tprice {
-            margin-top: 10px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--primary-dark)
-        }
-
-        /* COLORS */
-        .cgrid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 12px;
-            margin-bottom: 28px
-        }
-
-        .cc {
-            border: 2px solid var(--stone-mid);
-            border-radius: var(--rs);
-            cursor: pointer;
-            transition: all .2s;
-            overflow: hidden
-        }
-
-        .cc:hover {
-            border-color: var(--primary-light);
-            transform: translateY(-2px)
-        }
-
-        .cc.sel {
-            border-color: var(--primary-color)
-        }
-
-        .cswatch {
-            height: 64px;
-            width: 100%
-        }
-
-        .clabel {
-            padding: 8px 10px;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--ink-soft);
-            background: var(--white)
-        }
-
-        /* THICKNESS */
-        .thgrid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px
-        }
-
-        .thc {
-            border: 2px solid var(--stone-mid);
-            border-radius: var(--rs);
-            padding: 18px 20px;
-            cursor: pointer;
-            transition: all .2s;
-            background: var(--stone)
-        }
-
-        .thc:hover {
-            border-color: var(--primary-light)
-        }
-
-        .thc.sel {
-            border-color: var(--primary-color);
-            background: var(--select-light)
-        }
-
-        .thname {
-            font-weight: 700;
-            font-size: 16px;
-            margin-bottom: 2px
-        }
-
-        .thr {
-            font-size: 12px;
-            color: var(--ink-muted)
-        }
-
-        .thuse {
-            font-size: 12px;
-            color: var(--ink-soft);
-            margin-top: 6px
-        }
-
-        /* DIM */
-        .mtabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 28px;
-            background: var(--stone);
-            padding: 6px;
-            border-radius: var(--rs)
-        }
-
-        .mtab {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: transparent;
-            border-radius: 8px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--ink-muted);
-            cursor: pointer;
-            transition: all .2s
-        }
-
-        .mtab.active {
-            background: var(--white);
-            color: var(--primary-dark);
-            box-shadow: var(--shadow)
-        }
-
-        .dm {
-            display: none
-        }
-
-        .dm.active {
-            display: block
-        }
-
-        .pan-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr auto auto;
-            gap: 12px;
-            align-items: end;
-            margin-bottom: 12px;
-            padding: 16px;
-            background: var(--stone);
-            border-radius: var(--rs);
-            border: 1.5px solid var(--stone-mid)
-        }
-
-        .pan-hint {
-            background: transparent !important;
-            border-style: dashed !important;
-            cursor: pointer;
-            color: var(--ink-muted);
-            font-size: 13px;
-            grid-template-columns: 1fr !important;
-            padding: 12px !important;
-            text-align: center
-        }
-
-        .pan-hint:hover {
-            border-color: var(--primary-color) !important;
-            color: var(--primary-color)
-        }
-
-        label.fl {
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: .5px;
-            text-transform: uppercase;
-            color: var(--ink-muted);
-            display: block;
-            margin-bottom: 6px
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 11px 14px;
-            border: 2px solid var(--stone-mid);
-            border-radius: 8px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 15px;
-            color: var(--ink);
-            background: var(--white);
-            outline: none;
-            transition: border-color .2s
-        }
-
-        input[type=number] {
-            -moz-appearance: textfield
-        }
-
-        input[type=number]::-webkit-inner-spin-button {
-            -webkit-appearance: none
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            border-color: var(--primary-color)
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px
-        }
-
-        .fhint {
-            font-size: 12px;
-            color: var(--ink-muted);
-            margin-top: 4px
-        }
-
-        .fg {
-            margin-bottom: 20px
-        }
-
-        .btnrm {
-            width: 36px;
-            height: 36px;
-            border: 1.5px solid var(--stone-dark);
-            background: transparent;
-            border-radius: 8px;
-            cursor: pointer;
-            color: var(--ink-muted);
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all .2s
-        }
-
-        .btnrm:hover {
-            border-color: #c0392b;
-            color: #c0392b
-        }
-
-        .drbox {
-            background: linear-gradient(135deg, var(--select-light), var(--select-color));
-            border: 1.5px solid var(--primary-light);
-            border-radius: var(--rs);
-            padding: 20px 24px;
-            margin-top: 20px;
-            display: flex;
-            gap: 32px;
-            flex-wrap: wrap
-        }
-
-        .drl {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: .8px;
-            color: var(--primary-dark)
-        }
-
-        .drv {
-            font-family: 'Oswald', serif;
-            font-size: 26px
-        }
-
-        .drs {
-            font-size: 12px;
-            color: var(--ink-muted);
-            margin-top: 2px
-        }
-
-        .lgrid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 8px;
-            margin-top: 16px
-        }
-
-        .lbtn {
-            padding: 10px 6px;
-            border: 2px solid var(--stone-mid);
-            background: var(--stone);
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            text-align: center;
-            transition: all .2s;
-            color: var(--ink-soft)
-        }
-
-        .lbtn:hover {
-            border-color: var(--primary-light)
-        }
-
-        .lbtn.sel {
-            border-color: var(--primary-color);
-            background: var(--select-light);
-            color: var(--primary-dark);
-            font-weight: 700
-        }
-
-        .lbtn .lp {
-            display: block;
-            font-size: 10px;
-            color: var(--ink-muted);
-            margin-top: 2px;
-            font-weight: 400
-        }
-
-        .lbtn.sel .lp {
-            color: var(--primary-color)
-        }
-
-        /* ACC */
-        .agrid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px
-        }
-
-        .ar {
-            border: 2px solid var(--stone-mid);
-            border-radius: var(--rs);
-            padding: 16px;
-            background: var(--stone);
-            transition: border-color .2s
-        }
-
-        .ar.sel {
-            border-color: var(--primary-color);
-            background: var(--select-light)
-        }
-
-        .ahdr {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px
-        }
-
-        .achk {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--stone-dark);
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all .2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0
-        }
-
-        .achk.chk {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-            font-size: 12px
-        }
-
-        .aname {
-            font-weight: 600;
-            font-size: 14px;
-            flex: 1
-        }
-
-        .apt {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--primary-dark)
-        }
-
-        .adesc {
-            font-size: 12px;
-            color: var(--ink-muted);
-            margin-bottom: 10px;
-            line-height: 1.4
-        }
-
-        .aqrow {
-            display: flex;
-            align-items: center;
-            gap: 8px
-        }
-
-        .aqlbl {
-            font-size: 12px;
-            color: var(--ink-muted)
-        }
-
-        .qctrl {
-            display: flex;
-            align-items: center;
-            gap: 4px
-        }
-
-        .qbtn {
-            width: 28px;
-            height: 28px;
-            border: 1.5px solid var(--stone-dark);
-            background: var(--white);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all .2s;
-            color: var(--ink-soft)
-        }
-
-        .qbtn:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color)
-        }
-
-        .qdsp {
-            min-width: 36px;
-            text-align: center;
-            font-size: 15px;
-            font-weight: 600
-        }
-
-        .asugg {
-            display: inline-block;
-            background: var(--primary-color);
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: .5px;
-            text-transform: uppercase;
-            padding: 2px 7px;
-            border-radius: 20px;
-            margin-left: 4px;
-            vertical-align: middle
-        }
-
-        /* LIVRAISON */
-        .lgrd2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 24px
-        }
-
-        .lvres {
-            background: linear-gradient(135deg, var(--select-light), var(--select-color));
-            border: 1.5px solid var(--primary-light);
-            border-radius: var(--rs);
-            padding: 20px 24px;
-            margin-top: 20px;
-            display: none
-        }
-
-        .lvres.show {
-            display: block
-        }
-
-        /* CLIENT */
-        .clgrid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px
-        }
-
-        .clgrid .full {
-            grid-column: 1/-1
-        }
-
-        .rstar {
-            color: var(--primary-color);
-            margin-left: 2px
-        }
-
-        .ierr {
-            border-color: #c0392b !important
-        }
-
-        .emsg {
-            font-size: 12px;
-            color: #c0392b;
-            margin-top: 4px;
-            display: none
-        }
-
-        .emsg.show {
-            display: block
-        }
-
-        /* RECAP */
-        .rsec {
-            margin-bottom: 24px
-        }
-
-        .rsect {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--ink-muted);
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1.5px solid var(--stone-mid)
-        }
-
-        .rline {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            padding: 8px 0;
-            font-size: 14px;
-            border-bottom: 1px solid var(--stone-mid);
-            gap: 12px
-        }
-
-        .rline:last-child {
-            border-bottom: none
-        }
-
-        .rll {
-            color: var(--ink-soft)
-        }
-
-        .rld {
-            font-size: 12px;
-            color: var(--ink-muted);
-            margin-top: 2px
-        }
-
-        .rlp {
-            font-weight: 600;
-            white-space: nowrap
-        }
-
-        .rtbox {
-            background: var(--ink);
-            border-radius: var(--rs);
-            padding: 24px 28px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 24px;
-            flex-wrap: wrap;
-            gap: 16px
-        }
-
-        .rtlbl {
-            color: var(--stone-dark);
-            font-size: 13px;
-            letter-spacing: .5px
-        }
-
-        .rtht {
-            font-family: 'Oswald', serif;
-            font-size: 36px;
-            color: white
-        }
-
-        .rttva {
-            color: var(--ink-muted);
-            font-size: 12px;
-            margin-top: 2px
-        }
-
-        .racomp {
-            background: var(--primary-color);
-            color: white;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600
-        }
-
-        .rctag {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-top: 24px
-        }
-
-        /* BUTTONS */
-        .btn {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 10px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            justify-content: center;
-            text-decoration: none
-        }
-
-        .btn-p {
-            background: var(--primary-color);
-            color: white
-        }
-
-        .btn-p:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px #e1e6ff
-        }
-
-        .btn-p:disabled {
-            background: var(--stone-dark);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none
-        }
-
-        .btn-s {
-            background: var(--stone);
-            color: var(--ink-soft);
-            border: 2px solid var(--stone-mid)
-        }
-
-        .btn-s:hover {
-            border-color: var(--stone-dark)
-        }
-
-        .btn-g {
-            background: transparent;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color)
-        }
-
-        .btn-g:hover {
-            background: var(--primary-color);
-            color: white
-        }
-
-        .btn-ok {
-            background: var(--success);
-            color: white
-        }
-
-        .btn-ok:hover {
-            background: #3A6347;
-            transform: translateY(-1px)
-        }
-
-        .btn-lg {
-            padding: 18px 36px;
-            font-size: 17px;
-            border-radius: 12px;
-            width: 100%
-        }
-
-        .navbtns {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 36px;
-            gap: 12px
-        }
-
-        .navbtns .btn {
-            min-width: 130px
-        }
-
-        /* INFO BOX */
-        .ibox {
-            background: linear-gradient(135deg, #EEF4F0, #E0EDE4);
-            border: 1.5px solid #9DC4AA;
-            border-radius: var(--rs);
-            padding: 16px 20px;
-            margin-top: 16px
-        }
-
-        .ibox p {
-            font-size: 13px;
-            color: #3A6348;
-            line-height: 1.6
-        }
-
-        /* FLOATING */
-        .flt {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--ink);
-            color: var(--white);
-            border-radius: 14px;
-            padding: 14px 20px;
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            box-shadow: var(--shadow-lg);
-            z-index: 50;
-            min-width: 200px
-        }
-
-        .flt.show {
-            display: flex
-        }
-
-        .flt-lbl {
-            font-size: 11px;
-            color: var(--stone-dark);
-            text-transform: uppercase;
-            letter-spacing: .8px
-        }
-
-        .flt-p {
-            font-family: 'Oswald', serif;
-            font-size: 24px
-        }
-
-        .flt-s {
-            font-size: 11px;
-            color: var(--ink-muted)
-        }
-
-        /* TOAST */
-        .toast {
-            position: fixed;
-            top: 80px;
-            right: 24px;
-            background: var(--success);
-            color: white;
-            padding: 14px 20px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 500;
-            opacity: 0;
-            transform: translateX(20px);
-            transition: all .3s;
-            z-index: 200
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateX(0)
-        }
-
-        .toast.err {
-            background: #c0392b
-        }
-
-        /* PDF OVERLAY */
-        .pdfov {
-            position: fixed;
-            inset: 0;
-            background: rgba(26, 22, 18, .6);
-            z-index: 300;
-            display: none;
-            align-items: center;
-            justify-content: center
-        }
-
-        .pdfov.show {
-            display: flex
-        }
-
-        .pdfspin {
-            background: var(--white);
-            border-radius: var(--r);
-            padding: 40px 48px;
-            text-align: center;
-            box-shadow: var(--shadow-lg)
-        }
-
-        .pdfspin h3 {
-            font-family: 'Oswald', serif;
-            font-size: 22px;
-            margin-bottom: 8px
-        }
-
-        .pdfspin p {
-            color: var(--ink-muted);
-            font-size: 14px
-        }
-
-        .sdots {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 20px
-        }
-
-        .sdot {
-            width: 10px;
-            height: 10px;
-            background: var(--primary-color);
-            border-radius: 50%;
-            animation: bce 1.2s infinite
-        }
-
-        .sdot:nth-child(2) {
-            animation-delay: .2s
-        }
-
-        .sdot:nth-child(3) {
-            animation-delay: .4s
-        }
-
-        @keyframes bce {
-
-            0%,
-            80%,
-            100% {
-                transform: scale(.6);
-                opacity: .4
-            }
-
-            40% {
-                transform: scale(1);
-                opacity: 1
-            }
-        }
-
-        @media(max-width:640px) {
-            .sc {
-                padding: 24px 16px
-            }
-
-            .tgrid,
-            .rctag,
-            .clgrid {
-                grid-template-columns: 1fr
-            }
-
-            .clgrid .full {
-                grid-column: 1
-            }
-
-            .agrid,
-            .lgrd2 {
-                grid-template-columns: 1fr
-            }
-
-            .pan-row {
-                grid-template-columns: 1fr 1fr
-            }
-
-            .hdr {
-                padding: 14px 16px
-            }
-
-            .ctn {
-                padding: 24px 12px 100px
-            }
-
-            .pgstep span:not(.sn) {
-                display: none
-            }
-
-            .rtbox {
-                flex-direction: column;
-                align-items: flex-start
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -1187,7 +57,8 @@
                             src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/tuiles-plates-illustration.png?v=1774001720">
                     </div>
                     <div class="tname">Tuiles Plates</div>
-                    <div class="tdesc">Imitation tuile plate. Rendu contemporain, contraintes architecturales.</div>
+                    <div class="tdesc">Imitation tuile plate. Rendu visuel contemporain, contraintes architecturales.
+                    </div>
                     <div class="tprice">À partir de 34,50 €/m² HT</div>
                 </div>
                 <div class="tc" onclick="selType('bac-acier','Bac Acier',this)">
@@ -1392,13 +263,22 @@
             <h1 class="stitle">Dimensions de la toiture</h1>
             <p class="ssub">Nous calculerons le nombre de panneaux et la longueur optimale.</p>
             <div class="mtabs">
-                <button class="mtab active" onclick="setMode('pan',this)">🏠 Par pan de toit</button>
+                <button class="mtab active" onclick="setMode('expert',this)">⚙️ Mode expert</button>
+                <button class="mtab" onclick="setMode('pan',this)">🏠 Par pan de toit</button>
                 <button class="mtab" onclick="setMode('surface',this)">📐 Surface en m²</button>
-                <button class="mtab" onclick="setMode('expert',this)">⚙️ Mode expert</button>
+            </div>
+
+            <!-- Expert -->
+            <div class="dm active" id="m-expert">
+                <div class="fg"><label class="fl">Nombre de panneaux</label><input type="number" id="exp-qty"
+                        placeholder="ex: 40" min="1" oninput="calcExpert()"></div>
+                <div class="fg"><label class="fl">Longueur de chaque panneau</label>
+                    <div class="lgrid" id="exp-lgrid"></div>
+                </div>
             </div>
 
             <!-- Pan -->
-            <div class="dm active" id="m-pan">
+            <div class="dm" id="m-pan">
                 <div id="pans-list">
                     <div class="pan-row">
                         <div><label class="fl">Largeur du pan</label>
@@ -1436,14 +316,6 @@
                 </div>
             </div>
 
-            <!-- Expert -->
-            <div class="dm" id="m-expert">
-                <div class="fg"><label class="fl">Nombre de panneaux</label><input type="number" id="exp-qty"
-                        placeholder="ex: 40" min="1" oninput="calcExpert()"></div>
-                <div class="fg"><label class="fl">Longueur de chaque panneau</label>
-                    <div class="lgrid" id="exp-lgrid"></div>
-                </div>
-            </div>
 
             <div class="drbox" id="dr-box" style="display:none">
                 <div>
@@ -1859,28 +731,475 @@
         //  u = unité de vente ; co = conditionnement (nb pièces)
         //  th = épaisseur restreinte (null = tous) ; tp = type panel
         // ─────────────────────────────────────────────────────────────
+
+        // ANCIEN TABLEAU (NON UTILISE)
         const ACCS = {
             // ── Panneau Sandwich (Romane Canal + Tuile Plate) ──────────
-            'faitage': { n: 'Faîtage double pans', d: 'Faîtage pour deux pans de toit. Longueur 2 m.', p: 22.00, u: 'ml', ic: '🔝', t: ['romane-canal', 'tuile-plate'], sg: true },
-            'faitage-cm': { n: 'Faîtage contre mur', d: 'Pour toits appentis ou adossés à un mur. L = 2 m.', p: 18.50, u: 'ml', ic: '🧱', t: ['romane-canal', 'tuile-plate'], sg: false },
-            'faitage-f': { n: 'Faîtage de fermeture', d: 'Ferme les extrémités latérales du faîte.', p: 18.50, u: 'ml', ic: '🔒', t: ['romane-canal', 'tuile-plate'], sg: false },
-            'rive-l': { n: 'Rive Latérale L', d: 'Finition des bords latéraux du toit. L = 2 m.', p: 17.00, u: 'ml', ic: '◁', t: ['romane-canal', 'tuile-plate'], sg: true },
-            'rive-u': { n: 'Rive Latérale U', d: 'Profil en U pour bords latéraux. L = 2 m.', p: 17.50, u: 'ml', ic: '◻', t: ['romane-canal', 'tuile-plate'], sg: false },
-            'cm-40': { n: 'Cache mousse ép. 40/80 mm', d: 'Obture les alvéoles en bas de pente. Vendu à l\'unité.', p: 10.80, u: 'pièce', ic: '🟫', t: ['romane-canal', 'tuile-plate'], sg: true, th: '40-80' },
-            'cm-60': { n: 'Cache mousse ép. 60/105 mm', d: 'Obture les alvéoles en bas de pente. Vendu à l\'unité.', p: 10.80, u: 'pièce', ic: '🟫', t: ['romane-canal', 'tuile-plate'], sg: true, th: '60-105' },
-            'cm-tp': { n: 'Cache mousse ép. 50/77 mm', d: 'Obture les alvéoles en bas de pente. Vendu à l\'unité.', p: 10.80, u: 'pièce', ic: '🟫', t: ['tuile-plate'], sg: true, th: '50-77' },
-            'vis-125': { n: 'Vis de fixation 125 mm', d: 'Boîte de 100 vis avec rondelles EPDM. Épaisseur 40/80 mm.', p: 54.00, u: 'boîte (100u)', ic: '🔩', t: ['romane-canal', 'tuile-plate'], sg: true, th: '40-80' },
-            'vis-150': { n: 'Vis de fixation 150 mm', d: 'Boîte de 100 vis avec rondelles EPDM. Épaisseur 60/105 mm.', p: 56.00, u: 'boîte (100u)', ic: '🔩', t: ['romane-canal', 'tuile-plate'], sg: true, th: '60-105' },
-            'vis-tp': { n: 'Vis de fixation 150 mm', d: 'Boîte de 100 vis avec rondelles EPDM. Épaisseur 50/77 mm.', p: 56.00, u: 'boîte (100u)', ic: '🔩', t: ['tuile-plate'], sg: true, th: '50-77' },
-            'goutiere': { n: 'Gouttière', d: 'Gouttière zinc. Longueur 2 m.', p: 22.00, u: 'ml', ic: '🌧️', t: ['romane-canal', 'tuile-plate'], sg: false },
-            'crochet': { n: 'Crochet de gouttière', d: 'Crochet de fixation. Vendu à l\'unité.', p: 2.00, u: 'pièce', ic: '🪝', t: ['romane-canal', 'tuile-plate'], sg: false },
-            'omega': { n: 'Profils Métalliques Oméga', d: 'Profilés de fixation. Longueur 3 m.', p: 28.00, u: 'ml', ic: '⚡', t: ['romane-canal', 'tuile-plate', 'bac-acier'], sg: false },
+            'faitage': { n: 'Faîtage double pans', d: 'Faîtage pour deux pans de toit. Longueur 2 m.', p: 22.00, u: 'ml', img: 'https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire5.webp?v=1744156679', link: "https://isotuiles.fr/products/faitage-1", t: ['romane-canal', 'tuile-plate'], sg: true },
+            'faitage-cm': { n: 'Faîtage contre mur', d: 'Pour toits appentis ou adossés à un mur. L = 2 m.', p: 18.50, u: 'ml', img: 'https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire3.webp?v=1744156679', link: "https://isotuiles.fr/products/faitage-contre-mur-1", t: ['romane-canal', 'tuile-plate'], sg: false },
+            'faitage-f': { n: 'Faîtage de fermeture', d: 'Ferme les extrémités latérales du faîte.', p: 18.50, u: 'ml', img: 'https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008577', link: "https://isotuiles.fr/products/faitage-de-fermeture-1", t: ['romane-canal', 'tuile-plate'], sg: false },
+            'rive-l': { n: 'Rive Latérale L', d: 'Finition des bords latéraux du toit. L = 2 m.', p: 17.00, u: 'ml', img: 'illustration_accessoire', link: "https://isotuiles.fr/products/rive-laterale-u-copie", t: ['romane-canal', 'tuile-plate'], sg: true },
+            'rive-u': { n: 'Rive Latérale U', d: 'Profil en U pour bords latéraux. L = 2 m.', p: 17.50, u: 'ml', img: 'illustration_accessoire', link: "https://isotuiles.fr/products/profil-frontale-copie", t: ['romane-canal', 'tuile-plate'], sg: false },
+            'cm-40': { n: 'Cache mousse ép. 40/80 mm', d: 'Obture les alvéoles en bas de pente. Vendu à l\'unité.', p: 10.80, u: 'pièce', img: 'illustration_accessoire', link: "https://isotuiles.fr/products/faitage-de-fermeture-copie", t: ['romane-canal', 'tuile-plate'], sg: true, th: '40-80' },
+            'cm-60': { n: 'Cache mousse ép. 60/105 mm', d: 'Obture les alvéoles en bas de pente. Vendu à l\'unité.', p: 10.80, u: 'pièce', img: 'illustration_accessoire', link: "https://isotuiles.fr/products/cache-mousse-ep-40-80-mm-copie", t: ['romane-canal', 'tuile-plate'], sg: true, th: '60-105' },
+            // 'cm-tp': { n: 'Cache mousse ép. 50/77 mm', d: 'Obture les alvéoles en bas de pente. Vendu à l\'unité.', p: 10.80, u: 'pièce', img: 'illustration_accessoire', link: "url_acc", t: ['tuile-plate'], sg: true, th: '50-77' },
+            'vis-125': { n: 'Vis de fixation 125 mm', d: 'Boîte de 100 vis avec rondelles EPDM. Épaisseur 40/80 mm.', p: 54.00, u: 'boîte (100u)', img: 'illustration_accessoire', link: "https://isotuiles.fr/products/vis-de-125mm", t: ['romane-canal', 'tuile-plate'], sg: true, th: '40-80' },
+            'vis-150': { n: 'Vis de fixation 150 mm', d: 'Boîte de 100 vis avec rondelles EPDM. Épaisseur 60/105 mm.', p: 56.00, u: 'boîte (100u)', img: 'illustration_accessoire', link: "https://isotuiles.fr/products/vis-de-150mm", t: ['romane-canal', 'tuile-plate'], sg: true, th: '60-105' },
+            // 'vis-tp': { n: 'Vis de fixation 150 mm', d: 'Boîte de 100 vis avec rondelles EPDM. Épaisseur 50/77 mm.', p: 56.00, u: 'boîte (100u)', img: 'illustration_accessoire', link: "url_acc", t: ['tuile-plate'], sg: true, th: '50-77' },
+            // 'goutiere': { n: 'Gouttière', d: 'Gouttière zinc. Longueur 2 m.', p: 22.00, u: 'ml', img: 'illustration_accessoire', link: "url_acc", t: ['romane-canal', 'tuile-plate'], sg: false },
+            // 'crochet': { n: 'Crochet de gouttière', d: 'Crochet de fixation. Vendu à l\'unité.', p: 2.00, u: 'pièce', img: 'illustration_accessoire', link: "url_acc", t: ['romane-canal', 'tuile-plate'], sg: false },
+            'omega': { n: 'Profils Métalliques Oméga', d: 'Profilés de fixation. Longueur 3 m.', p: 28.00, u: 'ml', img: 'illustration_accessoire', link: "https://isotuiles.fr/products/profils-metalliques-omega", t: ['romane-canal', 'tuile-plate', 'bac-acier'], sg: false },
             // ── Bac Acier ─────────────────────────────────────────────
-            'vis-bac': { n: 'Vis bac acier', d: 'Boîte de 100 vis avec rondelles EPDM.', p: 44.00, u: 'boîte (100u)', ic: '🔩', t: ['bac-acier'], sg: true },
-            'fait-bac': { n: 'Faîtière double crantée', d: 'Faîtière adaptée aux profils bac acier. L = 2 m.', p: 21.40, u: 'ml', ic: '🔝', t: ['bac-acier'], sg: true },
-            'rive-cm-ba': { n: 'Rive contre mur', d: 'Rive contre mur pour bac acier. L = 2 m.', p: 16.30, u: 'ml', ic: '🧱', t: ['bac-acier'], sg: false },
-            'rive-lat-ba': { n: 'Rive latérale', d: 'Rive latérale pour bac acier. L = 2 m.', p: 16.80, u: 'ml', ic: '◁', t: ['bac-acier'], sg: true },
+            'vis-bac': { n: 'Vis bac acier', d: 'Boîte de 100 vis avec rondelles EPDM.', p: 44.00, u: 'boîte (100u)', img: 'illustration_accessoire', link: "https://isotuiles.fr/products/vis-de-150mm-copie", t: ['bac-acier'], sg: true },
+            'fait-bac': { n: 'Faîtière double crantée', d: 'Faîtière adaptée aux profils bac acier. L = 2 m.', p: 21.40, u: 'ml', img: 'illustration_accessoire', link: "https://isotuiles.fr/products/cache-mousse-bac-acier-copie", t: ['bac-acier'], sg: true },
+            'rive-cm-ba': { n: 'Rive contre mur', d: 'Rive contre mur pour bac acier. L = 2 m.', p: 16.30, u: 'ml', img: 'illustration_accessoire', link: "https://isotuiles.fr/products/rive-contre-mur-profilee-bac-acier-copie", t: ['bac-acier'], sg: false },
+            'rive-lat-ba': { n: 'Rive latérale', d: 'Rive latérale pour bac acier. L = 2 m.', p: 16.80, u: 'ml', img: 'illustration_accessoire', link: "https://isotuiles.fr/products/faitiere-contre-mur-crantee-copie", t: ['bac-acier'], sg: true },
         };
+
+
+        const API_URL = "https://script.google.com/macros/s/AKfycbwy-TPI__YNd_3wa8g4ThPG4MReZkfyoACXdYWSJ8e-4R8qllfZXKhShp1V1Mf5hskk/exec";
+
+        /**
+         * Récupère les données d'une feuille avec mise en cache locale
+         * @param {string} sheetName - Le nom de la feuille Google Sheets
+         * @param {number} cacheDuration - Durée du cache en minutes (défaut 60)
+         */
+        async function getCachedSheetData(sheetName, cacheDuration = 60) {
+            const cacheKey = `cache_sheet_${sheetName}`;
+            const cacheTimeKey = `${cacheKey}_timestamp`;
+
+            const now = new Date().getTime();
+            const cachedData = localStorage.getItem(cacheKey);
+            const cachedTimestamp = localStorage.getItem(cacheTimeKey);
+
+            // 1. Vérifier si le cache existe et s'il est encore valide
+            if (cachedData && cachedTimestamp) {
+                const ageInMinutes = (now - cachedTimestamp) / (1000 * 60);
+
+                if (ageInMinutes < cacheDuration) {
+                    console.log(`🚀 [Cache] Chargement de "${sheetName}" depuis le local`);
+                    return JSON.parse(cachedData);
+                }
+            }
+
+            // 2. Si pas de cache ou expiré, on appelle l'API
+            console.log(`🌐 [API] Récupération de "${sheetName}" sur Google Sheets...`);
+            try {
+                const response = await fetch(`${API_URL}?sheet=${encodeURIComponent(sheetName)}`);
+
+                if (!response.ok) throw new Error("Erreur réseau");
+
+                const data = await response.json();
+
+                // 3. Sauvegarder dans le localStorage pour la prochaine fois
+                localStorage.setItem(cacheKey, JSON.stringify(data));
+                localStorage.setItem(cacheTimeKey, now.toString());
+
+                return data;
+            } catch (error) {
+                console.error("❌ Erreur lors du fetch :", error);
+
+                // En cas d'erreur réseau, on tente de renvoyer le vieux cache s'il existe
+                return cachedData ? JSON.parse(cachedData) : null;
+            }
+        }
+
+        // NOUVEAU TABLEAU (UTILISE)
+        // On crée une fonction de démarrage
+        async function init() {
+            try {
+                const accessoires = await getCachedSheetData("Accessoires", 30);
+                console.log("Accessoires chargés :", accessoires);
+
+                // C'est ici que vous appelez vos fonctions qui affichent les données
+                // ex: afficherTableau(accessoires);
+
+            } catch (error) {
+                console.error("Erreur au démarrage :", error);
+            }
+        }
+
+        // On lance l'initialisation
+        init();
+
+
+        // Aperçu des Données récupérées
+//        {
+//     "A1": {
+//         "id": "A1",
+//         "designation": "Rive latérale 40mm ROMANE",
+//         "nom": "Rive latérale",
+//         "description": "Finition latérale en \"L\" pour panneau sandwich Romane ép. 40/80mm. L = 2 m.",
+//         "suggéré": true,
+//         "Épaisseur": "40-80",
+//         "type": "rive",
+//         "prix_unitaire_ht": 9.24,
+//         "prix_unitaire_ttc": 11.09,
+//         "unite": "ml",
+//         "Compatibilité": "P1,P3",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008577",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-1",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A2": {
+//         "id": "A2",
+//         "designation": "Rive latérale 60mm ROMANE",
+//         "nom": "Rive latérale",
+//         "description": "Finition latérale en \"L\" pour panneau sandwich Romane ép. 60/105mm. L = 2 m.",
+//         "suggéré": true,
+//         "Épaisseur": "60-105",
+//         "type": "rive",
+//         "prix_unitaire_ht": 9.72,
+//         "prix_unitaire_ttc": 11.66,
+//         "unite": "ml",
+//         "Compatibilité": "P2,P4",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008578",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-2",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A3": {
+//         "id": "A3",
+//         "designation": "Rive latérale U 40mm ROMANE",
+//         "nom": "Rive latérale U",
+//         "description": "Profil de rive en \"U\" pour une finition enveloppante (Romane 40/80mm). L = 2 m.",
+//         "suggéré": true,
+//         "Épaisseur": "40-80",
+//         "type": "rive",
+//         "prix_unitaire_ht": 9.24,
+//         "prix_unitaire_ttc": 11.09,
+//         "unite": "ml",
+//         "Compatibilité": "P1,P3",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008579",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-3",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A4": {
+//         "id": "A4",
+//         "designation": "Cache frontal 40mm ROMANE",
+//         "nom": "Cache frontal",
+//         "description": "Obturateur frontal (cache-mousse) contre les rongeurs et oiseaux pour Romane 40mm.",
+//         "suggéré": true,
+//         "Épaisseur": "40-80",
+//         "type": "cache",
+//         "prix_unitaire_ht": 8.8,
+//         "prix_unitaire_ttc": 10.56,
+//         "unite": "unité",
+//         "Compatibilité": "P1,P3",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008580",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-4",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A5": {
+//         "id": "A5",
+//         "designation": "Cache frontal 60mm ROMANE",
+//         "nom": "Cache frontal",
+//         "description": "Obturateur frontal (cache-mousse) contre les rongeurs et oiseaux pour Romane 60mm.",
+//         "suggéré": true,
+//         "Épaisseur": "60-105",
+//         "type": "cache",
+//         "prix_unitaire_ht": 10.44,
+//         "prix_unitaire_ttc": 12.53,
+//         "unite": "unité",
+//         "Compatibilité": "P2,P4",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008581",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-5",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A6": {
+//         "id": "A6",
+//         "designation": "Rive latérale L TUILE PLATE",
+//         "nom": "Rive latérale L",
+//         "description": "Finition de bord de toit en \"L\" pour profil Tuile Plate. Longueur 2 m.",
+//         "suggéré": false,
+//         "Épaisseur": "",
+//         "type": "rive",
+//         "prix_unitaire_ht": 7.2,
+//         "prix_unitaire_ttc": 8.64,
+//         "unite": "ml",
+//         "Compatibilité": "P5",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008582",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-6",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A7": {
+//         "id": "A7",
+//         "designation": "Cache frontal TUILE PLATE",
+//         "nom": "Cache frontal",
+//         "description": "Obturateur frontal spécifique au profil Tuile Plate (anti-intrusion).",
+//         "suggéré": false,
+//         "Épaisseur": "",
+//         "type": "cache",
+//         "prix_unitaire_ht": 5.94,
+//         "prix_unitaire_ttc": 7.13,
+//         "unite": "unité",
+//         "Compatibilité": "P5",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008583",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-7",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A8": {
+//         "id": "A8",
+//         "designation": "Faîtage double TUILE PLATE",
+//         "nom": "Faîtage double",
+//         "description": "Élément de sommet pour toiture double pans en Tuile Plate. L = 2 m.",
+//         "suggéré": true,
+//         "Épaisseur": "",
+//         "type": "faitage",
+//         "prix_unitaire_ht": 21.6,
+//         "prix_unitaire_ttc": 25.92,
+//         "unite": "unité",
+//         "Compatibilité": "P5",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008584",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-8",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A9": {
+//         "id": "A9",
+//         "designation": "Rive U TUILE PLATE",
+//         "nom": "Rive U",
+//         "description": "Profil de finition latérale en \"U\" pour profil Tuile Plate. L = 2 m.",
+//         "suggéré": false,
+//         "Épaisseur": "",
+//         "type": "rive",
+//         "prix_unitaire_ht": 7.2,
+//         "prix_unitaire_ttc": 8.64,
+//         "unite": "ml",
+//         "Compatibilité": "P5",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008585",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-9",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A10": {
+//         "id": "A10",
+//         "designation": "Cache frontal BAC ACIER",
+//         "nom": "Cache frontal",
+//         "description": "Closoir frontal en acier laqué pour profil Bac Acier.",
+//         "suggéré": false,
+//         "Épaisseur": "",
+//         "type": "cache",
+//         "prix_unitaire_ht": 6,
+//         "prix_unitaire_ttc": 7.2,
+//         "unite": "unité",
+//         "Compatibilité": "P6",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008586",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-10",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A11": {
+//         "id": "A11",
+//         "designation": "Rive L BAC ACIER",
+//         "nom": "Rive L",
+//         "description": "Rive latérale standard en \"L\" pour Bac Acier. L = 2 m.",
+//         "suggéré": false,
+//         "Épaisseur": "",
+//         "type": "rive",
+//         "prix_unitaire_ht": 5.46,
+//         "prix_unitaire_ttc": 6.55,
+//         "unite": "ml",
+//         "Compatibilité": "P6",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008587",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-11",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A12": {
+//         "id": "A12",
+//         "designation": "Rive U BAC ACIER",
+//         "nom": "Rive U",
+//         "description": "Profil de rive en \"U\" pour une finition renforcée sur Bac Acier. L = 2 m.",
+//         "suggéré": false,
+//         "Épaisseur": "",
+//         "type": "rive",
+//         "prix_unitaire_ht": 7.72,
+//         "prix_unitaire_ttc": 9.26,
+//         "unite": "ml",
+//         "Compatibilité": "P6",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008588",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-12",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A13": {
+//         "id": "A13",
+//         "designation": "Faîtage double BAC ACIER",
+//         "nom": "Faîtage double",
+//         "description": "Faîtière double pente crantée pour une étanchéité parfaite sur Bac Acier.",
+//         "suggéré": false,
+//         "Épaisseur": "",
+//         "type": "faitage",
+//         "prix_unitaire_ht": 13.61,
+//         "prix_unitaire_ttc": 16.33,
+//         "unite": "unité",
+//         "Compatibilité": "P6",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008589",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-13",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A14": {
+//         "id": "A14",
+//         "designation": "Gouttière",
+//         "nom": "Gouttière",
+//         "description": "Gouttière demi-ronde. (Crochets à commander séparément). L = 2 m.",
+//         "suggéré": false,
+//         "Épaisseur": "",
+//         "type": "gouttière",
+//         "prix_unitaire_ht": 12.5,
+//         "prix_unitaire_ttc": 15,
+//         "unite": "ml",
+//         "Compatibilité": "P1,P2,P3,P4,P5,P6",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008590",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-14",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A15": {
+//         "id": "A15",
+//         "designation": "Crochets de gouttière",
+//         "nom": "Crochet de gouttière",
+//         "description": "Support de fixation pour gouttière. À fixer sur chevron ou bandeau.",
+//         "suggéré": false,
+//         "Épaisseur": "",
+//         "type": "accessoire",
+//         "prix_unitaire_ht": 6,
+//         "prix_unitaire_ttc": 7.2,
+//         "unite": "unité",
+//         "Compatibilité": "P1,P2,P3,P4,P5,P6",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008591",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-15",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A16": {
+//         "id": "A16",
+//         "designation": "Vis métal",
+//         "nom": "Vis métal",
+//         "description": "Vis auto-foreuses pour structure métallique. Inclus cavaliers/rondelles.",
+//         "suggéré": false,
+//         "Épaisseur": "",
+//         "type": "vis",
+//         "prix_unitaire_ht": 84,
+//         "prix_unitaire_ttc": 100.8,
+//         "unite": "lot",
+//         "Compatibilité": "P6",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008592",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-16",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A17": {
+//         "id": "A17",
+//         "designation": "Vis couture 4,2x19mm",
+//         "nom": "Vis couture",
+//         "description": "Vis de couture 4,2x19mm pour l'assemblage des recouvrements de tôles.",
+//         "suggéré": true,
+//         "Épaisseur": "",
+//         "type": "vis",
+//         "prix_unitaire_ht": 62.4,
+//         "prix_unitaire_ttc": 74.88,
+//         "unite": "lot",
+//         "Compatibilité": "P6",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008593",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-17",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A18": {
+//         "id": "A18",
+//         "designation": "Vis bois 120mm",
+//         "nom": "Vis bois",
+//         "description": "Fixation pour panneaux sandwich sur charpente bois (épaisseur 40/80).",
+//         "suggéré": true,
+//         "Épaisseur": "40-80",
+//         "type": "vis",
+//         "prix_unitaire_ht": 44,
+//         "prix_unitaire_ttc": 52.8,
+//         "unite": "lot",
+//         "Compatibilité": "P1,P2,P3,P4,P5",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008594",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-18",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A19": {
+//         "id": "A19",
+//         "designation": "Vis bois 150mm",
+//         "nom": "Vis bois",
+//         "description": "Fixation pour panneaux sandwich sur charpente bois (épaisseur 60/105).",
+//         "suggéré": true,
+//         "Épaisseur": "60-105",
+//         "type": "vis",
+//         "prix_unitaire_ht": 62.52,
+//         "prix_unitaire_ttc": 75.02,
+//         "unite": "lot",
+//         "Compatibilité": "P1,P2,P3,P4,P5",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008595",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-19",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A20": {
+//         "id": "A20",
+//         "designation": "Faîtage rabat ROMANE",
+//         "nom": "Faîtage rabat",
+//         "description": "Faîtière simple avec rabat pour toiture monopente (Romane). L = 2 m.",
+//         "suggéré": false,
+//         "Épaisseur": "",
+//         "type": "faitage",
+//         "prix_unitaire_ht": 9.24,
+//         "prix_unitaire_ttc": 11.09,
+//         "unite": "ml",
+//         "Compatibilité": "P1,P2,P3,P4",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008596",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-20",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A21": {
+//         "id": "A21",
+//         "designation": "Faîtage contre mur BAC ACIER",
+//         "nom": "Faîtage contre mur",
+//         "description": "Solin de faîtage pour toiture Bac Acier adossée à un mur.",
+//         "suggéré": false,
+//         "Épaisseur": "",
+//         "type": "faitage",
+//         "prix_unitaire_ht": 7.14,
+//         "prix_unitaire_ttc": 8.57,
+//         "unite": "ml",
+//         "Compatibilité": "P6",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008597",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-21",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     },
+//     "A22": {
+//         "id": "A22",
+//         "designation": "Cache vis finition TUILE PLATE",
+//         "nom": "Cache vis finition",
+//         "description": "Capuchons esthétiques de la couleur de la toiture (boîte de 100).",
+//         "suggéré": false,
+//         "Épaisseur": "",
+//         "type": "accessoire",
+//         "prix_unitaire_ht": 8.64,
+//         "prix_unitaire_ttc": 10.37,
+//         "unite": "lot",
+//         "Compatibilité": "P1,P2,P3,P4",
+//         "image": "https://cdn.shopify.com/s/files/1/0909/7605/9715/files/accessoire4.webp?v=1732008598",
+//         "lien": "https://isotuiles.fr/products/faitage-de-fermeture-22",
+//         "Aperçu": {},
+//         "JSON (to complete)": ""
+//     }
+// }
 
         const DZONES = {
             A: { d: ['33', '40', '47', '64', '24', '17', '16', '19', '23', '87'], base: 280 },
@@ -2096,7 +1415,7 @@
                 if (id === 'crochet') sq = Math.max(4, Math.ceil(largBat / 2) * 3);
                 S.accs[id] = { qty: sq, chk: a.sg };
                 const d = document.createElement('div'); d.className = 'ar' + (a.sg ? ' sel' : ''); d.id = 'ar-' + id;
-                d.innerHTML = `<div class="ahdr"><div class="achk${a.sg ? ' chk' : ''}" id="ck-${id}" onclick="togAcc('${id}')">${a.sg ? '✓' : ''}</div><div class="aname">${a.ic} ${a.n}${a.sg ? '<span class="asugg">Suggéré</span>' : ''}</div><div class="apt">${f2(a.p)} €/${a.u}</div></div><div class="adesc">${a.d}</div><div class="aqrow"><span class="aqlbl">Qté :</span><div class="qctrl"><button class="qbtn" onclick="chgQty('${id}',-1)">−</button><span class="qdsp" id="qd-${id}">${sq}</span><button class="qbtn" onclick="chgQty('${id}',1)">+</button></div></div>`;
+                d.innerHTML = `<div class="acc_container"><div class="ahdr"><div class="achk${a.sg ? ' chk' : ''}" id="ck-${id}" onclick="togAcc('${id}')">${a.sg ? '✓' : ''}</div><div class="aname">${a.n}${a.sg ? '<span class="asugg">Suggéré</span>' : ''}</div><div class="apt">${f2(a.p)} €/${a.u}</div></div><div class="adesc">${a.d}</div><div class="aqrow"><span class="aqlbl">Qté :</span><div class="qctrl"><button class="qbtn" onclick="chgQty('${id}',-1)">−</button><span class="qdsp" id="qd-${id}">${sq}</span><button class="qbtn" onclick="chgQty('${id}',1)">+</button></div></div></div><div class="img-acc"><img src="${a.img}"></div><a class="link-acc" ${a.link ? `href="${a.link}" target="_blank"` : ''}><img src="https://img.icons8.com/forma-regular/500/info.png"></a>`;
                 g.appendChild(d);
             });
         }
