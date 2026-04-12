@@ -119,7 +119,7 @@
  .pgstep.done .sn {
      background: var(--stone-dark);
      border-color: var(--stone-dark);
-     color: var(--ink)
+     color: #e5e5e5
  }
 
  .pgstep.active .sn {
