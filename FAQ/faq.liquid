@@ -1,0 +1,360 @@
+<!--
+  FAQ Section — Shopify Liquid + HTML natif
+  Récupère les données depuis Google Apps Script
+
+  USAGE dans Shopify :
+  1. Créer un nouveau fichier dans sections/ → faq.liquid
+  2. Coller ce code
+  3. Ajouter la section à la page souhaitée
+
+  REMPLACER :
+  - VOTRE_URL_APPS_SCRIPT → URL de votre Web App Google Apps Script
+  - VOTRE_BRAND → 'isotuiles' ou 'panotuiles'
+-->
+
+{% comment %} ── PARAMÈTRES ──────────────────────────── {% endcomment %}
+{% assign faq_brand = 'isotuiles' %}  {%- comment -%} Changer selon le site {%- endcomment -%}
+
+<section class="faq-section" id="faq-section">
+  <div class="faq-inner">
+    <div class="faq-header">
+      <h2 class="faq-title">Questions fréquentes</h2>
+      <p class="faq-subtitle">Retrouvez les réponses à vos questions les plus courantes</p>
+    </div>
+
+    <!-- Filtres catégories (générés dynamiquement via JS) -->
+    <div class="faq-filters" id="faq-filters"></div>
+
+    <!-- Zone de chargement / liste -->
+    <div id="faq-container">
+      <div class="faq-loading">
+        <span class="faq-spinner"></span>
+        Chargement…
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.faq-section {
+  padding: 64px 0;
+  background: #fff;
+  font-family: inherit;
+}
+.faq-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* HEADER */
+.faq-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.faq-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 10px;
+}
+.faq-subtitle {
+  color: #666;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* FILTRES */
+.faq-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 36px;
+}
+.faq-filter-btn {
+  padding: 7px 18px;
+  border-radius: 30px;
+  border: 1.5px solid #ddd;
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .2s;
+  color: #444;
+  font-family: inherit;
+}
+.faq-filter-btn:hover {
+  border-color: #111;
+  color: #111;
+}
+.faq-filter-btn.active {
+  background: #111;
+  border-color: #111;
+  color: #fff;
+}
+
+/* ITEMS */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid #e8e8e8;
+}
+.faq-entry {
+  border-bottom: 1px solid #e8e8e8;
+}
+.faq-entry-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  cursor: pointer;
+  gap: 16px;
+}
+.faq-entry-head:hover .faq-q {
+  color: #000;
+}
+.faq-q {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  transition: color .15s;
+  flex: 1;
+}
+.faq-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all .25s;
+}
+.faq-icon svg {
+  width: 14px;
+  height: 14px;
+  transition: transform .3s ease;
+}
+.faq-entry.open .faq-icon {
+  background: #111;
+  border-color: #111;
+}
+.faq-entry.open .faq-icon svg {
+  stroke: #fff;
+  transform: rotate(45deg);
+}
+.faq-body {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .35s ease;
+}
+.faq-body-inner {
+  padding: 0 0 22px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #444;
+}
+.faq-body-inner img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 12px 0;
+}
+.faq-body-inner ul,
+.faq-body-inner ol {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+.faq-body-inner li {
+  margin-bottom: 4px;
+}
+.faq-body-inner h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 16px 0 8px;
+}
+.faq-body-inner a {
+  color: #111;
+  text-decoration: underline;
+}
+
+/* BOUTONS */
+.faq-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+.faq-btn {
+  display: inline-block;
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none !important;
+  transition: opacity .15s;
+  font-family: inherit;
+}
+.faq-btn:hover {
+  opacity: .85;
+}
+
+/* LOADING */
+.faq-loading {
+  text-align: center;
+  padding: 48px;
+  color: #aaa;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.faq-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ddd;
+  border-top-color: #111;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* EMPTY */
+.faq-empty {
+  text-align: center;
+  padding: 48px;
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .faq-title { font-size: 24px; }
+  .faq-q { font-size: 14px; }
+  .faq-body-inner { font-size: 14px; }
+}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+(function ($) {
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbJkQ2pI3diggXyAxap7eH7MDs3E_ZIFuYLuvSF72I7aBA9spZ-xcJjOsFXsKnaA/exec';
+  var BRAND = '{{ faq_brand }}';
+  var allItems = [];
+  var activeCategory = 'all';
+
+  function init() {
+    $.ajax({ url: SCRIPT_URL, dataType: 'jsonp', data: { action: 'getFAQ', brand: BRAND }, success: function (res) {
+      if (res.error || !res.data) {
+        $('#faq-container').html('<div class="faq-empty">Impossible de charger la FAQ.</div>');
+        return;
+      }
+      // Filtrer actifs + trier
+      allItems = res.data
+        .filter(function (f) { return String(f.Actif) === 'true'; })
+        .sort(function (a, b) { return Number(a.Ordre) - Number(b.Ordre); });
+
+      buildFilters();
+      renderItems(allItems);
+    }}).fail(function () {
+      $('#faq-container').html('<div class="faq-empty">Impossible de charger la FAQ.</div>');
+    });
+  }
+
+  function buildFilters() {
+    var cats = [];
+    $.each(allItems, function (_, f) {
+      if (f.Categorie && cats.indexOf(f.Categorie) === -1) cats.push(f.Categorie);
+    });
+    if (cats.length < 2) return;
+    var html = '<button class="faq-filter-btn active" data-cat="all">Toutes</button>';
+    $.each(cats, function (_, c) {
+      html += '<button class="faq-filter-btn" data-cat="' + encodeURIComponent(c) + '">' + c + '</button>';
+    });
+    $('#faq-filters').html(html);
+    $(document).on('click', '.faq-filter-btn', function () {
+      activeCategory = $(this).data('cat');
+      $('.faq-filter-btn').removeClass('active');
+      $(this).addClass('active');
+      var filtered = activeCategory === 'all' ? allItems : allItems.filter(function (f) {
+        return f.Categorie === decodeURIComponent(activeCategory);
+      });
+      renderItems(filtered);
+    });
+  }
+
+  function renderItems(items) {
+    if (!items.length) {
+      $('#faq-container').html('<div class="faq-empty">Aucune question dans cette catégorie.</div>');
+      return;
+    }
+    var html = '<div class="faq-list">';
+    $.each(items, function (_, f) {
+      var btns = '';
+      if (f.Boutons_JSON) {
+        try {
+          var parsed = JSON.parse(f.Boutons_JSON);
+          if (parsed.length) {
+            btns = '<div class="faq-btns">';
+            $.each(parsed, function (_, b) {
+              btns += '<a class="faq-btn" href="' + b.url + '" target="' + (b.target || '_blank') + '" '
+                + 'style="background:' + (b.bg_color || '#111') + ';color:' + (b.text_color || '#fff') + '">'
+                + b.text + '</a>';
+            });
+            btns += '</div>';
+          }
+        } catch (e) {}
+      }
+      html += '<div class="faq-entry" data-id="' + f.ID + '">'
+        + '<div class="faq-entry-head">'
+        + '<span class="faq-q">' + f.Titre + '</span>'
+        + '<span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>'
+        + '</div>'
+        + '<div class="faq-body"><div class="faq-body-inner">' + f.Texte_HTML + btns + '</div></div>'
+        + '</div>';
+    });
+    html += '</div>';
+    $('#faq-container').html(html);
+    bindAccordion();
+  }
+
+  function bindAccordion() {
+    $('.faq-entry-head').off('click').on('click', function () {
+      var $entry = $(this).closest('.faq-entry');
+      var $body = $entry.find('.faq-body');
+      var isOpen = $entry.hasClass('open');
+
+      // Fermer tous
+      $('.faq-entry.open').each(function () {
+        $(this).removeClass('open').find('.faq-body').css('max-height', '0');
+      });
+
+      // Ouvrir si était fermé
+      if (!isOpen) {
+        $entry.addClass('open');
+        $body.css('max-height', $body[0].scrollHeight + 'px');
+      }
+    });
+  }
+
+  $(document).ready(init);
+
+})(jQuery);
+</script>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [],
+  "presets": [
+    {
+      "name": "FAQ",
+      "category": "Content"
+    }
+  ]
+}
+{% endschema %}
