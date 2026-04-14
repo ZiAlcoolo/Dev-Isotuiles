@@ -9,7 +9,6 @@ const HEADERS_QST = ['ID', 'Date', 'Question', 'Note_par', 'Statut'];
 function doGet(e) {
   const p = e.parameter;
   const action = p.action;
-  const callback = p.callback; // JSONP callback
   try {
     let result;
     if (action === 'getFAQ') result = getFAQ(p.brand);
@@ -22,18 +21,16 @@ function doGet(e) {
     else if (action === 'deleteQuestion') result = deleteQuestion(p.id);
     else if (action === 'initSheets') result = initSheets();
     else result = { error: 'Action inconnue' };
-    return jsonpResponse(result, callback);
+    return sendJsonResponse(result);
   } catch (err) {
-    return jsonpResponse({ error: err.message }, callback);
+    return sendJsonResponse({ error: err.message });
   }
 }
 
-function jsonpResponse(data, callback) {
-  const json = JSON.stringify(data);
-  const output = callback ? `${callback}(${json})` : json;
+function sendJsonResponse(data) {
   return ContentService
-    .createTextOutput(output)
-    .setMimeType(callback ? ContentService.MimeType.JAVASCRIPT : ContentService.MimeType.JSON);
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function getSheet(name) {

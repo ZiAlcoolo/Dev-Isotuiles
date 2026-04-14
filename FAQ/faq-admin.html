@@ -1,968 +1,416 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FAQ Admin</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
-  <style>
-    :root {
-      --bg: #f7f7f7;
-      --surface: #fff;
-      --border: #e0e0e0;
-      --text: #111;
-      --muted: #888;
-      --accent: #111;
-      --accent-hover: #333;
-      --danger: #c0392b;
-      --success: #27ae60;
-      --tag-bg: #efefef;
-      --shadow: 0 1px 4px rgba(0, 0, 0, .07);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 14px;
-    }
-
-    /* LAYOUT */
-    #app {
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    #sidebar {
-      width: 220px;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-    }
-
-    #main {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* SIDEBAR */
-    .sidebar-logo {
-      padding: 20px 18px 14px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .sidebar-logo h2 {
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: -.3px;
-    }
-
-    .sidebar-logo p {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    .nav-section {
-      padding: 14px 10px 6px;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--muted);
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 9px 14px;
-      cursor: pointer;
-      border-radius: 6px;
-      margin: 1px 6px;
-      font-size: 13px;
-      color: var(--text);
-      transition: background .15s;
-    }
-
-    .nav-item:hover {
-      background: var(--bg);
-    }
-
-    .nav-item.active {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .nav-item svg {
-      width: 15px;
-      height: 15px;
-      flex-shrink: 0;
-    }
-
-    /* BRAND SWITCHER */
-    .brand-switcher {
-      padding: 10px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .brand-btn {
-      width: 100%;
-      padding: 7px 10px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      border-radius: 6px;
-      font-size: 12px;
-      cursor: pointer;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-weight: 500;
-    }
-
-    .brand-btn:hover {
-      background: #eee;
-    }
-
-    .brand-btn.active {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
-
-    .brand-btns {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    /* TOPBAR */
-    #topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 24px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    #topbar h1 {
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    #topbar .actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    /* BUTTONS */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      border: none;
-      transition: all .15s;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-ghost:hover {
-      background: var(--bg);
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: #fff;
-    }
-
-    .btn-danger:hover {
-      opacity: .85;
-    }
-
-    .btn-sm {
-      padding: 4px 10px;
-      font-size: 12px;
-    }
-
-    .btn svg {
-      width: 14px;
-      height: 14px;
-    }
-
-    /* CONTENT AREA */
-    #content {
-      padding: 24px;
-      flex: 1;
-    }
-
-    /* FAQ LIST */
-    .faq-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .faq-item {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      cursor: grab;
-      transition: box-shadow .15s;
-    }
-
-    .faq-item:active {
-      cursor: grabbing;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, .12);
-    }
-
-    .faq-item.sortable-ghost {
-      opacity: .4;
-    }
-
-    .drag-handle {
-      color: var(--muted);
-      padding-top: 2px;
-      flex-shrink: 0;
-      cursor: grab;
-    }
-
-    .faq-body {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .faq-top {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
-      flex-wrap: wrap;
-    }
-
-    .faq-title {
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    .faq-cat {
-      font-size: 11px;
-      padding: 2px 8px;
-      background: var(--tag-bg);
-      border-radius: 20px;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .faq-preview {
-      font-size: 12px;
-      color: var(--muted);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 500px;
-    }
-
-    .faq-actions {
-      display: flex;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .toggle-active {
-      width: 36px;
-      height: 20px;
-      background: var(--border);
-      border-radius: 20px;
-      position: relative;
-      cursor: pointer;
-      transition: background .2s;
-      flex-shrink: 0;
-      border: none;
-    }
-
-    .toggle-active.on {
-      background: var(--success);
-    }
-
-    .toggle-active::after {
-      content: '';
-      width: 14px;
-      height: 14px;
-      background: #fff;
-      border-radius: 50%;
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      transition: transform .2s;
-    }
-
-    .toggle-active.on::after {
-      transform: translateX(16px);
-    }
-
-    /* FILTERS */
-    .filters {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-
-    .filters input {
-      padding: 7px 12px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 13px;
-      background: var(--surface);
-      min-width: 200px;
-    }
-
-    .filters select {
-      padding: 7px 12px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 13px;
-      background: var(--surface);
-    }
-
-    .faq-count {
-      font-size: 12px;
-      color: var(--muted);
-      margin-left: auto;
-    }
-
-    /* MODAL */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, .4);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-overlay.open {
-      display: flex;
-    }
-
-    .modal {
-      background: var(--surface);
-      border-radius: 10px;
-      width: 820px;
-      max-width: 95vw;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 8px 40px rgba(0, 0, 0, .18);
-    }
-
-    .modal-head {
-      padding: 18px 22px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-    }
-
-    .modal-head h3 {
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .modal-body {
-      padding: 22px;
-      overflow-y: auto;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .modal-foot {
-      padding: 14px 22px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      flex-shrink: 0;
-    }
-
-    /* FORM */
-    .form-row {
-      display: flex;
-      gap: 14px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      flex: 1;
-    }
-
-    .form-group label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .5px;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      padding: 8px 12px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 13px;
-      font-family: inherit;
-      background: var(--surface);
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: #999;
-    }
-
-    .form-group textarea {
-      resize: vertical;
-    }
-
-    /* RICH TEXT TOOLBAR */
-    .editor-wrap {
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    .editor-toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2px;
-      padding: 6px 8px;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .tb-btn {
-      padding: 4px 8px;
-      border: none;
-      background: transparent;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 13px;
-      color: var(--text);
-      font-family: inherit;
-      transition: background .1s;
-    }
-
-    .tb-btn:hover {
-      background: var(--border);
-    }
-
-    .tb-btn.active {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .tb-sep {
-      width: 1px;
-      background: var(--border);
-      margin: 2px 3px;
-      align-self: stretch;
-    }
-
-    #editor {
-      min-height: 180px;
-      padding: 12px;
-      outline: none;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    #editor img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 4px;
-    }
-
-    #editor p {
-      margin-bottom: 8px;
-    }
-
-    /* BUTTONS JSON */
-    .btn-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .btn-entry {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      background: var(--bg);
-      border-radius: 6px;
-      padding: 8px 10px;
-    }
-
-    .btn-entry input {
-      padding: 5px 9px;
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      font-size: 12px;
-      flex: 1;
-    }
-
-    .btn-entry input[type=color] {
-      width: 34px;
-      padding: 2px;
-      flex: none;
-    }
-
-    .btn-entry label {
-      font-size: 11px;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    /* QUESTIONS PAGE */
-    .q-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .q-item {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px 16px;
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-    }
-
-    .q-body {
-      flex: 1;
-    }
-
-    .q-text {
-      font-size: 14px;
-      margin-bottom: 4px;
-    }
-
-    .q-meta {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .q-actions {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 2px 9px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .status-badge.traiter {
-      background: #fef3cd;
-      color: #856404;
-    }
-
-    .status-badge.traite {
-      background: #d1fae5;
-      color: #065f46;
-    }
-
-    .q-form {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 18px;
-      margin-bottom: 18px;
-    }
-
-    .q-form h3 {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 14px;
-    }
-
-    .q-form textarea {
-      width: 100%;
-      padding: 9px 12px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 13px;
-      font-family: inherit;
-      resize: vertical;
-    }
-
-    /* TOAST */
-    #toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: var(--accent);
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 13px;
-      display: none;
-      z-index: 9999;
-      box-shadow: var(--shadow);
-    }
-
-    /* EMPTY STATE */
-    .empty {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--muted);
-    }
-
-    .empty p {
-      margin-top: 8px;
-      font-size: 13px;
-    }
-
-    /* SPINNER */
-    .spinner {
-      text-align: center;
-      padding: 40px;
-      color: var(--muted);
-    }
-
-    /* SOURCE MODE */
-    #source-mode {
-      display: none;
-      width: 100%;
-      min-height: 180px;
-      padding: 12px;
-      border: none;
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      resize: vertical;
-      background: #1e1e1e;
-      color: #d4d4d4;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ Admin</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+<style>
+  :root {
+    --bg: #f7f7f7;
+    --surface: #fff;
+    --border: #e0e0e0;
+    --text: #111;
+    --muted: #888;
+    --accent: #111;
+    --accent-hover: #333;
+    --danger: #c0392b;
+    --success: #27ae60;
+    --tag-bg: #efefef;
+    --shadow: 0 1px 4px rgba(0,0,0,.07);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+
+  /* LAYOUT */
+  #app { display: flex; height: 100vh; overflow: hidden; }
+  #sidebar { width: 220px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+  #main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+
+  /* SIDEBAR */
+  .sidebar-logo { padding: 20px 18px 14px; border-bottom: 1px solid var(--border); }
+  .sidebar-logo h2 { font-size: 15px; font-weight: 700; letter-spacing: -.3px; }
+  .sidebar-logo p { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .nav-section { padding: 14px 10px 6px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 14px; cursor: pointer; border-radius: 6px; margin: 1px 6px; font-size: 13px; color: var(--text); transition: background .15s; }
+  .nav-item:hover { background: var(--bg); }
+  .nav-item.active { background: var(--accent); color: #fff; }
+  .nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  /* BRAND SWITCHER */
+  .brand-switcher { padding: 10px; border-bottom: 1px solid var(--border); }
+  .brand-btn { width: 100%; padding: 7px 10px; border: 1px solid var(--border); background: var(--bg); border-radius: 6px; font-size: 12px; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; font-weight: 500; }
+  .brand-btn:hover { background: #eee; }
+  .brand-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .brand-btns { display: flex; flex-direction: column; gap: 5px; }
+
+  /* TOPBAR */
+  #topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  #topbar h1 { font-size: 16px; font-weight: 700; }
+  #topbar .actions { display: flex; gap: 8px; align-items: center; }
+
+  /* BUTTONS */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all .15s; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--bg); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { opacity: .85; }
+  .btn-sm { padding: 4px 10px; font-size: 12px; }
+  .btn svg { width: 14px; height: 14px; }
+
+  /* CONTENT AREA */
+  #content { padding: 24px; flex: 1; }
+
+  /* FAQ LIST */
+  .faq-list { display: flex; flex-direction: column; gap: 8px; }
+  .faq-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; cursor: grab; transition: box-shadow .15s; }
+  .faq-item:active { cursor: grabbing; box-shadow: 0 4px 16px rgba(0,0,0,.12); }
+  .faq-item.sortable-ghost { opacity: .4; }
+  .drag-handle { color: var(--muted); padding-top: 2px; flex-shrink: 0; cursor: grab; }
+  .faq-body { flex: 1; min-width: 0; }
+  .faq-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+  .faq-title { font-weight: 600; font-size: 14px; }
+  .faq-cat { font-size: 11px; padding: 2px 8px; background: var(--tag-bg); border-radius: 20px; color: var(--muted); white-space: nowrap; }
+  .faq-preview { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 500px; }
+  .faq-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .toggle-active { width: 36px; height: 20px; background: var(--border); border-radius: 20px; position: relative; cursor: pointer; transition: background .2s; flex-shrink: 0; border: none; }
+  .toggle-active.on { background: var(--success); }
+  .toggle-active::after { content: ''; width: 14px; height: 14px; background: #fff; border-radius: 50%; position: absolute; top: 3px; left: 3px; transition: transform .2s; }
+  .toggle-active.on::after { transform: translateX(16px); }
+
+  /* FILTERS */
+  .filters { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filters input { padding: 7px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; background: var(--surface); min-width: 200px; }
+  .filters select { padding: 7px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; background: var(--surface); }
+  .faq-count { font-size: 12px; color: var(--muted); margin-left: auto; }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 1000; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border-radius: 10px; width: 820px; max-width: 95vw; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 8px 40px rgba(0,0,0,.18); }
+  .modal-head { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .modal-head h3 { font-size: 16px; font-weight: 700; }
+  .modal-body { padding: 22px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 16px; }
+  .modal-foot { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; flex-shrink: 0; }
+
+  /* FORM */
+  .form-row { display: flex; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+  .form-group label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+  .form-group input, .form-group select, .form-group textarea { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: inherit; background: var(--surface); }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #999; }
+  .form-group textarea { resize: vertical; }
+
+  /* RICH TEXT TOOLBAR */
+  .editor-wrap { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .editor-toolbar { display: flex; flex-wrap: wrap; gap: 2px; padding: 6px 8px; background: var(--bg); border-bottom: 1px solid var(--border); }
+  .tb-btn { padding: 4px 8px; border: none; background: transparent; border-radius: 4px; cursor: pointer; font-size: 13px; color: var(--text); font-family: inherit; transition: background .1s; }
+  .tb-btn:hover { background: var(--border); }
+  .tb-btn.active { background: var(--accent); color: #fff; }
+  .tb-sep { width: 1px; background: var(--border); margin: 2px 3px; align-self: stretch; }
+  #editor { min-height: 180px; padding: 12px; outline: none; font-size: 13px; line-height: 1.6; }
+  #editor img { max-width: 100%; height: auto; border-radius: 4px; }
+  #editor p { margin-bottom: 8px; }
+
+  /* BUTTONS JSON */
+  .btn-list { display: flex; flex-direction: column; gap: 8px; }
+  .btn-entry { display: flex; gap: 8px; align-items: center; background: var(--bg); border-radius: 6px; padding: 8px 10px; }
+  .btn-entry input { padding: 5px 9px; border: 1px solid var(--border); border-radius: 5px; font-size: 12px; flex: 1; }
+  .btn-entry input[type=color] { width: 34px; padding: 2px; flex: none; }
+  .btn-entry label { font-size: 11px; color: var(--muted); white-space: nowrap; }
+
+  /* QUESTIONS PAGE */
+  .q-list { display: flex; flex-direction: column; gap: 8px; }
+  .q-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; display: flex; gap: 14px; align-items: flex-start; }
+  .q-body { flex: 1; }
+  .q-text { font-size: 14px; margin-bottom: 4px; }
+  .q-meta { font-size: 11px; color: var(--muted); }
+  .q-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+  .status-badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .status-badge.traiter { background: #fef3cd; color: #856404; }
+  .status-badge.traite { background: #d1fae5; color: #065f46; }
+  .q-form { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 18px; }
+  .q-form h3 { font-size: 14px; font-weight: 700; margin-bottom: 14px; }
+  .q-form textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: inherit; resize: vertical; }
+
+  /* TOAST */
+  #toast { position: fixed; bottom: 24px; right: 24px; background: var(--accent); color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 13px; display: none; z-index: 9999; box-shadow: var(--shadow); }
+
+  /* EMPTY STATE */
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty p { margin-top: 8px; font-size: 13px; }
+
+  /* SPINNER */
+  .spinner { text-align: center; padding: 40px; color: var(--muted); }
+
+  /* SOURCE MODE */
+  #source-mode { display: none; width: 100%; min-height: 180px; padding: 12px; border: none; font-family: 'Courier New', monospace; font-size: 12px; resize: vertical; background: #1e1e1e; color: #d4d4d4; }
+</style>
 </head>
-
 <body>
 
-  <div id="app">
-    <!-- SIDEBAR -->
-    <aside id="sidebar">
-      <div class="sidebar-logo">
-        <h2>FAQ Admin</h2>
-        <p>Gestion des questions</p>
-      </div>
-      <div class="brand-switcher">
-        <div class="brand-btns">
-          <button class="brand-btn active" data-brand="isotuiles">Isotuiles</button>
-          <button class="brand-btn" data-brand="panotuiles">Panotuiles</button>
-        </div>
-      </div>
-      <div class="nav-section">Navigation</div>
-      <div class="nav-item active" data-page="faq">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-          <line x1="12" y1="17" x2="12.01" y2="17" />
-        </svg>
-        FAQ
-      </div>
-      <div class="nav-item" data-page="questions">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>
-        Questions tél.
-      </div>
-    </aside>
-
-    <!-- MAIN -->
-    <div id="main">
-      <div id="topbar">
-        <h1 id="page-title">FAQ — Isotuiles</h1>
-        <div class="actions">
-          <button class="btn btn-ghost btn-sm" id="btn-save-order" style="display:none">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-            Sauvegarder l'ordre
-          </button>
-          <button class="btn btn-primary" id="btn-add">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Nouvelle entrée
-          </button>
-        </div>
-      </div>
-      <div id="content">
-        <div class="spinner">Chargement…</div>
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <h2>FAQ Admin</h2>
+      <p>Gestion des questions</p>
+    </div>
+    <div class="brand-switcher">
+      <div class="brand-btns">
+        <button class="brand-btn active" data-brand="isotuiles">Isotuiles</button>
+        <button class="brand-btn" data-brand="panotuiles">Panotuiles</button>
       </div>
     </div>
-  </div>
+    <div class="nav-section">Navigation</div>
+    <div class="nav-item active" data-page="faq">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      FAQ
+    </div>
+    <div class="nav-item" data-page="questions">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Questions tél.
+    </div>
+  </aside>
 
-  <!-- MODAL FAQ -->
-  <div class="modal-overlay" id="modal-faq">
-    <div class="modal">
-      <div class="modal-head">
-        <h3 id="modal-title">Nouvelle entrée FAQ</h3>
-        <button class="btn btn-ghost btn-sm" id="modal-close">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-row">
-          <div class="form-group" style="flex:2">
-            <label>Titre</label>
-            <input type="text" id="f-titre" placeholder="Question courte…">
-          </div>
-          <div class="form-group" style="flex:1">
-            <label>Catégorie</label>
-            <select id="f-cat">
-              <option value="">-- Choisir --</option>
-              <option>Produits & Caractéristiques</option>
-              <option>Pose & Installation</option>
-              <option>Commande & Livraison</option>
-              <option>SAV & Garantie</option>
-              <option>Prix & Devis</option>
-              <option>Entretien</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Contenu HTML</label>
-          <div class="editor-wrap">
-            <div class="editor-toolbar">
-              <button class="tb-btn" data-cmd="bold" title="Gras"><b>G</b></button>
-              <button class="tb-btn" data-cmd="italic" title="Italique"><i>I</i></button>
-              <button class="tb-btn" data-cmd="underline" title="Souligné"><u>S</u></button>
-              <div class="tb-sep"></div>
-              <button class="tb-btn" data-cmd="insertUnorderedList" title="Liste à puces">• ≡</button>
-              <button class="tb-btn" data-cmd="insertOrderedList" title="Liste numérotée">1 ≡</button>
-              <div class="tb-sep"></div>
-              <button class="tb-btn" data-cmd="formatBlock" data-val="h3" title="Titre">H3</button>
-              <button class="tb-btn" data-cmd="formatBlock" data-val="p" title="Paragraphe">¶</button>
-              <div class="tb-sep"></div>
-              <button class="tb-btn" id="tb-link" title="Lien">🔗</button>
-              <button class="tb-btn" id="tb-img" title="Image (balise img)">🖼</button>
-              <div class="tb-sep"></div>
-              <button class="tb-btn" id="tb-source" title="Source HTML">&lt;/&gt;</button>
-            </div>
-            <div id="editor" contenteditable="true"></div>
-            <textarea id="source-mode"></textarea>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Boutons d'action <span style="font-weight:400;text-transform:none;font-size:11px">(liens de
-              redirection)</span></label>
-          <div id="btn-list" class="btn-list"></div>
-          <button class="btn btn-ghost btn-sm" id="add-btn-entry" style="margin-top:6px">+ Ajouter un bouton</button>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group" style="flex:0 0 100px">
-            <label>Ordre</label>
-            <input type="number" id="f-ordre" value="0" min="0">
-          </div>
-          <div class="form-group" style="flex:0 0 80px">
-            <label>Actif</label>
-            <select id="f-actif">
-              <option value="true">Oui</option>
-              <option value="false">Non</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn btn-ghost" id="modal-cancel">Annuler</button>
-        <button class="btn btn-primary" id="modal-save">Enregistrer</button>
+  <!-- MAIN -->
+  <div id="main">
+    <div id="topbar">
+      <h1 id="page-title">FAQ — Isotuiles</h1>
+      <div class="actions">
+        <button class="btn btn-ghost btn-sm" id="btn-save-order" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Sauvegarder l'ordre
+        </button>
+        <button class="btn btn-primary" id="btn-add">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nouvelle entrée
+        </button>
       </div>
     </div>
+    <div id="content">
+      <div class="spinner">Chargement…</div>
+    </div>
   </div>
+</div>
 
-  <div id="toast"></div>
+<!-- MODAL FAQ -->
+<div class="modal-overlay" id="modal-faq">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-title">Nouvelle entrée FAQ</h3>
+      <button class="btn btn-ghost btn-sm" id="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group" style="flex:2">
+          <label>Titre</label>
+          <input type="text" id="f-titre" placeholder="Question courte…">
+        </div>
+        <div class="form-group" style="flex:1">
+          <label>Catégorie</label>
+          <select id="f-cat">
+            <option value="">-- Choisir --</option>
+            <option>Produits & Caractéristiques</option>
+            <option>Pose & Installation</option>
+            <option>Commande & Livraison</option>
+            <option>SAV & Garantie</option>
+            <option>Prix & Devis</option>
+            <option>Entretien</option>
+          </select>
+        </div>
+      </div>
 
-  <script>
-    // ── CONFIG ─────────────────────────────────────────────
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbJkQ2pI3diggXyAxap7eH7MDs3E_ZIFuYLuvSF72I7aBA9spZ-xcJjOsFXsKnaA/exec';
+      <div class="form-group">
+        <label>Contenu HTML</label>
+        <div class="editor-wrap">
+          <div class="editor-toolbar">
+            <button class="tb-btn" data-cmd="bold" title="Gras"><b>G</b></button>
+            <button class="tb-btn" data-cmd="italic" title="Italique"><i>I</i></button>
+            <button class="tb-btn" data-cmd="underline" title="Souligné"><u>S</u></button>
+            <div class="tb-sep"></div>
+            <button class="tb-btn" data-cmd="insertUnorderedList" title="Liste à puces">• ≡</button>
+            <button class="tb-btn" data-cmd="insertOrderedList" title="Liste numérotée">1 ≡</button>
+            <div class="tb-sep"></div>
+            <button class="tb-btn" data-cmd="formatBlock" data-val="h3" title="Titre">H3</button>
+            <button class="tb-btn" data-cmd="formatBlock" data-val="p" title="Paragraphe">¶</button>
+            <div class="tb-sep"></div>
+            <button class="tb-btn" id="tb-link" title="Lien">🔗</button>
+            <button class="tb-btn" id="tb-img" title="Image (balise img)">🖼</button>
+            <div class="tb-sep"></div>
+            <button class="tb-btn" id="tb-source" title="Source HTML">&lt;/&gt;</button>
+          </div>
+          <div id="editor" contenteditable="true"></div>
+          <textarea id="source-mode"></textarea>
+        </div>
+      </div>
 
-    // ── STATE ──────────────────────────────────────────────
-    let currentBrand = localStorage.getItem('faq_brand') || 'isotuiles';
-    let currentPage = 'faq';
-    let faqData = [];
-    let questionsData = [];
-    let editingId = null;
-    let orderChanged = false;
-    let sortableInstance = null;
-    let sourceMode = false;
+      <div class="form-group">
+        <label>Boutons d'action <span style="font-weight:400;text-transform:none;font-size:11px">(liens de redirection)</span></label>
+        <div id="btn-list" class="btn-list"></div>
+        <button class="btn btn-ghost btn-sm" id="add-btn-entry" style="margin-top:6px">+ Ajouter un bouton</button>
+      </div>
 
-    // ── API (JSONP pour contourner CORS Apps Script) ───────
-    function api(params) {
-      const cleaned = {};
-      $.each(params, function (k, v) {
-        cleaned[k] = (typeof v === 'object') ? encodeURIComponent(JSON.stringify(v)) : v;
-      });
-      return $.ajax({ url: SCRIPT_URL, method: 'GET', dataType: 'jsonp', data: cleaned });
-    }
-    function apiGet(p) { return api(p); }
-    function apiPost(p) { return api(p); }
+      <div class="form-row">
+        <div class="form-group" style="flex:0 0 100px">
+          <label>Ordre</label>
+          <input type="number" id="f-ordre" value="0" min="0">
+        </div>
+        <div class="form-group" style="flex:0 0 80px">
+          <label>Actif</label>
+          <select id="f-actif">
+            <option value="true">Oui</option>
+            <option value="false">Non</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="modal-cancel">Annuler</button>
+      <button class="btn btn-primary" id="modal-save">Enregistrer</button>
+    </div>
+  </div>
+</div>
 
-    // ── INIT ───────────────────────────────────────────────
-    $(function () {
-      setBrand(currentBrand);
-      bindNav();
-      bindModal();
-      bindEditor();
-      loadPage();
-    });
+<div id="toast"></div>
 
-    function setBrand(brand) {
-      currentBrand = brand;
-      localStorage.setItem('faq_brand', brand);
-      $('.brand-btn').removeClass('active');
-      $(`.brand-btn[data-brand="${brand}"]`).addClass('active');
-      updateTitle();
-    }
+<script>
+// ── CONFIG ─────────────────────────────────────────────
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzaBpFt9EV88u41pQk62u73fJGYLJkTAs3tnhvYWTOScHg-Y6BUUrV4lUdQgf3YD4Bf/exec';
 
-    function updateTitle() {
-      const label = currentPage === 'faq' ? `FAQ — ${currentBrand.charAt(0).toUpperCase() + currentBrand.slice(1)}` : 'Questions téléphone';
-      $('#page-title').text(label);
-    }
+// ── STATE ──────────────────────────────────────────────
+let currentBrand = localStorage.getItem('faq_brand') || 'isotuiles';
+let currentPage = 'faq';
+let faqData = [];
+let questionsData = [];
+let editingId = null;
+let orderChanged = false;
+let sortableInstance = null;
+let sourceMode = false;
 
-    function bindNav() {
-      $('.brand-btn').on('click', function () {
-        setBrand($(this).data('brand'));
-        if (currentPage === 'faq') loadFAQ();
-      });
+// ── API fetch() JSON/CORS ──────────────────────────────
+function apiGet(params) {
+  const qs = $.param(params);
+  return $.Deferred(function(def) {
+    fetch(SCRIPT_URL + '?' + qs)
+      .then(r => r.json()).then(d => def.resolve(d)).catch(e => def.reject(e));
+  }).promise();
+}
+function apiPost(params) {
+  const body = {};
+  $.each(params, function(k, v) {
+    body[k] = (typeof v === 'object') ? encodeURIComponent(JSON.stringify(v)) : v;
+  });
+  const qs = $.param(body);
+  return $.Deferred(function(def) {
+    fetch(SCRIPT_URL + '?' + qs)
+      .then(r => r.json()).then(d => def.resolve(d)).catch(e => def.reject(e));
+  }).promise();
+}
 
-      $('.nav-item').on('click', function () {
-        const page = $(this).data('page');
-        currentPage = page;
-        $('.nav-item').removeClass('active');
-        $(this).addClass('active');
-        updateTitle();
-        loadPage();
-      });
-    }
+// ── INIT ───────────────────────────────────────────────
+$(function () {
+  setBrand(currentBrand);
+  bindNav();
+  bindModal();
+  bindEditor();
+  loadPage();
+});
 
-    function loadPage() {
-      if (currentPage === 'faq') {
-        $('#btn-add').text('Nouvelle entrée').show();
-        loadFAQ();
-      } else {
-        $('#btn-add').text('Nouvelle question');
-        $('#btn-save-order').hide();
-        loadQuestions();
-      }
-    }
+function setBrand(brand) {
+  currentBrand = brand;
+  localStorage.setItem('faq_brand', brand);
+  $('.brand-btn').removeClass('active');
+  $(`.brand-btn[data-brand="${brand}"]`).addClass('active');
+  updateTitle();
+}
 
-    // ── TOAST ──────────────────────────────────────────────
-    function toast(msg, err) {
-      $('#toast').css('background', err ? '#c0392b' : '#111').text(msg).fadeIn(200);
-      setTimeout(() => $('#toast').fadeOut(300), 2500);
-    }
+function updateTitle() {
+  const label = currentPage === 'faq' ? `FAQ — ${currentBrand.charAt(0).toUpperCase()+currentBrand.slice(1)}` : 'Questions téléphone';
+  $('#page-title').text(label);
+}
 
-    // ── FAQ PAGE ───────────────────────────────────────────
-    function loadFAQ() {
-      $('#content').html('<div class="spinner">Chargement…</div>');
-      orderChanged = false;
-      $('#btn-save-order').hide();
-      apiGet({ action: 'getFAQ', brand: currentBrand }).done(res => {
-        if (res.error) return toast(res.error, true);
-        faqData = res.data.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
-        renderFAQ();
-      }).fail(() => toast('Erreur réseau', true));
-    }
+function bindNav() {
+  $('.brand-btn').on('click', function () {
+    setBrand($(this).data('brand'));
+    if (currentPage === 'faq') loadFAQ();
+  });
 
-    function renderFAQ() {
-      if (!faqData.length) {
-        $('#content').html('<div class="empty"><strong>Aucune entrée FAQ</strong><p>Cliquez sur « Nouvelle entrée » pour commencer.</p></div>');
-        return;
-      }
+  $('.nav-item').on('click', function () {
+    const page = $(this).data('page');
+    currentPage = page;
+    $('.nav-item').removeClass('active');
+    $(this).addClass('active');
+    updateTitle();
+    loadPage();
+  });
+}
 
-      const cats = [...new Set(faqData.map(f => f.Categorie).filter(Boolean))];
-      let html = `<div class="filters">
+function loadPage() {
+  if (currentPage === 'faq') {
+    $('#btn-add').text('Nouvelle entrée').show();
+    loadFAQ();
+  } else {
+    $('#btn-add').text('Nouvelle question');
+    $('#btn-save-order').hide();
+    loadQuestions();
+  }
+}
+
+// ── TOAST ──────────────────────────────────────────────
+function toast(msg, err) {
+  $('#toast').css('background', err ? '#c0392b' : '#111').text(msg).fadeIn(200);
+  setTimeout(() => $('#toast').fadeOut(300), 2500);
+}
+
+// ── FAQ PAGE ───────────────────────────────────────────
+function loadFAQ() {
+  $('#content').html('<div class="spinner">Chargement…</div>');
+  orderChanged = false;
+  $('#btn-save-order').hide();
+  apiGet({ action: 'getFAQ', brand: currentBrand }).done(res => {
+    if (res.error) return toast(res.error, true);
+    faqData = res.data.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
+    renderFAQ();
+  }).fail(() => toast('Erreur réseau', true));
+}
+
+function renderFAQ() {
+  if (!faqData.length) {
+    $('#content').html('<div class="empty"><strong>Aucune entrée FAQ</strong><p>Cliquez sur « Nouvelle entrée » pour commencer.</p></div>');
+    return;
+  }
+
+  const cats = [...new Set(faqData.map(f => f.Categorie).filter(Boolean))];
+  let html = `<div class="filters">
     <input type="text" id="search" placeholder="Rechercher…">
-    <select id="filter-cat"><option value="">Toutes catégories</option>${cats.map(c => `<option>${c}</option>`).join('')}</select>
+    <select id="filter-cat"><option value="">Toutes catégories</option>${cats.map(c=>`<option>${c}</option>`).join('')}</select>
     <span class="faq-count" id="count"></span>
   </div><div class="faq-list" id="faq-list"></div>`;
-      $('#content').html(html);
+  $('#content').html(html);
 
-      renderFaqItems(faqData);
+  renderFaqItems(faqData);
 
-      $('#search, #filter-cat').on('input change', filterFAQ);
+  $('#search, #filter-cat').on('input change', filterFAQ);
 
-      sortableInstance = Sortable.create(document.getElementById('faq-list'), {
-        handle: '.drag-handle',
-        animation: 150,
-        onEnd: function () {
-          orderChanged = true;
-          $('#btn-save-order').show();
-        }
-      });
+  sortableInstance = Sortable.create(document.getElementById('faq-list'), {
+    handle: '.drag-handle',
+    animation: 150,
+    onEnd: function () {
+      orderChanged = true;
+      $('#btn-save-order').show();
     }
+  });
+}
 
-    function renderFaqItems(items) {
-      const html = items.map(f => {
-        const preview = f.Texte_HTML.replace(/<[^>]+>/g, '').slice(0, 80);
-        const isOn = String(f.Actif) === 'true';
-        return `<div class="faq-item" data-id="${f.ID}">
+function renderFaqItems(items) {
+  const html = items.map(f => {
+    const preview = f.Texte_HTML.replace(/<[^>]+>/g, '').slice(0, 80);
+    const isOn = String(f.Actif) === 'true';
+    return `<div class="faq-item" data-id="${f.ID}">
       <div class="drag-handle">⠿</div>
       <div class="faq-body">
         <div class="faq-top">
@@ -972,233 +420,233 @@
         <div class="faq-preview">${preview}…</div>
       </div>
       <div class="faq-actions">
-        <button class="toggle-active ${isOn ? 'on' : ''}" data-id="${f.ID}" title="${isOn ? 'Désactiver' : 'Activer'}"></button>
+        <button class="toggle-active ${isOn?'on':''}" data-id="${f.ID}" title="${isOn?'Désactiver':'Activer'}"></button>
         <button class="btn btn-ghost btn-sm edit-btn" data-id="${f.ID}">Modifier</button>
         <button class="btn btn-danger btn-sm del-btn" data-id="${f.ID}">✕</button>
       </div>
     </div>`;
-      }).join('');
-      $('#faq-list').html(html);
-      $('#count').text(`${items.length} entrée${items.length > 1 ? 's' : ''}`);
+  }).join('');
+  $('#faq-list').html(html);
+  $('#count').text(`${items.length} entrée${items.length>1?'s':''}`);
 
-      $('.edit-btn').on('click', function () { openModal($(this).data('id')); });
-      $('.del-btn').on('click', function () { deleteFAQEntry($(this).data('id')); });
-      $('.toggle-active').on('click', function () { toggleActive($(this).data('id')); });
+  $('.edit-btn').on('click', function(){ openModal($(this).data('id')); });
+  $('.del-btn').on('click', function(){ deleteFAQEntry($(this).data('id')); });
+  $('.toggle-active').on('click', function(){ toggleActive($(this).data('id')); });
 
-      $('#btn-add').off('click').on('click', function () { openModal(null); });
-      $('#btn-save-order').off('click').on('click', saveOrder);
-    }
+  $('#btn-add').off('click').on('click', function(){ openModal(null); });
+  $('#btn-save-order').off('click').on('click', saveOrder);
+}
 
-    function filterFAQ() {
-      const q = $('#search').val().toLowerCase();
-      const cat = $('#filter-cat').val();
-      const filtered = faqData.filter(f =>
-        (!q || f.Titre.toLowerCase().includes(q) || f.Texte_HTML.toLowerCase().includes(q)) &&
-        (!cat || f.Categorie === cat)
-      );
-      renderFaqItems(filtered);
-    }
+function filterFAQ() {
+  const q = $('#search').val().toLowerCase();
+  const cat = $('#filter-cat').val();
+  const filtered = faqData.filter(f =>
+    (!q || f.Titre.toLowerCase().includes(q) || f.Texte_HTML.toLowerCase().includes(q)) &&
+    (!cat || f.Categorie === cat)
+  );
+  renderFaqItems(filtered);
+}
 
-    function toggleActive(id) {
-      const item = faqData.find(f => String(f.ID) === String(id));
-      if (!item) return;
-      item.Actif = String(item.Actif) !== 'true';
-      const row = Object.assign({}, item);
-      apiPost({ action: 'saveFAQ', brand: currentBrand, row }).done(res => {
-        if (res.error) toast(res.error, true);
-        else { toast('Statut mis à jour'); renderFaqItems(faqData); }
+function toggleActive(id) {
+  const item = faqData.find(f => String(f.ID) === String(id));
+  if (!item) return;
+  item.Actif = String(item.Actif) !== 'true';
+  const row = Object.assign({}, item);
+  apiPost({ action: 'saveFAQ', brand: currentBrand, row }).done(res => {
+    if (res.error) toast(res.error, true);
+    else { toast('Statut mis à jour'); renderFaqItems(faqData); }
+  });
+}
+
+function deleteFAQEntry(id) {
+  if (!confirm('Supprimer cette entrée ?')) return;
+  apiPost({ action: 'deleteFAQ', brand: currentBrand, id }).done(res => {
+    if (res.error) toast(res.error, true);
+    else { toast('Supprimé'); faqData = faqData.filter(f => String(f.ID) !== String(id)); renderFaqItems(faqData); }
+  });
+}
+
+function saveOrder() {
+  const order = [];
+  $('#faq-list .faq-item').each(function (i) {
+    order.push({ id: $(this).data('id'), ordre: i });
+  });
+  apiPost({ action: 'reorderFAQ', brand: currentBrand, order }).done(res => {
+    if (res.error) toast(res.error, true);
+    else { toast('Ordre sauvegardé'); orderChanged = false; $('#btn-save-order').hide(); }
+  });
+}
+
+// ── MODAL ──────────────────────────────────────────────
+function bindModal() {
+  $('#modal-close, #modal-cancel').on('click', closeModal);
+  $('#modal-save').on('click', saveModal);
+  $('#modal-faq').on('click', function(e){ if ($(e.target).is('#modal-faq')) closeModal(); });
+  $('#add-btn-entry').on('click', addBtnEntry);
+}
+
+function openModal(id) {
+  editingId = id;
+  sourceMode = false;
+  $('#source-mode').hide();
+  $('#editor').show();
+
+  if (id) {
+    const item = faqData.find(f => String(f.ID) === String(id));
+    $('#modal-title').text('Modifier l\'entrée');
+    $('#f-titre').val(item.Titre);
+    $('#f-cat').val(item.Categorie);
+    $('#editor').html(item.Texte_HTML);
+    $('#f-ordre').val(item.Ordre);
+    $('#f-actif').val(String(item.Actif));
+    renderBtnList(item.Boutons_JSON ? JSON.parse(item.Boutons_JSON) : []);
+  } else {
+    $('#modal-title').text('Nouvelle entrée FAQ');
+    $('#f-titre').val('');
+    $('#f-cat').val('');
+    $('#editor').html('');
+    $('#f-ordre').val(faqData.length);
+    $('#f-actif').val('true');
+    renderBtnList([]);
+  }
+  $('#modal-faq').addClass('open');
+}
+
+function closeModal() {
+  $('#modal-faq').removeClass('open');
+  editingId = null;
+}
+
+function saveModal() {
+  if (sourceMode) syncSourceToEditor();
+  const titre = $('#f-titre').val().trim();
+  if (!titre) { toast('Le titre est requis', true); return; }
+
+  const btnEntries = [];
+  $('#btn-list .btn-entry').each(function(){
+    const text = $(this).find('.be-text').val().trim();
+    const url = $(this).find('.be-url').val().trim();
+    if (text && url) {
+      btnEntries.push({
+        text, url,
+        bg_color: $(this).find('.be-bg').val(),
+        text_color: $(this).find('.be-tc').val(),
+        target: $(this).find('.be-target').val()
       });
     }
+  });
 
-    function deleteFAQEntry(id) {
-      if (!confirm('Supprimer cette entrée ?')) return;
-      apiPost({ action: 'deleteFAQ', brand: currentBrand, id }).done(res => {
-        if (res.error) toast(res.error, true);
-        else { toast('Supprimé'); faqData = faqData.filter(f => String(f.ID) !== String(id)); renderFaqItems(faqData); }
-      });
-    }
+  const row = {
+    ID: editingId || '',
+    Categorie: $('#f-cat').val(),
+    Titre: titre,
+    Texte_HTML: $('#editor').html(),
+    Boutons_JSON: btnEntries.length ? JSON.stringify(btnEntries) : '',
+    Ordre: $('#f-ordre').val(),
+    Actif: $('#f-actif').val()
+  };
 
-    function saveOrder() {
-      const order = [];
-      $('#faq-list .faq-item').each(function (i) {
-        order.push({ id: $(this).data('id'), ordre: i });
-      });
-      apiPost({ action: 'reorderFAQ', brand: currentBrand, order }).done(res => {
-        if (res.error) toast(res.error, true);
-        else { toast('Ordre sauvegardé'); orderChanged = false; $('#btn-save-order').hide(); }
-      });
-    }
+  $('#modal-save').prop('disabled', true).text('Enregistrement…');
+  apiPost({ action: 'saveFAQ', brand: currentBrand, row }).done(res => {
+    if (res.error) { toast(res.error, true); return; }
+    toast('Enregistré !');
+    closeModal();
+    loadFAQ();
+  }).fail(() => toast('Erreur réseau', true))
+    .always(() => $('#modal-save').prop('disabled', false).text('Enregistrer'));
+}
 
-    // ── MODAL ──────────────────────────────────────────────
-    function bindModal() {
-      $('#modal-close, #modal-cancel').on('click', closeModal);
-      $('#modal-save').on('click', saveModal);
-      $('#modal-faq').on('click', function (e) { if ($(e.target).is('#modal-faq')) closeModal(); });
-      $('#add-btn-entry').on('click', addBtnEntry);
-    }
+// ── BTN ENTRIES ────────────────────────────────────────
+function renderBtnList(btns) {
+  $('#btn-list').html('');
+  btns.forEach(b => addBtnEntryData(b));
+}
 
-    function openModal(id) {
-      editingId = id;
-      sourceMode = false;
-      $('#source-mode').hide();
-      $('#editor').show();
-
-      if (id) {
-        const item = faqData.find(f => String(f.ID) === String(id));
-        $('#modal-title').text('Modifier l\'entrée');
-        $('#f-titre').val(item.Titre);
-        $('#f-cat').val(item.Categorie);
-        $('#editor').html(item.Texte_HTML);
-        $('#f-ordre').val(item.Ordre);
-        $('#f-actif').val(String(item.Actif));
-        renderBtnList(item.Boutons_JSON ? JSON.parse(item.Boutons_JSON) : []);
-      } else {
-        $('#modal-title').text('Nouvelle entrée FAQ');
-        $('#f-titre').val('');
-        $('#f-cat').val('');
-        $('#editor').html('');
-        $('#f-ordre').val(faqData.length);
-        $('#f-actif').val('true');
-        renderBtnList([]);
-      }
-      $('#modal-faq').addClass('open');
-    }
-
-    function closeModal() {
-      $('#modal-faq').removeClass('open');
-      editingId = null;
-    }
-
-    function saveModal() {
-      if (sourceMode) syncSourceToEditor();
-      const titre = $('#f-titre').val().trim();
-      if (!titre) { toast('Le titre est requis', true); return; }
-
-      const btnEntries = [];
-      $('#btn-list .btn-entry').each(function () {
-        const text = $(this).find('.be-text').val().trim();
-        const url = $(this).find('.be-url').val().trim();
-        if (text && url) {
-          btnEntries.push({
-            text, url,
-            bg_color: $(this).find('.be-bg').val(),
-            text_color: $(this).find('.be-tc').val(),
-            target: $(this).find('.be-target').val()
-          });
-        }
-      });
-
-      const row = {
-        ID: editingId || '',
-        Categorie: $('#f-cat').val(),
-        Titre: titre,
-        Texte_HTML: $('#editor').html(),
-        Boutons_JSON: btnEntries.length ? JSON.stringify(btnEntries) : '',
-        Ordre: $('#f-ordre').val(),
-        Actif: $('#f-actif').val()
-      };
-
-      $('#modal-save').prop('disabled', true).text('Enregistrement…');
-      apiPost({ action: 'saveFAQ', brand: currentBrand, row }).done(res => {
-        if (res.error) { toast(res.error, true); return; }
-        toast('Enregistré !');
-        closeModal();
-        loadFAQ();
-      }).fail(() => toast('Erreur réseau', true))
-        .always(() => $('#modal-save').prop('disabled', false).text('Enregistrer'));
-    }
-
-    // ── BTN ENTRIES ────────────────────────────────────────
-    function renderBtnList(btns) {
-      $('#btn-list').html('');
-      btns.forEach(b => addBtnEntryData(b));
-    }
-
-    function addBtnEntryData(b) {
-      const html = `<div class="btn-entry">
+function addBtnEntryData(b) {
+  const html = `<div class="btn-entry">
     <div style="display:flex;flex-direction:column;gap:4px;flex:1">
       <div style="display:flex;gap:6px">
-        <input class="be-text" placeholder="Texte du bouton" value="${b.text || ''}">
-        <input class="be-url" placeholder="https://..." value="${b.url || ''}" style="flex:2">
+        <input class="be-text" placeholder="Texte du bouton" value="${b.text||''}">
+        <input class="be-url" placeholder="https://..." value="${b.url||''}" style="flex:2">
         <button class="btn btn-danger btn-sm rm-btn" style="flex:none">✕</button>
       </div>
       <div style="display:flex;gap:10px;align-items:center">
-        <label>Fond <input type="color" class="be-bg" value="${b.bg_color || '#111111'}"></label>
-        <label>Texte <input type="color" class="be-tc" value="${b.text_color || '#ffffff'}"></label>
+        <label>Fond <input type="color" class="be-bg" value="${b.bg_color||'#111111'}"></label>
+        <label>Texte <input type="color" class="be-tc" value="${b.text_color||'#ffffff'}"></label>
         <label>Ouverture
           <select class="be-target" style="padding:3px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px">
-            <option value="_blank" ${b.target === '_blank' ? 'selected' : ''}>Nouvel onglet</option>
-            <option value="_self" ${b.target === '_self' ? 'selected' : ''}>Même onglet</option>
+            <option value="_blank" ${b.target==='_blank'?'selected':''}>Nouvel onglet</option>
+            <option value="_self" ${b.target==='_self'?'selected':''}>Même onglet</option>
           </select>
         </label>
       </div>
     </div>
   </div>`;
-      $('#btn-list').append(html);
-      $('#btn-list .rm-btn').last().on('click', function () { $(this).closest('.btn-entry').remove(); });
+  $('#btn-list').append(html);
+  $('#btn-list .rm-btn').last().on('click', function(){ $(this).closest('.btn-entry').remove(); });
+}
+
+function addBtnEntry() {
+  addBtnEntryData({ text:'', url:'', bg_color:'#111111', text_color:'#ffffff', target:'_blank' });
+}
+
+// ── EDITOR ─────────────────────────────────────────────
+function bindEditor() {
+  // Toolbar commands
+  $('.editor-toolbar').on('click', '.tb-btn[data-cmd]', function () {
+    const cmd = $(this).data('cmd');
+    const val = $(this).data('val');
+    document.execCommand(cmd, false, val || null);
+    $('#editor').focus();
+  });
+
+  // Link
+  $('#tb-link').on('click', function () {
+    const url = prompt('URL du lien :');
+    if (url) document.execCommand('createLink', false, url);
+    $('#editor').focus();
+  });
+
+  // Image
+  $('#tb-img').on('click', function () {
+    const src = prompt('URL ou balise <img> complète :');
+    if (!src) return;
+    const tag = src.startsWith('<img') ? src : `<img src="${src}" alt="">`;
+    document.execCommand('insertHTML', false, tag);
+    $('#editor').focus();
+  });
+
+  // Source toggle
+  $('#tb-source').on('click', function () {
+    sourceMode = !sourceMode;
+    $(this).toggleClass('active', sourceMode);
+    if (sourceMode) {
+      $('#source-mode').val($('#editor').html()).show();
+      $('#editor').hide();
+    } else {
+      syncSourceToEditor();
     }
+  });
+}
 
-    function addBtnEntry() {
-      addBtnEntryData({ text: '', url: '', bg_color: '#111111', text_color: '#ffffff', target: '_blank' });
-    }
+function syncSourceToEditor() {
+  $('#editor').html($('#source-mode').val());
+  $('#source-mode').hide();
+  $('#editor').show();
+}
 
-    // ── EDITOR ─────────────────────────────────────────────
-    function bindEditor() {
-      // Toolbar commands
-      $('.editor-toolbar').on('click', '.tb-btn[data-cmd]', function () {
-        const cmd = $(this).data('cmd');
-        const val = $(this).data('val');
-        document.execCommand(cmd, false, val || null);
-        $('#editor').focus();
-      });
+// ── QUESTIONS PAGE ─────────────────────────────────────
+function loadQuestions() {
+  $('#content').html('<div class="spinner">Chargement…</div>');
+  apiGet({ action: 'getQuestions' }).done(res => {
+    if (res.error) return toast(res.error, true);
+    questionsData = res.data;
+    renderQuestions();
+  }).fail(() => toast('Erreur réseau', true));
+}
 
-      // Link
-      $('#tb-link').on('click', function () {
-        const url = prompt('URL du lien :');
-        if (url) document.execCommand('createLink', false, url);
-        $('#editor').focus();
-      });
-
-      // Image
-      $('#tb-img').on('click', function () {
-        const src = prompt('URL ou balise <img> complète :');
-        if (!src) return;
-        const tag = src.startsWith('<img') ? src : `<img src="${src}" alt="">`;
-        document.execCommand('insertHTML', false, tag);
-        $('#editor').focus();
-      });
-
-      // Source toggle
-      $('#tb-source').on('click', function () {
-        sourceMode = !sourceMode;
-        $(this).toggleClass('active', sourceMode);
-        if (sourceMode) {
-          $('#source-mode').val($('#editor').html()).show();
-          $('#editor').hide();
-        } else {
-          syncSourceToEditor();
-        }
-      });
-    }
-
-    function syncSourceToEditor() {
-      $('#editor').html($('#source-mode').val());
-      $('#source-mode').hide();
-      $('#editor').show();
-    }
-
-    // ── QUESTIONS PAGE ─────────────────────────────────────
-    function loadQuestions() {
-      $('#content').html('<div class="spinner">Chargement…</div>');
-      apiGet({ action: 'getQuestions' }).done(res => {
-        if (res.error) return toast(res.error, true);
-        questionsData = res.data;
-        renderQuestions();
-      }).fail(() => toast('Erreur réseau', true));
-    }
-
-    function renderQuestions() {
-      let html = `<div class="q-form">
+function renderQuestions() {
+  let html = `<div class="q-form">
     <h3>Ajouter une question reçue au téléphone</h3>
     <div style="display:flex;gap:10px;margin-bottom:10px">
       <textarea id="q-text" rows="3" placeholder="Question posée par le client…" style="flex:1"></textarea>
@@ -1217,74 +665,73 @@
     <span class="faq-count" id="q-count"></span>
   </div>
   <div class="q-list" id="q-list"></div>`;
-      $('#content').html(html);
+  $('#content').html(html);
 
-      renderQItems(questionsData);
+  renderQItems(questionsData);
 
-      $('#add-q-btn').on('click', addQuestion);
-      $('#q-filter').on('change', filterQuestions);
-      $('#btn-add').off('click').on('click', function () { $('#q-text').focus(); });
-    }
+  $('#add-q-btn').on('click', addQuestion);
+  $('#q-filter').on('change', filterQuestions);
+  $('#btn-add').off('click').on('click', function(){ $('#q-text').focus(); });
+}
 
-    function renderQItems(items) {
-      $('#q-count').text(`${items.length} question${items.length > 1 ? 's' : ''}`);
-      if (!items.length) {
-        $('#q-list').html('<div class="empty"><strong>Aucune question</strong><p>Les questions téléphone apparaîtront ici.</p></div>');
-        return;
-      }
-      const html = items.map(q => {
-        const statut = q.Statut || 'À traiter';
-        const isTraite = statut === 'Traité';
-        return `<div class="q-item" data-id="${q.ID}">
+function renderQItems(items) {
+  $('#q-count').text(`${items.length} question${items.length>1?'s':''}`);
+  if (!items.length) {
+    $('#q-list').html('<div class="empty"><strong>Aucune question</strong><p>Les questions téléphone apparaîtront ici.</p></div>');
+    return;
+  }
+  const html = items.map(q => {
+    const statut = q.Statut || 'À traiter';
+    const isTraite = statut === 'Traité';
+    return `<div class="q-item" data-id="${q.ID}">
       <div class="q-body">
         <div class="q-text">${q.Question}</div>
         <div class="q-meta">${q.Date}${q.Note_par ? ' · ' + q.Note_par : ''}</div>
       </div>
       <div class="q-actions">
-        <span class="status-badge ${isTraite ? 'traite' : 'traiter'}">${statut}</span>
-        <button class="btn btn-ghost btn-sm toggle-q-status" data-id="${q.ID}" data-statut="${isTraite ? 'À traiter' : 'Traité'}">
+        <span class="status-badge ${isTraite?'traite':'traiter'}">${statut}</span>
+        <button class="btn btn-ghost btn-sm toggle-q-status" data-id="${q.ID}" data-statut="${isTraite?'À traiter':'Traité'}">
           ${isTraite ? 'Rouvrir' : 'Marquer traité'}
         </button>
         <button class="btn btn-danger btn-sm del-q" data-id="${q.ID}">✕</button>
       </div>
     </div>`;
-      }).join('');
-      $('#q-list').html(html);
-      $('.toggle-q-status').on('click', function () { updateQStatus($(this).data('id'), $(this).data('statut')); });
-      $('.del-q').on('click', function () { deleteQ($(this).data('id')); });
-    }
+  }).join('');
+  $('#q-list').html(html);
+  $('.toggle-q-status').on('click', function(){ updateQStatus($(this).data('id'), $(this).data('statut')); });
+  $('.del-q').on('click', function(){ deleteQ($(this).data('id')); });
+}
 
-    function filterQuestions() {
-      const f = $('#q-filter').val();
-      const filtered = f ? questionsData.filter(q => q.Statut === f) : questionsData;
-      renderQItems(filtered);
-    }
+function filterQuestions() {
+  const f = $('#q-filter').val();
+  const filtered = f ? questionsData.filter(q => q.Statut === f) : questionsData;
+  renderQItems(filtered);
+}
 
-    function addQuestion() {
-      const text = $('#q-text').val().trim();
-      if (!text) { toast('Entrez une question', true); return; }
-      const row = { Question: text, Note_par: $('#q-par').val().trim(), Statut: 'À traiter' };
-      apiPost({ action: 'addQuestion', row }).done(res => {
-        if (res.error) toast(res.error, true);
-        else { toast('Question ajoutée'); loadQuestions(); }
-      });
-    }
+function addQuestion() {
+  const text = $('#q-text').val().trim();
+  if (!text) { toast('Entrez une question', true); return; }
+  const row = { Question: text, Note_par: $('#q-par').val().trim(), Statut: 'À traiter' };
+  apiPost({ action: 'addQuestion', row }).done(res => {
+    if (res.error) toast(res.error, true);
+    else { toast('Question ajoutée'); loadQuestions(); }
+  });
+}
 
-    function updateQStatus(id, statut) {
-      apiPost({ action: 'updateQuestionStatus', id, statut }).done(res => {
-        if (res.error) toast(res.error, true);
-        else { toast('Statut mis à jour'); loadQuestions(); }
-      });
-    }
+function updateQStatus(id, statut) {
+  apiPost({ action: 'updateQuestionStatus', id, statut }).done(res => {
+    if (res.error) toast(res.error, true);
+    else { toast('Statut mis à jour'); loadQuestions(); }
+  });
+}
 
-    function deleteQ(id) {
-      if (!confirm('Supprimer ?')) return;
-      apiPost({ action: 'deleteQuestion', id }).done(res => {
-        if (res.error) toast(res.error, true);
-        else { toast('Supprimé'); questionsData = questionsData.filter(q => String(q.ID) !== String(id)); filterQuestions(); }
-      });
-    }
-  </script>
+function deleteQ(id) {
+  if (!confirm('Supprimer ?')) return;
+  apiPost({ action: 'deleteQuestion', id }).done(res => {
+    if (res.error) toast(res.error, true);
+    else { toast('Supprimé'); questionsData = questionsData.filter(q => String(q.ID) !== String(id)); filterQuestions(); }
+  });
+}
+</script>
 </body>
-
 </html>

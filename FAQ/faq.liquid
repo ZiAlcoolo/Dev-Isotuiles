@@ -242,13 +242,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
 (function ($) {
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbJkQ2pI3diggXyAxap7eH7MDs3E_ZIFuYLuvSF72I7aBA9spZ-xcJjOsFXsKnaA/exec';
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzaBpFt9EV88u41pQk62u73fJGYLJkTAs3tnhvYWTOScHg-Y6BUUrV4lUdQgf3YD4Bf/exec';
   var BRAND = '{{ faq_brand }}';
   var allItems = [];
   var activeCategory = 'all';
 
   function init() {
-    $.ajax({ url: SCRIPT_URL, dataType: 'jsonp', data: { action: 'getFAQ', brand: BRAND }, success: function (res) {
+    fetch(SCRIPT_URL + '?action=getFAQ&brand=' + BRAND)
+      .then(function(r) { return r.json(); })
+      .then(function (res) {
       if (res.error || !res.data) {
         $('#faq-container').html('<div class="faq-empty">Impossible de charger la FAQ.</div>');
         return;
@@ -260,7 +262,7 @@
 
       buildFilters();
       renderItems(allItems);
-    }}).fail(function () {
+    }).catch(function () {
       $('#faq-container').html('<div class="faq-empty">Impossible de charger la FAQ.</div>');
     });
   }
