@@ -1,25 +1,14 @@
 <!--
   FAQ Section — Shopify Liquid + HTML natif
   Récupère les données depuis Google Apps Script
-
-  USAGE dans Shopify :
-  1. Créer un nouveau fichier dans sections/ → faq.liquid
-  2. Coller ce code
-  3. Ajouter la section à la page souhaitée
-
-  REMPLACER :
-  - VOTRE_URL_APPS_SCRIPT → URL de votre Web App Google Apps Script
-  - VOTRE_BRAND → 'isotuiles' ou 'panotuiles'
+  URL et feuille configurables via l'éditeur de thème Shopify
 -->
-
-{% comment %} ── PARAMÈTRES ──────────────────────────── {% endcomment %}
-{% assign faq_brand = 'isotuiles' %}  {%- comment -%} Changer selon le site {%- endcomment -%}
 
 <section class="faq-section" id="faq-section">
   <div class="faq-inner">
     <div class="faq-header">
-      <h2 class="faq-title">Questions fréquentes</h2>
-      <p class="faq-subtitle">Retrouvez les réponses à vos questions les plus courantes</p>
+      <h2 class="faq-title">{{ section.settings.titre | default: 'Questions fréquentes' }}</h2>
+      <p class="faq-subtitle">{{ section.settings.sous_titre | default: 'Retrouvez les réponses à vos questions les plus courantes' }}</p>
     </div>
 
     <!-- Filtres catégories (générés dynamiquement via JS) -->
@@ -242,29 +231,50 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
 (function ($) {
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzaBpFt9EV88u41pQk62u73fJGYLJkTAs3tnhvYWTOScHg-Y6BUUrV4lUdQgf3YD4Bf/exec';
-  var BRAND = '{{ faq_brand }}';
+  var SCRIPT_URL = {{ section.settings.script_url | json }};
+  var BRAND = {{ section.settings.brand | json }};
+  var CACHE_TTL = 30 * 60 * 1000; // 30 min en ms
+  var CACHE_KEY = 'faq_cache_' + BRAND;
   var allItems = [];
   var activeCategory = 'all';
 
   function init() {
+    // Vérifier le cache sessionStorage (TTL 30 min)
+    try {
+      var cached = sessionStorage.getItem(CACHE_KEY);
+      if (cached) {
+        var parsed = JSON.parse(cached);
+        if (Date.now() - parsed.ts < CACHE_TTL) {
+          allItems = parsed.data;
+          buildFilters();
+          renderItems(allItems);
+          return;
+        }
+      }
+    } catch(e) {}
+
+    // Pas de cache valide → appel API
     fetch(SCRIPT_URL + '?action=getFAQ&brand=' + BRAND)
       .then(function(r) { return r.json(); })
       .then(function (res) {
-      if (res.error || !res.data) {
-        $('#faq-container').html('<div class="faq-empty">Impossible de charger la FAQ.</div>');
-        return;
-      }
-      // Filtrer actifs + trier
-      allItems = res.data
-        .filter(function (f) { return String(f.Actif) === 'true'; })
-        .sort(function (a, b) { return Number(a.Ordre) - Number(b.Ordre); });
+        if (res.error || !res.data) {
+          $('#faq-container').html('<div class="faq-empty">Impossible de charger la FAQ.</div>');
+          return;
+        }
+        allItems = res.data
+          .filter(function (f) { return String(f.Actif) === 'true'; })
+          .sort(function (a, b) { return Number(a.Ordre) - Number(b.Ordre); });
 
-      buildFilters();
-      renderItems(allItems);
-    }).catch(function () {
-      $('#faq-container').html('<div class="faq-empty">Impossible de charger la FAQ.</div>');
-    });
+        // Stocker en cache avec timestamp
+        try {
+          sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: allItems }));
+        } catch(e) {}
+
+        buildFilters();
+        renderItems(allItems);
+      }).catch(function () {
+        $('#faq-container').html('<div class="faq-empty">Impossible de charger la FAQ.</div>');
+      });
   }
 
   function buildFilters() {
@@ -351,7 +361,33 @@
 {% schema %}
 {
   "name": "FAQ",
-  "settings": [],
+  "settings": [
+    {
+      "type": "text",
+      "id": "script_url",
+      "label": "URL de la Web App Google Apps Script",
+      "placeholder": "https://script.google.com/macros/s/.../exec"
+    },
+    {
+      "type": "text",
+      "id": "brand",
+      "label": "Nom de la feuille (brand)",
+      "placeholder": "isotuiles",
+      "info": "Correspond au nom de l'onglet dans le Google Sheet : isotuiles ou panotuiles"
+    },
+    {
+      "type": "text",
+      "id": "titre",
+      "label": "Titre de la section",
+      "default": "Questions fréquentes"
+    },
+    {
+      "type": "text",
+      "id": "sous_titre",
+      "label": "Sous-titre",
+      "default": "Retrouvez les réponses à vos questions les plus courantes"
+    }
+  ],
   "presets": [
     {
       "name": "FAQ",
