@@ -1,521 +1,718 @@
-<section id="main-page">
-        <div id="left-section">
 
+<section id="hero-v2">
 
-            <span id="pre-title"></span>
-            <h1>L'isolation <b>sur mesure,</b><br>La solution <b>qui assure.</b></h1>
+  <!-- ══ DESKTOP ══════════════════════════════════════ -->
+  <div id="hv2-desktop">
 
-            <div id="main-presentation">
-                <hr>
-                <p>
-                    Une isolation performante, une esthétique soignée, et des économies garanties : avec Isotuiles,
-                    construisez
-                    dès aujourd’hui le confort durable de demain.
-                </p>
+    <!-- Colonne gauche : texte + boutons -->
+    <div id="hv2-left">
+      <h1>L'isolation <b>sur mesure,</b><br>La solution <b>qui assure.</b></h1>
+      <div class="hv2-subbar">
+        <hr>
+        <p>
+          Une isolation performante, une esthétique soignée, et des économies garanties :
+          avec Isotuiles,  construisez dès aujourd'hui le confort durable de demain.
+        </p>
+      </div>
+      <div class="hv2-btns">
+        <div class="hv2-btn" onclick="document.location='#shopify-section-template--23794560205123__rich_text_UNhzEj'">
+          <div class="hv2-btn-content"><span>NOS PRODUITS</span></div>
+        </div>
+        <div class="hv2-btn outline" onclick="document.location='#estimateur-commande'">
+          <div class="hv2-btn-content"><span>ESTIMATEUR DE PRIX</span></div>
+          <div class="hv2-btn-arrow">
+            <img src="https://img.icons8.com/windows/1000/up-right-arrow.png" alt="" class="hv2-icon-arrow">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colonne droite : image + hotspots + carousel -->
+    <div id="hv2-right">
+
+      <!-- Zone image avec hotspots -->
+      <div id="hv2-img-wrap">
+        <img
+          id="hv2-product-img"
+          src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/rouge.webp?v=1744188622"
+          alt="Panneau sandwich isolant Isotuiles"
+        >
+
+        <!--
+          HOTSPOTS
+          Ajuste top/left (en %) pour coller exactement à ton image.
+          data-slide="N" = index du slide correspondant (0-based)
+        -->
+        <div class="hv2-hotspot" data-slide="0" style="top:28%;left:37%">
+          <div class="hv2-hs-tooltip">Aspect naturel</div>
+        </div>
+        <div class="hv2-hotspot" data-slide="1" style="top:34%;left:63%">
+          <div class="hv2-hs-tooltip">Isolation thermique</div>
+        </div>
+        <div class="hv2-hotspot" data-slide="2" style="top:62%;left:55%">
+          <div class="hv2-hs-tooltip">Coût réduit</div>
+        </div>
+        <div class="hv2-hotspot" data-slide="3" style="top:68%;left:27%">
+          <div class="hv2-hs-tooltip">Pose rapide</div>
+        </div>
+      </div>
+
+      <!-- Carousel -->
+      <div id="hv2-carousel">
+        <div class="hv2-track-wrap" id="hv2TrackWrap">
+          <div class="hv2-track" id="hv2Track">
+
+            <!-- ── SLIDES ───────────────────────────────────
+                 Chaque slide : icone SVG (ou emoji), titre, description.
+                 Ajoute / retire / modifie librement.
+                 Si tu modifies le nombre de slides, mets à jour
+                 HV2_SLIDE_COUNT dans le <script> ci-dessous.
+            ─────────────────────────────────────────────── -->
+            <div class="hv2-slide" data-index="0">
+              <div class="hv2-slide-icon">🏠</div>
+              <div class="hv2-slide-title">Aspect naturel</div>
+              <div class="hv2-slide-desc">
+                Rendu tuile traditionnelle parfaitement intégré à tout type d'architecture,
+                sans compromis esthétique.
+              </div>
             </div>
 
-
-            <div class="btn-section">
-                <div class="btn-container"
-                    onclick="document.location='#shopify-section-template--23794560205123__rich_text_UNhzEj'">
-
-                    <div class="btn-content">
-                        <span>NOS PRODUITS</span>
-                    </div>
-                    
-
-                </div>
-
-                <div class="btn-container secondary" onclick="document.location='#estimateur-commande'">
-
-                    <div class="btn-content">
-                        <span>ESTIMATEUR DE PRIX</span>
-                    </div>
-                    <div class="btn-arrow">
-                        <img class="icon-arrow" alt="Fleche indication ouverture de nouvelle page"  src="https://img.icons8.com/windows/1000/up-right-arrow.png">
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <div id="right-section">
-            <img alt="Représentation d'un panneau sandwich isolant, produit phare de isotuiles" src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/rouge.webp?v=1744188622">
-        </div>
-
-
-        <!-- ------------------------------------------ -->
-
-        <div id="mobile-version">
-
-            <div id="main-mobile-container">
-                <span id="pre-title">ISOTUILES C'EST...</span>
-
-                <h1>L'isolation <b>sur mesure,</b><br>La solution <b>qui assure.</b></h1>
-
-                <div class="picture">
-                    <img alt="Représentation d'un panneau sandwich isolant, produit phare de isotuiles" src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/rouge.webp?v=1744188622">
-                </div>
-
-                <div id="main-presentation">
-                    <p>
-                        Une isolation performante, une esthétique soignée, et des économies garanties : avec Isotuiles,
-                        construisez
-                        dès aujourd’hui le confort durable de demain.
-                    </p>
-                </div>
+            <div class="hv2-slide" data-index="1">
+              <div class="hv2-slide-icon">🌡️</div>
+              <div class="hv2-slide-title">Isolation thermique</div>
+              <div class="hv2-slide-desc">
+                Mousse polyuréthane haute densité pour des performances thermiques
+                supérieures et des économies d'énergie durables.
+              </div>
             </div>
 
-
-
-            <div class="btn-section">
-                <div class="btn-container"
-                    onclick="document.location='#shopify-section-template--23794560205123__rich_text_UNhzEj'">
-
-                    <div class="btn-content">
-                        <span>NOS PRODUITS</span>
-                    </div>
-                </div>
-
-                <div class="btn-container secondary" onclick="document.location='#shopify-section-template--23794560205123__custom_liquid_LrWAtw'">
-
-                    <div class="btn-content">
-                        <span>ESTIMATEUR DE PRIX</span>
-                    </div>
-                    <div class="btn-arrow">
-                        <img class="icon-arrow" alt="Fleche indication ouverture de nouvelle page"  src="https://img.icons8.com/windows/1000/up-right-arrow.png">
-                    </div>
-
-                </div>
+            <div class="hv2-slide" data-index="2">
+              <div class="hv2-slide-icon">💶</div>
+              <div class="hv2-slide-title">Coût réduit</div>
+              <div class="hv2-slide-desc">
+                Un coût d'intervention 30 % moins cher qu'une rénovation toiture
+                traditionnelle à performance équivalente.
+              </div>
             </div>
 
+            <div class="hv2-slide" data-index="3">
+              <div class="hv2-slide-icon">⚡</div>
+              <div class="hv2-slide-title">Pose rapide</div>
+              <div class="hv2-slide-desc">
+                Installation 2× plus rapide grâce à la pose directe sur la charpente
+                existante — sans démolition.
+              </div>
+            </div>
+
+            <div class="hv2-slide" data-index="4">
+              <div class="hv2-slide-icon">📐</div>
+              <div class="hv2-slide-title">Sur mesure</div>
+              <div class="hv2-slide-desc">
+                Découpe aux dimensions exactes de ton chantier, sans chute inutile
+                ni surcoût matière.
+              </div>
+            </div>
+
+            <div class="hv2-slide" data-index="5">
+              <div class="hv2-slide-icon">🔇</div>
+              <div class="hv2-slide-title">Isolation phonique</div>
+              <div class="hv2-slide-desc">
+                Atténuation sonore renforcée, idéale pour les zones à forte
+                exposition au bruit extérieur (pluie, circulation…).
+              </div>
+            </div>
+
+          </div><!-- /hv2-track -->
+        </div><!-- /hv2-track-wrap -->
+
+        <div class="hv2-nav">
+          <div class="hv2-dots" id="hv2Dots"></div>
+          <div class="hv2-arrows">
+            <button class="hv2-nav-btn" id="hv2Prev" aria-label="Précédent">&#8249;</button>
+            <button class="hv2-nav-btn" id="hv2Next" aria-label="Suivant">&#8250;</button>
+          </div>
         </div>
+      </div><!-- /hv2-carousel -->
 
+    </div><!-- /hv2-right -->
+  </div><!-- /hv2-desktop -->
+
+
+  <!-- ══ MOBILE ════════════════════════════════════════ -->
+  <div id="hv2-mobile">
+
+    <div id="hv2-mob-text">
+      <span class="hv2-pretitle">ISOTUILES C'EST…</span>
+      <h1>L'isolation <b>sur mesure,</b><br>La solution <b>qui assure.</b></h1>
+    </div>
+
+    <div id="hv2-mob-card">
+      <!-- Image flottante -->
+      <div class="hv2-mob-img-zone">
+        <img
+          src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/rouge.webp?v=1744188622"
+          alt="Panneau sandwich Isotuiles"
+          class="hv2-mob-img"
+        >
+      </div>
+
+      <!-- Description courte -->
+      <p class="hv2-mob-desc">
+        Une isolation performante, une esthétique soignée, et des économies garanties.
+      </p>
+
+      <!-- Carousel mobile -->
+      <div class="hv2-mob-carousel">
+        <div class="hv2-track-wrap" id="hv2MobTrackWrap">
+          <div class="hv2-track" id="hv2MobTrack">
+
+            <div class="hv2-slide" data-index="0"><div class="hv2-slide-icon">🏠</div><div class="hv2-slide-title">Aspect naturel</div><div class="hv2-slide-desc">Rendu tuile traditionnelle intégré à tout type d'architecture.</div></div>
+            <div class="hv2-slide" data-index="1"><div class="hv2-slide-icon">🌡️</div><div class="hv2-slide-title">Thermique</div><div class="hv2-slide-desc">Mousse polyuréthane haute densité pour des performances optimales.</div></div>
+            <div class="hv2-slide" data-index="2"><div class="hv2-slide-icon">💶</div><div class="hv2-slide-title">-30 % de coût</div><div class="hv2-slide-desc">30 % moins cher qu'une rénovation toiture traditionnelle.</div></div>
+            <div class="hv2-slide" data-index="3"><div class="hv2-slide-icon">⚡</div><div class="hv2-slide-title">Pose rapide</div><div class="hv2-slide-desc">2× plus rapide, pose directe sur charpente existante.</div></div>
+            <div class="hv2-slide" data-index="4"><div class="hv2-slide-icon">📐</div><div class="hv2-slide-title">Sur mesure</div><div class="hv2-slide-desc">Découpe aux dimensions exactes de votre chantier.</div></div>
+            <div class="hv2-slide" data-index="5"><div class="hv2-slide-icon">🔇</div><div class="hv2-slide-title">Phonique</div><div class="hv2-slide-desc">Atténuation sonore renforcée pour un confort maximal.</div></div>
+
+          </div>
         </div>
-
-    </section>
-
-
-
-
-
-
-
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
-        .header-wrapper {
-            border-radius: 20px;
-            margin: 1rem;
-        }
-
-
-        #main-page {
-            font-family: "Inter", Arial, Helvetica, sans-serif;
-            display: flex;
-            flex-direction: row;
-            min-height: 90vh;
-            /* background-color: #F4F5F7; */
-            align-items: stretch;
-            padding: 0 1rem;
-            padding-bottom: 5vh;
-            box-sizing: border-box;
-            gap: 5vw;
-        }
-
-        #main-page #mobile-version {
-            display: none;
-        }
-
-
-        #main-page #left-section {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 7%;
-            width: 60vw;
-            box-sizing: border-box;
-            gap: 1rem;
-            color: #303030;
-        }
-
-
-        #main-page #pre-title {
-            font-weight: 400;
-            font-size: 2rem;
-            color: #303030;
-        }
-
-        #main-page h1 {
-            font-style: normal;
-            font-weight: 400;
-            font-size: 3rem;
-            margin: 0;
-            text-transform: uppercase;
-        }
-
-        #main-page h1 b {
-            color: #002F5C;
-        }
-
-        #main-page #left-section #main-presentation {
-            display: flex;
-            flex-direction: row;
-            gap: 1rem;
-        }
-
-        #main-page #left-section p {
-            font-size: 1.2rem;
-            margin: .5rem 0;
-            color: #303030;
-        }
-
-        #main-page #left-section hr {
-            border: solid 1px #303030;
-            height: 100%;
-            width: 0;
-            margin: 0;
-        }
-
-
-
-
-
-        #main-page #right-section {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-
-            background: linear-gradient(90deg, #2F6CA2 0%, #377DB6 42.31%, #3983BD 68.27%, #3A83BE 100%);
-            border-radius: 20px;
-            flex: 1;
-        }
-
-        #main-page #right-section img {
-            position: absolute;
-            left: -40%;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40vw;
-            -webkit-animation: pulsate-fwd 10s ease-in-out infinite both;
-            animation: pulsate-fwd 10s ease-in-out infinite both;
-            transform-origin: center top;
-            -webkit-filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-            filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-            /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
-        }
-
-        @-webkit-keyframes pulsate-fwd {
-            0% {
-                -webkit-transform: scale(1) translateY(-50%);
-                transform: scale(1) translateY(-50%);
-                -webkit-filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-                filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-            }
-
-            50% {
-                -webkit-transform: scale(1.05) translateY(-50%);
-                transform: scale(1.05) translateY(-50%);
-                -webkit-filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-                filter: drop-shadow(5px 15px 30px rgba(35, 35, 41, 0.4));
-            }
-
-            100% {
-                -webkit-transform: scale(1) translateY(-50%);
-                transform: scale(1) translateY(-50%);
-                -webkit-filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-                filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-            }
-        }
-
-        @keyframes pulsate-fwd {
-            0% {
-                -webkit-transform: scale(1) translateY(-50%);
-                transform: scale(1) translateY(-50%);
-                -webkit-filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-                filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-            }
-
-            50% {
-                -webkit-transform: scale(1.05) translateY(-50%);
-                transform: scale(1.05) translateY(-50%);
-                -webkit-filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-                filter: drop-shadow(5px 15px 30px rgba(35, 35, 41, 0.4));
-            }
-
-            100% {
-                -webkit-transform: scale(1) translateY(-50%);
-                transform: scale(1) translateY(-50%);
-                -webkit-filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-                filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-            }
-        }
-
-
-
-
-
-
-
-        #main-page .btn-section {
-            display: flex;
-            gap: 1rem;
-            flex-direction: row;
-            width: fit-content;
-            justify-content: center;
-            font-family: Arial, Helvetica, sans-serif;
-            -webkit-flex-wrap: wrap;
-            flex-wrap: wrap;
-        }
-
-        /* btn-container */
-        #main-page .btn-container {
-            /* Auto layout */
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            padding: 0px;
-
-            width: fit-content;
-gap:1px;
-
-
-            /* Inside auto layout */
-            flex: none;
-            order: 1;
-            flex-grow: 0;
-            cursor: pointer;
-        }
-
-        /* btn-content */
-        #main-page .btn-content {
-            height: 100%;
-            box-sizing: border-box;
-
-            /* Auto layout */
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            padding: 5px 15px;
-            gap: 10px;
-
-
-            width: fit-content;
-
-            border: 2px solid #002F5C;
-            background-color: #002F5C;
-            border-radius: 15px;
-
-            /* Inside auto layout */
-            flex: none;
-            order: 0;
-            flex-grow: 0;
-            transition: all ease .3s;
-        }
-
-        #main-page .btn-container:hover .btn-content,
-        #main-page .btn-container.secondary .btn-content {
-            color: #002F5C;
-            background-color: transparent;
-        }
-
-        /* Fiche Technique */
-        #main-page .btn-content span {
-            width: fit-content;
-            font-style: normal;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            text-align: center;
-
-            color: white;
-
-
-            /* Inside auto layout */
-            flex: none;
-            order: 0;
-            flex-grow: 0;
-            transition: all ease .3s;
-        }
-
-        #main-page .btn-container:hover span,
-        #main-page .btn-container.secondary span {
-            color: #002F5C;
-        }
-
-        /* btn-arrow */
-        #main-page .btn-arrow {
-            box-sizing: border-box;
-
-            /* Auto layout */
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            padding: 0px;
-            gap: 10px;
-
-            width: 40px;
-            height: 40px;
-
-            border: 2px solid #002F5C;
-            background-color: #002F5C;
-            border-radius: 15px;
-
-            /* Inside auto layout */
-            flex: none;
-            order: 1;
-            flex-grow: 0;
-            transition: all ease .3s;
-        }
-
-        #main-page .btn-container:hover .btn-arrow,
-        #main-page .btn-container.secondary .btn-arrow {
-            background-color: transparent;
-        }
-
-        /* icon-arrow */
-        #main-page .icon-arrow {
-            width: 20px;
-            height: 20px;
-            filter: invert();
-            transition: all ease .3s;
-        }
-
-        #main-page .btn-container:hover .icon-arrow,
-        #main-page .btn-container.secondary .icon-arrow {
-            filter: unset;
-        }
-
-        #main-page .btn-container.secondary:hover .btn-content,
-        #main-page .btn-container.secondary:hover .btn-arrow {
-            background-color: rgba(0, 47, 92, 0.1) !important;
-        }
-
-
-
-        #main-page #mobile-version {
-            margin-top: 10vh;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            flex: 1;
-        }
-
-        #main-page #mobile-version #main-mobile-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
-        }
-
-        #main-page #mobile-version #pre-title {
-            font-size: 1rem;
-            text-align: center;
-        }
-
-        #main-page #mobile-version h1 {
-            font-size: 1.5rem;
-            text-align: center;
-        }
-
-        #main-page #mobile-version #main-mobile-container .picture {
-            width: 100%;
-            height: 15vh;
-            position: relative;
-            display: flex;
-
-            background: linear-gradient(90deg, #2F6CA2 0%, #377DB6 42.31%, #3983BD 68.27%, #3A83BE 100%);
-            border-radius: 2rem;
-            margin-top: 40vw;
-            margin-bottom: 2rem;
-        }
-
-        #main-page #mobile-version #main-mobile-container .picture img {
-            position: absolute;
-            left: 50%;
-            top: -50%;
-            transform: translate(-50%, 50%);
-            width: 80vw;
-            -webkit-animation: pulsate-fwd-mobile 10s ease-in-out infinite both;
-            animation: pulsate-fwd-mobile 10s ease-in-out infinite both;
-            -webkit-filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-            filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-        }
-
-
-        @-webkit-keyframes pulsate-fwd-mobile {
-            0% {
-                -webkit-transform: scale(1) translateX(-50%);
-                transform: scale(1) translateX(-50%);
-                -webkit-filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-                filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-            }
-
-            50% {
-                -webkit-transform: scale(1.05) translateX(-50%);
-                transform: scale(1.05) translateX(-50%);
-                -webkit-filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-                filter: drop-shadow(5px 15px 30px rgba(35, 35, 41, 0.4));
-            }
-
-            100% {
-                -webkit-transform: scale(1) translateX(-50%);
-                transform: scale(1) translateX(-50%);
-                -webkit-filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-                filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-            }
-        }
-
-        @keyframes pulsate-fwd-mobile {
-            0% {
-                -webkit-transform: scale(1) translateX(-50%);
-                transform: scale(1) translateX(-50%);
-                -webkit-filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-                filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-            }
-
-            50% {
-                -webkit-transform: scale(1.05) translateX(-50%);
-                transform: scale(1.05) translateX(-50%);
-                -webkit-filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-                filter: drop-shadow(5px 15px 30px rgba(35, 35, 41, 0.4));
-            }
-
-            100% {
-                -webkit-transform: scale(1) translateX(-50%);
-                transform: scale(1) translateX(-50%);
-                -webkit-filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-                filter: drop-shadow(5px 15px 10px rgba(35, 35, 41, 0.4));
-            }
-        }
-
-        #main-page #mobile-version #main-presentation {
-            text-align: center;
-            font-size: .9rem;
-        }
-
-
-        /* MOBILE VERSION ========================== */
-        @media (max-width: 768px) {
-            #main-page #mobile-version {
-                display: flex !important;
-            }
-
-            #main-page {
-                flex-direction: column !important;
-                min-height: 80vh;
-                height: auto;
-            }
-
-            #main-page #left-section,
-            #main-page #right-section {
-                display: none !important;
-            }
-        }
-    </style>
+        <div class="hv2-nav" style="margin-top:.6rem">
+          <div class="hv2-dots" id="hv2MobDots"></div>
+          <div class="hv2-arrows">
+            <button class="hv2-nav-btn" id="hv2MobPrev" aria-label="Précédent">&#8249;</button>
+            <button class="hv2-nav-btn" id="hv2MobNext" aria-label="Suivant">&#8250;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Boutons mobile -->
+    <div class="hv2-btns" style="justify-content:center">
+      <div class="hv2-btn" onclick="document.location='#shopify-section-template--23794560205123__rich_text_UNhzEj'">
+        <div class="hv2-btn-content"><span>NOS PRODUITS</span></div>
+      </div>
+      <div class="hv2-btn outline" onclick="document.location='#shopify-section-template--23794560205123__custom_liquid_LrWAtw'">
+        <div class="hv2-btn-content"><span>ESTIMATEUR DE PRIX</span></div>
+        <div class="hv2-btn-arrow">
+          <img src="https://img.icons8.com/windows/1000/up-right-arrow.png" alt="" class="hv2-icon-arrow">
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /hv2-mobile -->
+
+</section>
+
+
+<!-- ════════════════════════════════════════════════════
+     STYLES
+     ════════════════════════════════════════════════════ -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+/* ── Reset local ──────────────────────────────────────── */
+#hero-v2 *, #hero-v2 *::before, #hero-v2 *::after { box-sizing: border-box; }
+
+/* ── Variables ────────────────────────────────────────── */
+#hero-v2 {
+  --c-dark:  #002F5C;
+  --c-mid:   #2F6CA2;
+  --c-light: #3A83BE;
+  --c-text:  #303030;
+  --radius:  20px;
+  font-family: "Inter", Arial, Helvetica, sans-serif;
+}
+
+/* ══ DESKTOP ════════════════════════════════════════════ */
+#hv2-desktop {
+  display: flex;
+  flex-direction: row;
+  min-height: 90vh;
+  align-items: stretch;
+  padding: 0 1rem 5vh;
+  gap: 4vw;
+}
+#hv2-mobile { display: none; }
+
+/* ── Colonne gauche ──────────────────────────────────── */
+#hv2-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5% 6%;
+  width: 55%;
+  gap: 1.2rem;
+  color: var(--c-text);
+}
+#hv2-left h1 {
+  font-weight: 400;
+  font-size: clamp(1.8rem, 2.8vw, 3rem);
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.18;
+}
+#hv2-left h1 b { color: var(--c-dark); }
+
+.hv2-subbar {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+.hv2-subbar hr {
+  border: 1px solid var(--c-text);
+  height: auto;
+  width: 0;
+  margin: 0;
+}
+.hv2-subbar p {
+  font-size: clamp(.95rem, 1.1vw, 1.15rem);
+  margin: .4rem 0;
+  color: var(--c-text);
+}
+
+/* ── Boutons ─────────────────────────────────────────── */
+.hv2-btns {
+  display: flex;
+  gap: .8rem;
+  flex-wrap: wrap;
+}
+.hv2-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+}
+.hv2-btn-content {
+  display: flex;
+  align-items: center;
+  padding: 7px 18px;
+  gap: 8px;
+  border: 2px solid var(--c-dark);
+  background: var(--c-dark);
+  border-radius: 14px;
+  transition: all .3s;
+}
+.hv2-btn-content span {
+  font-size: clamp(.85rem, 1vw, 1.1rem);
+  color: #fff;
+  font-weight: 500;
+  transition: color .3s;
+}
+.hv2-btn:hover .hv2-btn-content,
+.hv2-btn.outline .hv2-btn-content {
+  background: transparent;
+}
+.hv2-btn:hover .hv2-btn-content span,
+.hv2-btn.outline .hv2-btn-content span {
+  color: var(--c-dark);
+}
+.hv2-btn-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 2px solid var(--c-dark);
+  border-radius: 13px;
+  background: var(--c-dark);
+  transition: all .3s;
+}
+.hv2-btn.outline .hv2-btn-arrow { background: transparent; }
+.hv2-btn:hover .hv2-btn-arrow { background: transparent; }
+.hv2-icon-arrow {
+  width: 18px;
+  height: 18px;
+  filter: invert(1);
+  transition: filter .3s;
+}
+.hv2-btn.outline .hv2-icon-arrow { filter: none; }
+.hv2-btn:hover .hv2-icon-arrow { filter: none; }
+.hv2-btn.outline:hover .hv2-btn-content,
+.hv2-btn.outline:hover .hv2-btn-arrow {
+  background: rgba(0,47,92,.08) !important;
+}
+
+/* ── Colonne droite ──────────────────────────────────── */
+#hv2-right {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, var(--c-mid) 0%, var(--c-light) 100%);
+  border-radius: var(--radius);
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Zone image ──────────────────────────────────────── */
+#hv2-img-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 3rem 1rem;
+  min-height: 280px;
+}
+#hv2-product-img {
+  width: 120%;
+  max-width: 45vw;
+  filter: drop-shadow(5px 15px 18px rgba(0,0,0,.42));
+  animation: hv2pulse 10s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+}
+@keyframes hv2pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.04); }
+}
+
+/* ── Hotspots ────────────────────────────────────────── */
+.hv2-hotspot {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background: var(--c-dark);
+  border: 2.5px solid #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform .25s, box-shadow .25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hv2-hotspot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.5);
+  animation: hv2ripple 2s ease-out infinite;
+}
+@keyframes hv2ripple {
+  0%   { transform: scale(1);   opacity: .9; }
+  100% { transform: scale(2.2); opacity: 0;  }
+}
+.hv2-hotspot:hover { transform: scale(1.35); box-shadow: 0 0 0 5px rgba(255,255,255,.25); }
+.hv2-hotspot.active { background: #fff; border-color: var(--c-dark); }
+.hv2-hotspot.active::after { border-color: rgba(255,255,255,.7); }
+
+/* Tooltip au survol */
+.hv2-hs-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--c-dark);
+  color: #fff;
+  font-size: .7rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.hv2-hotspot:hover .hv2-hs-tooltip { opacity: 1; }
+
+/* ── Carousel ────────────────────────────────────────── */
+#hv2-carousel {
+  padding: 1rem 1.25rem 1.4rem;
+  border-top: 1px solid rgba(255,255,255,.18);
+  flex-shrink: 0;
+}
+.hv2-track-wrap {
+  overflow-x: auto;
+  overflow-y: visible;
+  cursor: grab;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;         /* Firefox */
+  -ms-overflow-style: none;      /* IE */
+  padding-bottom: 4px;           /* espace pour box-shadow des slides actifs */
+}
+.hv2-track-wrap::-webkit-scrollbar { display: none; }
+.hv2-track-wrap.hv2-grabbing { cursor: grabbing; }
+
+.hv2-track {
+  display: flex;
+  gap: 10px;
+  width: max-content;
+}
+
+/* ── Slide ──────────────────────────────────────────── */
+.hv2-slide {
+  flex-shrink: 0;
+  width: 140px;
+  background: rgba(255,255,255,.12);
+  border: 1.5px solid rgba(255,255,255,.22);
+  border-radius: 14px;
+  padding: .85rem .75rem;
+  color: #fff;
+  cursor: pointer;
+  transition: width .35s cubic-bezier(.25,.8,.25,1),
+              background .3s, border-color .3s;
+  overflow: hidden;
+}
+.hv2-slide:hover,
+.hv2-slide.active {
+  width: 210px;
+  background: rgba(255,255,255,.22);
+  border-color: rgba(255,255,255,.65);
+}
+.hv2-slide-icon  { font-size: 1.15rem; line-height: 1; margin-bottom: .35rem; }
+.hv2-slide-title {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .045em;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.hv2-slide-desc {
+  font-size: .72rem;
+  opacity: .88;
+  line-height: 1.45;
+  margin-top: .4rem;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .35s ease;
+}
+.hv2-slide:hover .hv2-slide-desc,
+.hv2-slide.active .hv2-slide-desc { max-height: 100px; }
+
+/* ── Navigation (dots + flèches) ────────────────────── */
+.hv2-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: .75rem;
+}
+.hv2-dots { display: flex; gap: 5px; align-items: center; }
+.hv2-dot {
+  width: 6px; height: 6px;
+  border-radius: 3px;
+  background: rgba(255,255,255,.35);
+  cursor: pointer;
+  transition: all .3s;
+}
+.hv2-dot.active { background: #fff; width: 18px; }
+.hv2-arrows { display: flex; gap: 5px; }
+.hv2-nav-btn {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.4);
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  font-size: 16px;
+  line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background .2s;
+  font-family: inherit;
+}
+.hv2-nav-btn:hover { background: rgba(255,255,255,.28); }
+
+/* ══ MOBILE ════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #hv2-desktop { display: none; }
+  #hv2-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding: 1rem 1rem 3rem;
+    min-height: auto;
+    color: var(--c-text);
+  }
+
+  #hv2-mob-text {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+  }
+  .hv2-pretitle {
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: #666;
+  }
+  #hv2-mob-text h1 {
+    font-weight: 400;
+    font-size: 1.55rem;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1.2;
+  }
+  #hv2-mob-text h1 b { color: var(--c-dark); }
+
+  #hv2-mob-card {
+    background: linear-gradient(135deg, var(--c-mid) 0%, var(--c-light) 100%);
+    border-radius: var(--radius);
+    overflow: visible;
+    position: relative;
+    margin-top: 28vw; /* espace pour l'image qui dépasse */
+  }
+  .hv2-mob-img-zone {
+    position: relative;
+    width: 100%;
+    height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .hv2-mob-img {
+    position: relative;
+    top: 2rem;
+    width: 82vw;
+    max-width: 340px;
+    filter: drop-shadow(3px 8px 14px rgba(0,0,0,.42));
+    animation: hv2pulse 10s ease-in-out infinite;
+  }
+  .hv2-mob-desc {
+    font-size: .88rem;
+    color: #fff;
+    opacity: .9;
+    text-align: center;
+    padding: 34vw 1.2rem 1rem; /* padding-top = espace image flottante */
+    line-height: 1.5;
+  }
+  .hv2-mob-carousel {
+    padding: .6rem 1rem 1.2rem;
+    border-top: 1px solid rgba(255,255,255,.18);
+  }
+  /* Slides un peu plus étroits sur mobile */
+  #hv2-mobile .hv2-slide { width: 125px; }
+  #hv2-mobile .hv2-slide:hover,
+  #hv2-mobile .hv2-slide.active { width: 185px; }
+
+  #hv2-mobile .hv2-btns { justify-content: center; }
+}
+</style>
+
+
+<!-- ════════════════════════════════════════════════════
+     JAVASCRIPT
+     ════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  /* ─── CONFIG ─────────────────────────────────────── */
+  const HV2_SLIDE_COUNT = 6;   // ← met à jour si tu ajoutes/supprimes des slides
+  const HV2_AUTO_DELAY  = 4500; // ms entre chaque défilement automatique
+
+  /* ─── ÉTAT ───────────────────────────────────────── */
+  let current = 0;
+  let autoTimer = null;
+
+  /* ─── HELPERS ─────────────────────────────────────── */
+  function $id(id) { return document.getElementById(id); }
+
+  /* ─── CAROUSEL DESKTOP ───────────────────────────── */
+  const track      = $id('hv2Track');
+  const trackWrap  = $id('hv2TrackWrap');
+  const dotsEl     = $id('hv2Dots');
+
+  function buildDots(container, count) {
+    if (!container) return;
+    for (let i = 0; i < count; i++) {
+      const d = document.createElement('div');
+      d.className = 'hv2-dot' + (i === 0 ? ' active' : '');
+      d.addEventListener('click', () => goToSlide(i));
+      container.appendChild(d);
+    }
+  }
+
+  function updateDots(container, idx) {
+    if (!container) return;
+    container.querySelectorAll('.hv2-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === idx);
+    });
+  }
+
+  function updateSlides(trackEl, idx) {
+    if (!trackEl) return;
+    trackEl.querySelectorAll('.hv2-slide').forEach((s, i) => {
+      s.classList.toggle('active', i === idx);
+    });
+    /* scroll centré sur le slide actif */
+    const activeSlide = trackEl.querySelectorAll('.hv2-slide')[idx];
+    const wrap = trackEl.closest('.hv2-track-wrap');
+    if (activeSlide && wrap) {
+      const wRect = wrap.getBoundingClientRect();
+      const sRect = activeSlide.getBoundingClientRect();
+      const offset = activeSlide.offsetLeft - (wRect.width / 2 - sRect.width / 2);
+      wrap.scrollTo({ left: Math.max(0, offset), behavior: 'smooth' });
+    }
+  }
+
+  function updateHotspots(idx) {
+    document.querySelectorAll('.hv2-hotspot').forEach(h => {
+      h.classList.toggle('active', parseInt(h.dataset.slide) === idx);
+    });
+  }
+
+  function goToSlide(idx) {
+    current = (idx + HV2_SLIDE_COUNT) % HV2_SLIDE_COUNT;
+    updateSlides(track, current);
+    updateSlides($id('hv2MobTrack'), current);
+    updateDots(dotsEl, current);
+    updateDots($id('hv2MobDots'), current);
+    updateHotspots(current);
+    resetAuto();
+  }
+
+  function moveBy(dir) { goToSlide(current + dir); }
+
+  function resetAuto() {
+    clearInterval(autoTimer);
+    autoTimer = setInterval(() => moveBy(1), HV2_AUTO_DELAY);
+  }
+
+  /* ─── DRAG-TO-SCROLL ──────────────────────────────── */
+  function enableDrag(wrap) {
+    if (!wrap) return;
+    let dragging = false, startX = 0, scrollStart = 0;
+    wrap.addEventListener('mousedown', e => {
+      dragging = true; startX = e.pageX; scrollStart = wrap.scrollLeft;
+      wrap.classList.add('hv2-grabbing');
+    });
+    wrap.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      wrap.scrollLeft = scrollStart - (e.pageX - startX);
+    });
+    ['mouseup','mouseleave'].forEach(ev =>
+      wrap.addEventListener(ev, () => { dragging = false; wrap.classList.remove('hv2-grabbing'); })
+    );
+    /* touch */
+    let tx = 0, ts = 0;
+    wrap.addEventListener('touchstart', e => { tx = e.touches[0].pageX; ts = wrap.scrollLeft; }, { passive: true });
+    wrap.addEventListener('touchmove',  e => { wrap.scrollLeft = ts - (e.touches[0].pageX - tx); }, { passive: true });
+  }
+
+  /* ─── INIT ───────────────────────────────────────── */
+  buildDots(dotsEl,       HV2_SLIDE_COUNT);
+  buildDots($id('hv2MobDots'), HV2_SLIDE_COUNT);
+
+  enableDrag(trackWrap);
+  enableDrag($id('hv2MobTrackWrap'));
+
+  /* Flèches desktop */
+  const prev = $id('hv2Prev'), next = $id('hv2Next');
+  if (prev) prev.addEventListener('click', () => moveBy(-1));
+  if (next) next.addEventListener('click', () => moveBy(1));
+
+  /* Flèches mobile */
+  const mp = $id('hv2MobPrev'), mn = $id('hv2MobNext');
+  if (mp) mp.addEventListener('click', () => moveBy(-1));
+  if (mn) mn.addEventListener('click', () => moveBy(1));
+
+  /* Hotspots */
+  document.querySelectorAll('.hv2-hotspot').forEach(h => {
+    h.addEventListener('click', () => goToSlide(parseInt(h.dataset.slide)));
+  });
+
+  /* État initial */
+  goToSlide(0);
+  // goToSlide() a déjà lancé resetAuto()
+})();
+</script>
