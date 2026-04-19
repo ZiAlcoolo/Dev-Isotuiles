@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chargement de sections</title>
+    <script src="./modules/jquery.min.js"></script>
+
+
+</head>
+
+<body>
+
+    <script>
+        function loadSection(file, pushState = true) {
+            if (pushState) {
+                const url = new URL(window.location);
+                url.searchParams.set('page', file);
+                window.history.pushState({}, '', url);
+            }
+
+            fetch('sections/' + file)
+                .then(res => {
+                    if (!res.ok) throw new Error("Section introuvable");
+                    return res.text();
+                })
+                .then(data => {
+                    document.getElementById('content').innerHTML = data;
+                })
+                .catch(err => {
+                    document.getElementById('content').innerHTML = "<p>Erreur de chargement</p>";
+                    console.error(err);
+                });
+        }
+
+        function getPageFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('page');
+        }
+
+        // Charger le menu dynamiquement
+        fetch('./sections/sections.json')
+            .then(res => {
+                if (!res.ok) throw new Error("sections.json introuvable");
+                return res.json();
+            })
+            .then(files => {
+                const menu = document.getElementById('menu');
+
+                files.forEach(file => {
+                    const btn = document.createElement('button');
+                    btn.textContent = file.replace('.html', '');
+                    btn.onclick = () => loadSection(file);
+                    menu.appendChild(btn);
+                });
+
+                // Charger la bonne page au démarrage
+                const page = getPageFromURL() || files[0];
+                loadSection(page, false);
+            })
+            .catch(err => {
+                console.error("Erreur JSON :", err);
+            });
+
+        // Bouton retour navigateur
+        window.addEventListener('popstate', () => {
+            const page = getPageFromURL();
+            if (page) {
+                loadSection(page, false);
+            }
+        });
+    </script>
+
+    <div id="menu"></div>
+    <div id="content"></div>
+
+</body>
+
+</html>
