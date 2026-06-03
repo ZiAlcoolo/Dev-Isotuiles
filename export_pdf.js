@@ -12,13 +12,18 @@ document.getElementById("exportPdf").addEventListener("click", function () {
     <input type="text" id="nomPrenom" placeholder="Nom Prénom">
     <input type="email" id="emailClient" placeholder="Email">
     <input type="tel" id="telClient" placeholder="Téléphone">
+    <input type="text" id="adresseRue" placeholder="N° et Rue">
+    <input type="text" id="codePostal" placeholder="Code Postal">
+    <input type="text" id="ville" placeholder="Ville">
+    <input type="text" id="pays" placeholder="Pays">
+
     <div style="margin-top:15px;">
       <button id="exportAvecNom" onclick="generatePdf(true)">Exporter avec infos</button>
       <button id="exportSansNom" onclick="generatePdf(false)">Exporter sans infos</button>
     </div>
   </div>
 `;
-        $('#insert_pdf_options').append(pdf_overlay)
+        $('#insert_pdf_options').append(pdf_overlay);
     }
 });
 
@@ -62,6 +67,10 @@ function generatePdf(withInfos) {
         const nomPrenom = document.getElementById("nomPrenom").value.trim();
         const emailClient = document.getElementById("emailClient").value.trim();
         const telClient = document.getElementById("telClient").value.trim();
+        const adresse = $("#adresseRue").val().trim();
+        const cp = $("#codePostal").val().trim();
+        const ville = $("#ville").val().trim();
+        const pays = $("#pays").val().trim();
 
         doc.setFontSize(12);
         if (nomPrenom) {
@@ -74,6 +83,14 @@ function generatePdf(withInfos) {
         }
         if (telClient) {
             doc.text(`Téléphone : ${telClient}`, 14, yPos);
+            yPos += 8;
+        }
+        if (adresse) {
+            doc.text(`Adresse : ${adresse},`, 14, yPos);
+            yPos += 8;
+        }
+        if (cp || ville || pays) {
+            doc.text(`${cp} ${ville} ${pays}`, 14, yPos);
             yPos += 8;
         }
     }
