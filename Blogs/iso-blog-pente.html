@@ -1,0 +1,1765 @@
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  ISOTUILES – BLOG : POURCENTAGE DE PENTE DE TOITURE        ║
+     ║  Widget autonome pour intégration Shopify (coller en HTML) ║
+     ║  Préfixe CSS/JS : iso-  |  Aucune dépendance externe       ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+
+<style>
+  .article-template__title,
+  .article-template__social-sharing {
+    display: none;
+  }
+
+  /* ── RESET SCOPED ── */
+  #iso-blog-pente *,
+  #iso-blog-pente *::before,
+  #iso-blog-pente *::after {
+    box-sizing: border-box;
+  }
+
+  #iso-blog-pente {
+    --iso-navy: #002F5C;
+    --iso-navy-dark: #001E3D;
+    --iso-navy-light: #1A4B7A;
+    --iso-terra: #C8442A;
+    --iso-terra-dark: #A83520;
+    --iso-white: #FFFFFF;
+    --iso-offwhite: #F8F8F6;
+    --iso-light: #F2F4F7;
+    --iso-border: #E2E6EC;
+    --iso-text: #1A1A2E;
+    --iso-text-mid: #3D4A5C;
+    --iso-text-soft: #6B7A8D;
+    --iso-warn-bg: #FEF3EC;
+    --iso-warn-border: #E8733A;
+    --iso-ok-bg: #D6F0E0;
+    --iso-ok-text: #1A6B3A;
+    --iso-radius: 10px;
+    --iso-shadow: 0 4px 20px rgba(0, 47, 92, 0.10);
+
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--iso-text);
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 16px 48px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HERO ── */
+  .iso-hero {
+    background: var(--iso-navy);
+    border-radius: 14px;
+    padding: 52px 44px 52px;
+    margin-bottom: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .iso-hero::after {
+    content: '';
+    position: absolute;
+    right: -80px;
+    top: -80px;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    pointer-events: none;
+  }
+
+  .iso-hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 0.73rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 22px;
+  }
+
+  .iso-hero-tag-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--iso-terra);
+    flex-shrink: 0;
+  }
+
+  .iso-hero h1 {
+    font-size: clamp(1.7rem, 4.5vw, 2.75rem);
+    font-weight: 800;
+    color: var(--iso-white);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    margin: 0 0 16px;
+    padding: 0;
+    border: none;
+  }
+
+  .iso-hero h1 span {
+    color: var(--iso-terra);
+  }
+
+  .iso-hero-lead {
+    font-size: 0.97rem;
+    color: rgba(255, 255, 255, 0.65);
+    max-width: 580px;
+    margin-bottom: 28px;
+    line-height: normal;
+  }
+
+  .iso-hero-meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 18px;
+    font-size: 0.76rem;
+    color: rgba(255, 255, 255, 0.38);
+  }
+
+  .iso-hero-meta b {
+    color: rgba(255, 255, 255, 0.58);
+    font-weight: 600;
+  }
+
+  /* ── TOC ── */
+  .iso-toc {
+    background: var(--iso-white);
+    border: 1px solid var(--iso-border);
+    border-left: 4px solid var(--iso-navy);
+    border-radius: 0 var(--iso-radius) var(--iso-radius) 0;
+    padding: 26px 30px;
+    margin-bottom: 52px;
+  }
+
+  .iso-toc-label {
+    font-size: 0.69rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--iso-navy);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .iso-toc-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--iso-border);
+  }
+
+  .iso-toc ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: iso-toc;
+  }
+
+  .iso-toc li {
+    counter-increment: iso-toc;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--iso-border);
+    font-size: 0.88rem;
+  }
+
+  .iso-toc li:last-child {
+    border-bottom: none;
+  }
+
+  .iso-toc li::before {
+    content: counter(iso-toc, decimal-leading-zero);
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: var(--iso-terra);
+    min-width: 22px;
+  }
+
+  .iso-toc a {
+    color: var(--iso-navy);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+
+  .iso-toc a:hover {
+    color: var(--iso-terra);
+  }
+
+  /* ── SECTIONS ── */
+  .iso-section {
+    margin-bottom: 60px;
+    scroll-margin-top: 80px;
+  }
+
+  .iso-h2 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--iso-navy);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    padding: 0;
+    border: none;
+  }
+
+  .iso-rule {
+    width: 38px;
+    height: 3px;
+    background: var(--iso-terra);
+    border-radius: 2px;
+    margin-bottom: 20px;
+    border: none;
+  }
+
+  .iso-h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--iso-navy);
+    margin: 26px 0 9px;
+    padding: 0;
+    border: none;
+  }
+
+  .iso-p {
+    color: var(--iso-text-mid);
+    font-size: 0.94rem;
+    margin-bottom: 14px;
+    line-height: normal;
+  }
+
+  .iso-p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* ── CONVERTISSEUR ── */
+  .iso-converter-wrap {
+    background: var(--iso-navy);
+    border-radius: 14px;
+    padding: 34px 36px;
+    margin: 28px 0;
+    color: var(--iso-white);
+  }
+
+  .iso-conv-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .iso-conv-sub {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.48);
+    margin-bottom: 24px;
+  }
+
+  .iso-conv-grid {
+    display: grid;
+    grid-template-columns: 1fr 48px 1fr;
+    gap: 14px;
+    align-items: end;
+    margin-bottom: 24px;
+  }
+
+  .iso-conv-field label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.42);
+    margin-bottom: 8px;
+  }
+
+  .iso-conv-field input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1.5px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+    padding: 13px 15px;
+    color: var(--iso-white);
+    font-size: 1.1rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    -moz-appearance: textfield;
+  }
+
+  .iso-conv-field input::-webkit-inner-spin-button,
+  .iso-conv-field input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+
+  .iso-conv-field input:focus {
+    border-color: var(--iso-terra);
+    background: rgba(255, 255, 255, 0.11);
+  }
+
+  .iso-conv-field input.iso-error {
+    border-color: #FF6B6B;
+  }
+
+  .iso-conv-error {
+    font-size: 0.72rem;
+    color: #FF9999;
+    margin-top: 5px;
+    min-height: 16px;
+    display: block;
+  }
+
+  .iso-conv-arrow {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 13px;
+    font-size: 1.25rem;
+    color: var(--iso-terra);
+    font-weight: 700;
+    user-select: none;
+  }
+
+  /* SVG toit animé */
+  .iso-roof-viz {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 20px 24px 16px;
+    margin-top: 4px;
+  }
+
+  .iso-roof-viz-label {
+    font-size: 0.69rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  #iso-roof-svg {
+    width: 100%;
+    height: 140px;
+    display: block;
+  }
+
+  .iso-roof-stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+
+  .iso-roof-stat {
+    flex: 1;
+    min-width: 100px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 10px 14px;
+    text-align: center;
+  }
+
+  .iso-roof-stat-val {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--iso-white);
+    line-height: 1;
+  }
+
+  .iso-roof-stat-val span {
+    color: var(--iso-terra);
+    font-size: 0.85em;
+  }
+
+  .iso-roof-stat-lbl {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.38);
+    margin-top: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .iso-qualif {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  .iso-conv-hint {
+    font-size: 0.71rem;
+    color: rgba(255, 255, 255, 0.28);
+    margin-top: 16px;
+    font-family: 'Courier New', monospace;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 12px;
+  }
+
+  /* ── SLOPE CARDS ── */
+  .iso-slopes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+    gap: 10px;
+    margin: 20px 0;
+  }
+
+  .iso-slope-card {
+    background: var(--iso-white);
+    border: 1px solid var(--iso-border);
+    border-radius: var(--iso-radius);
+    padding: 16px 10px;
+    text-align: center;
+    border-bottom: 3px solid var(--iso-border);
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: default;
+  }
+
+  .iso-slope-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--iso-shadow);
+  }
+
+  .iso-slope-card.iso-active {
+    border-bottom-color: var(--iso-terra);
+  }
+
+  .iso-slope-deg {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--iso-navy);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .iso-slope-pct {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--iso-terra);
+    margin: 4px 0 5px;
+  }
+
+  .iso-slope-lbl {
+    font-size: 0.69rem;
+    color: var(--iso-text-soft);
+  }
+
+  /* ── TABLES ── */
+  .iso-table-wrap {
+    overflow-x: auto;
+    margin: 18px 0;
+    border-radius: var(--iso-radius);
+    border: 1px solid var(--iso-border);
+    box-shadow: var(--iso-shadow);
+  }
+
+  .iso-table-wrap table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  .iso-table-wrap thead {
+    background: var(--iso-navy);
+  }
+
+  .iso-table-wrap thead th {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 0.71rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.82);
+    white-space: nowrap;
+  }
+
+  .iso-table-wrap tbody tr:nth-child(odd) {
+    background: var(--iso-white);
+  }
+
+  .iso-table-wrap tbody tr:nth-child(even) {
+    background: var(--iso-light);
+  }
+
+  .iso-table-wrap tbody tr:hover {
+    background: #EEF3FA;
+  }
+
+  .iso-table-wrap tbody td {
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--iso-border);
+    font-size: 0.84rem;
+    color: var(--iso-text-mid);
+    vertical-align: middle;
+  }
+
+  .iso-table-wrap tbody td:first-child {
+    font-weight: 600;
+    color: var(--iso-navy);
+  }
+
+  .iso-table-wrap tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .iso-badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .iso-badge-ok {
+    background: var(--iso-ok-bg);
+    color: var(--iso-ok-text);
+  }
+
+  .iso-badge-min {
+    background: #FDE8D3;
+    color: #8B3A0E;
+  }
+
+  .iso-badge-no {
+    background: #FAD7D7;
+    color: #8B1A1A;
+  }
+
+  .iso-badge-nav {
+    background: #E3ECF8;
+    color: var(--iso-navy);
+  }
+
+  /* ── CALLOUTS ── */
+  .iso-callout {
+    border-radius: var(--iso-radius);
+    padding: 18px 22px;
+    margin: 20px 0;
+    font-size: 0.88rem;
+  }
+
+  .iso-callout-info {
+    background: #EEF3FA;
+    border: 1px solid #C5D7EE;
+    border-left: 4px solid var(--iso-navy);
+  }
+
+  .iso-callout-warn {
+    background: var(--iso-warn-bg);
+    border: 1px solid var(--iso-warn-border);
+    border-left: 4px solid var(--iso-warn-border);
+  }
+
+  .iso-callout-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+    display: block;
+  }
+
+  .iso-callout-info .iso-callout-label {
+    color: var(--iso-navy);
+  }
+
+  .iso-callout-warn .iso-callout-label {
+    color: #9B3A10;
+  }
+
+  .iso-callout p {
+    margin: 0;
+    color: var(--iso-text-mid);
+    font-size: 0.87rem;
+    line-height: 1.6;
+  }
+
+  .iso-callout strong {
+    color: var(--iso-navy);
+  }
+
+  /* ── ACCORDÉON ── */
+  .iso-accordion {
+    margin: 20px 0;
+  }
+
+  .iso-acc-item {
+    border: 1px solid var(--iso-border);
+    border-radius: var(--iso-radius);
+    margin-bottom: 8px;
+    overflow: hidden;
+    background: var(--iso-white);
+  }
+
+  .iso-acc-btn {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--iso-navy);
+    transition: background 0.15s;
+  }
+
+  .iso-acc-btn:hover {
+    background: var(--iso-light);
+  }
+
+  .iso-acc-btn[aria-expanded="true"] {
+    background: var(--iso-navy);
+    color: var(--iso-white);
+  }
+
+  .iso-acc-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--iso-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    font-style: normal;
+    color: var(--iso-navy);
+    transition: background 0.15s, transform 0.2s, color 0.15s;
+    font-weight: 700;
+  }
+
+  .iso-acc-btn[aria-expanded="true"] .iso-acc-icon {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--iso-white);
+    transform: rotate(45deg);
+  }
+
+  .iso-acc-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.2s;
+    padding: 0 20px;
+  }
+
+  .iso-acc-panel.iso-open {
+    max-height: 600px;
+    padding: 16px 20px 20px;
+  }
+
+  .iso-acc-panel p {
+    color: var(--iso-text-mid);
+    font-size: 0.88rem;
+    margin-bottom: 10px;
+    line-height: 1.65;
+  }
+
+  .iso-acc-panel ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+  }
+
+  .iso-acc-panel ul li {
+    padding: 7px 0 7px 20px;
+    position: relative;
+    font-size: 0.86rem;
+    color: var(--iso-text-mid);
+    border-bottom: 1px solid var(--iso-border);
+  }
+
+  .iso-acc-panel ul li::before {
+    content: '→';
+    color: var(--iso-navy);
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+    font-size: 0.75rem;
+  }
+
+  .iso-acc-panel ul li:last-child {
+    border-bottom: none;
+  }
+
+  .iso-acc-panel strong {
+    color: var(--iso-navy);
+  }
+
+  /* ── VELUX DARK BOX ── */
+  .iso-dark-box {
+    background: var(--iso-navy);
+    border-radius: 14px;
+    padding: 36px 40px;
+    color: var(--iso-white);
+  }
+
+  .iso-dark-box .iso-h2 {
+    color: var(--iso-white);
+  }
+
+  .iso-dark-box .iso-p {
+    color: rgba(255, 255, 255, 0.68);
+  }
+
+  .iso-dark-box .iso-h3 {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .iso-dark-list {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0;
+  }
+
+  .iso-dark-list li {
+    padding: 10px 0 10px 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.87rem;
+    color: rgba(255, 255, 255, 0.72);
+    position: relative;
+    line-height: 1.55;
+  }
+
+  .iso-dark-list li::before {
+    content: '▸';
+    color: var(--iso-terra);
+    position: absolute;
+    left: 0;
+    top: 10px;
+    font-size: 0.75rem;
+  }
+
+  .iso-dark-list li:last-child {
+    border-bottom: none;
+  }
+
+  .iso-dark-list li strong {
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  /* ── REGION GRID ── */
+  .iso-region-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .iso-region-card {
+    background: var(--iso-white);
+    border: 1px solid var(--iso-border);
+    border-radius: var(--iso-radius);
+    padding: 18px;
+    border-top: 3px solid var(--iso-navy);
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: default;
+  }
+
+  .iso-region-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--iso-shadow);
+  }
+
+  .iso-region-card.iso-accent {
+    border-top-color: var(--iso-terra);
+  }
+
+  .iso-region-name {
+    font-weight: 700;
+    color: var(--iso-navy);
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  .iso-region-pct {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--iso-terra);
+    margin-bottom: 3px;
+  }
+
+  .iso-region-desc {
+    font-size: 0.77rem;
+    color: var(--iso-text-soft);
+    line-height: 1.5;
+  }
+
+  /* ── CTA ── */
+  .iso-cta-band {
+    background: linear-gradient(135deg, var(--iso-terra), var(--iso-terra-dark));
+    border-radius: 14px;
+    padding: 34px 40px;
+    margin: 52px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .iso-cta-band h3 {
+    color: var(--iso-white);
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+    padding: 0;
+    border: none;
+  }
+
+  .iso-cta-band p {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.86rem;
+    margin: 0;
+  }
+
+  .iso-btn-white {
+    background: var(--iso-white);
+    color: var(--iso-terra-dark);
+    font-weight: 700;
+    font-size: 0.87rem;
+    padding: 12px 22px;
+    border-radius: 7px;
+    text-decoration: none;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .iso-btn-white:hover {
+    opacity: 0.9;
+  }
+
+  /* ── DIVIDER ── */
+  .iso-divider {
+    border: none;
+    border-top: 1px solid var(--iso-border);
+    margin: 52px 0;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    #iso-blog-pente {
+      padding: 0 12px 40px;
+      font-size: 15px;
+    }
+
+    .iso-hero {
+      padding: 36px 24px 36px;
+    }
+
+    .iso-hero h1 {
+      font-size: 1.6rem;
+    }
+
+    .iso-converter-wrap {
+      padding: 24px 20px;
+    }
+
+    .iso-conv-grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .iso-conv-arrow {
+      padding-bottom: 0;
+      justify-content: flex-start;
+      padding-left: 4px;
+    }
+
+    .iso-dark-box {
+      padding: 28px 22px;
+    }
+
+    .iso-cta-band {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .iso-slopes-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .iso-toc {
+      padding: 20px 18px;
+    }
+
+    .iso-table-wrap table {
+      width: 180%;
+      min-width: 500px
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #iso-blog-pente * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+</style>
+
+<!-- ═══════════════ CONTENU ═══════════════ -->
+<div id="iso-blog-pente">
+
+  <!-- HERO -->
+  <header class="iso-hero" role="banner">
+    <div class="iso-hero-tag" aria-hidden="true">
+      <span class="iso-hero-tag-dot"></span>
+      Guide technique · Couverture
+    </div>
+    <h1>Pourcentage de <span>Pente</span> de Toiture :<br>Le Guide Complet</h1>
+    <p class="iso-hero-lead">Panneaux sandwich bac acier, imitation tuiles, fenêtres de toit… Tout ce que vous devez
+      savoir pour respecter les règles de l'art, les DTU, et garantir l'étanchéité durable de votre toiture.</p>
+    <div class="iso-hero-meta" aria-label="Métadonnées de l'article">
+      <span><b>Guide mis à jour</b> 2026</span>
+      <span><b>Lecture :</b> ~8 min</span>
+      <span><b>Rédigé par</b> l'équipe Isotuiles</span>
+    </div>
+  </header>
+
+  <!-- TOC -->
+  <nav class="iso-toc" aria-label="Sommaire de l'article">
+    <div class="iso-toc-label">Sommaire</div>
+    <ol>
+      <li><a href="#iso-s1">Calculer et convertir la pente (% ↔ degrés)</a></li>
+      <li><a href="#iso-s2">Panneaux sandwich bac acier – pentes recommandées</a></li>
+      <li><a href="#iso-s3">Panneaux imitation tuiles – pentes recommandées</a></li>
+      <li><a href="#iso-s4">Pentes minimales réglementaires (DTU)</a></li>
+      <li><a href="#iso-s5">Recommandations supplémentaires</a></li>
+      <li><a href="#iso-s6">Fenêtres de toit – spécificités de pente</a></li>
+      <li><a href="#iso-s7">Pentes par région et style architectural</a></li>
+    </ol>
+  </nav>
+
+  <!-- ── SECTION 1 ── -->
+  <section class="iso-section" id="iso-s1" aria-labelledby="iso-h1">
+    <h2 class="iso-h2" id="iso-h1">1. Calculer et convertir la pente</h2>
+    <hr class="iso-rule" aria-hidden="true">
+    <p class="iso-p">La pente d'un toit s'exprime en <strong>pourcentage (%)</strong> — référence des DTU et des
+      professionnels — et en <strong>degrés (°)</strong>, plus intuitive pour visualiser l'inclinaison. Une pente à
+      <strong>40 %</strong> signifie que pour 100 cm à l'horizontale, le toit monte de 40 cm.</p>
+
+    <!-- CONVERTISSEUR INTERACTIF -->
+    <div class="iso-converter-wrap" role="region" aria-label="Convertisseur de pente interactif">
+      <div class="iso-conv-title">⇄ Convertisseur de pente en temps réel</div>
+      <div class="iso-conv-sub">Saisissez une valeur — l'autre s'actualise instantanément avec visualisation du toit.
+      </div>
+
+      <div class="iso-conv-grid">
+        <div class="iso-conv-field">
+          <label for="iso-input-pct">Pourcentage (%)</label>
+          <input type="number" id="iso-input-pct" placeholder="ex. 40" step="0.1" min="0" max="1000"
+            aria-label="Pente en pourcentage" autocomplete="off">
+          <span class="iso-conv-error" id="iso-err-pct" role="alert" aria-live="polite"></span>
+        </div>
+        <div class="iso-conv-arrow" aria-hidden="true">⇄</div>
+        <div class="iso-conv-field">
+          <label for="iso-input-deg">Degrés (°)</label>
+          <input type="number" id="iso-input-deg" placeholder="ex. 21.8" step="0.1" min="0" max="89.9"
+            aria-label="Pente en degrés" autocomplete="off">
+          <span class="iso-conv-error" id="iso-err-deg" role="alert" aria-live="polite"></span>
+        </div>
+      </div>
+
+      <!-- Visualisation SVG dynamique -->
+      <div class="iso-roof-viz" aria-label="Visualisation graphique de la pente">
+        <div class="iso-roof-viz-label">Visualisation de la pente</div>
+        <svg id="iso-roof-svg" viewBox="0 0 400 140" aria-hidden="true" role="img">
+          <!-- Sol -->
+          <line x1="30" y1="118" x2="370" y2="118" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+          <!-- Dimensions -->
+          <line id="iso-dim-h" x1="360" y1="118" x2="360" y2="118" stroke="rgba(200,68,42,0.6)" stroke-width="1"
+            stroke-dasharray="3,2" />
+          <line id="iso-dim-b" x1="50" y1="122" x2="50" y2="122" stroke="rgba(255,255,255,0.2)" stroke-width="1"
+            stroke-dasharray="3,2" />
+          <!-- Rampant -->
+          <line id="iso-ramp-line" x1="50" y1="118" x2="310" y2="60" stroke="rgba(200,68,42,0.8)" stroke-width="2"
+            stroke-dasharray="5,3" />
+          <!-- Toit principal -->
+          <polygon id="iso-roof-shape" points="50,118 310,118 310,60" fill="rgba(200,68,42,0.12)"
+            stroke="var(--iso-terra)" stroke-width="1.5" />
+          <!-- Panneau sandwich (texture) -->
+          <line id="iso-panel-1" x1="0" y1="0" x2="0" y2="0" stroke="rgba(255,255,255,0.12)" stroke-width="5" />
+          <!-- Angle arc -->
+          <path id="iso-arc-path" d="" fill="none" stroke="rgba(255,200,100,0.6)" stroke-width="1.5" />
+          <!-- Labels -->
+          <text id="iso-lbl-deg" x="80" y="112" fill="rgba(255,200,100,0.85)" font-size="11" font-family="inherit"
+            font-weight="700">0°</text>
+          <text id="iso-lbl-pct" x="160" y="88" fill="rgba(200,68,42,0.9)" font-size="10" font-family="inherit"
+            font-weight="600">pente</text>
+          <text id="iso-lbl-h" x="322" y="95" fill="rgba(255,255,255,0.5)" font-size="9" font-family="inherit">H</text>
+          <text id="iso-lbl-b" x="172" y="132" fill="rgba(255,255,255,0.35)" font-size="9" font-family="inherit">Base
+            (100 cm)</text>
+          <!-- Faîtage -->
+          <circle id="iso-faitage" cx="50" cy="118" r="4" fill="var(--iso-terra)" />
+        </svg>
+
+        <div class="iso-roof-stats">
+          <div class="iso-roof-stat">
+            <div class="iso-roof-stat-val" id="iso-stat-pct">—<span>%</span></div>
+            <div class="iso-roof-stat-lbl">Pourcentage</div>
+          </div>
+          <div class="iso-roof-stat">
+            <div class="iso-roof-stat-val" id="iso-stat-deg">—<span>°</span></div>
+            <div class="iso-roof-stat-lbl">Degrés</div>
+          </div>
+          <div class="iso-roof-stat">
+            <div class="iso-roof-stat-val" id="iso-stat-rise">—<span>cm</span></div>
+            <div class="iso-roof-stat-lbl">Hauteur / 100 cm</div>
+          </div>
+        </div>
+        <div class="iso-qualif" id="iso-qualif-txt" role="status" aria-live="polite">Entrez une valeur ci-dessus pour
+          visualiser la pente</div>
+      </div>
+
+      <div class="iso-conv-hint">% → ° : arctan(pente÷100)×(180÷π) &nbsp;|&nbsp; ° → % : tan(angle×π÷180)×100</div>
+    </div>
+
+    <h3 class="iso-h3">Correspondances rapides</h3>
+    <div class="iso-slopes-grid" role="list" aria-label="Correspondances degrés et pourcentages courants">
+      <div class="iso-slope-card" role="listitem">
+        <div class="iso-slope-deg">3°</div>
+        <div class="iso-slope-pct">≈ 5 %</div>
+        <div class="iso-slope-lbl">Très faible</div>
+      </div>
+      <div class="iso-slope-card" role="listitem">
+        <div class="iso-slope-deg">5°</div>
+        <div class="iso-slope-pct">≈ 9 %</div>
+        <div class="iso-slope-lbl">Faible</div>
+      </div>
+      <div class="iso-slope-card iso-active" role="listitem">
+        <div class="iso-slope-deg">10°</div>
+        <div class="iso-slope-pct">≈ 18 %</div>
+        <div class="iso-slope-lbl">Min. Isotuiles</div>
+      </div>
+      <div class="iso-slope-card iso-active" role="listitem">
+        <div class="iso-slope-deg">21°</div>
+        <div class="iso-slope-pct">≈ 38 %</div>
+        <div class="iso-slope-lbl">Standard</div>
+      </div>
+      <div class="iso-slope-card" role="listitem">
+        <div class="iso-slope-deg">30°</div>
+        <div class="iso-slope-pct">≈ 58 %</div>
+        <div class="iso-slope-lbl">Méditerranée</div>
+      </div>
+      <div class="iso-slope-card" role="listitem">
+        <div class="iso-slope-deg">45°</div>
+        <div class="iso-slope-pct">100 %</div>
+        <div class="iso-slope-lbl">Alpin</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="iso-divider" aria-hidden="true">
+
+  <!-- ── SECTION 2 ── -->
+  <section class="iso-section" id="iso-s2" aria-labelledby="iso-h2">
+    <h2 class="iso-h2" id="iso-h2">2. Panneaux sandwich bac acier</h2>
+    <hr class="iso-rule" aria-hidden="true">
+    <p class="iso-p">Les panneaux sandwich bac acier associent une âme isolante entre deux parements acier. Très
+      utilisés pour le bâtiment industriel, agricole ou résidentiel, leur étanchéité repose sur des nervures relevées et
+      des recouvrements. La pente minimale varie selon le profil et le type d'assemblage.</p>
+
+    <div class="iso-table-wrap">
+      <table role="table" aria-label="Pentes recommandées pour bac acier">
+        <thead>
+          <tr>
+            <th scope="col">Type de bac acier</th>
+            <th scope="col">Pente minimale</th>
+            <th scope="col">Pente optimale</th>
+            <th scope="col">Usage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Bac nervuré standard (T45, T50)</td>
+            <td>5 % (≈ 3°)</td>
+            <td>7 – 15 %</td>
+            <td><span class="iso-badge iso-badge-ok">Courant</span></td>
+          </tr>
+          <tr>
+            <td>Bac nervuré grand linéaire</td>
+            <td>3 % (≈ 1,7°)</td>
+            <td>5 – 10 %</td>
+            <td><span class="iso-badge iso-badge-nav">Industriel</span></td>
+          </tr>
+          <tr>
+            <td>Panneau sandwich joint debout</td>
+            <td>2 % (≈ 1,2°)</td>
+            <td>3 – 8 %</td>
+            <td><span class="iso-badge iso-badge-ok">Quasi-plat</span></td>
+          </tr>
+          <tr>
+            <td>Bac acier recouvrement simple</td>
+            <td>7 % (≈ 4°)</td>
+            <td>10 – 20 %</td>
+            <td><span class="iso-badge iso-badge-min">Recouvrement +</span></td>
+          </tr>
+          <tr>
+            <td>Zone exposée (vent / neige)</td>
+            <td>10 % (≈ 5,7°)</td>
+            <td>15 – 25 %</td>
+            <td><span class="iso-badge iso-badge-ok">Sécurisé</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="iso-callout iso-callout-warn" role="note">
+      <span class="iso-callout-label">⚠ Risque d'infiltration</span>
+      <p>En dessous de <strong>5 %</strong> avec un bac nervuré standard, les risques d'infiltration augmentent
+        fortement au niveau des recouvrements. Sceller les joints avec du mastic butyle et augmenter le recouvrement
+        longitudinal à 200 mm minimum.</p>
+    </div>
+  </section>
+
+  <hr class="iso-divider" aria-hidden="true">
+
+  <!-- ── SECTION 3 ── -->
+  <section class="iso-section" id="iso-s3" aria-labelledby="iso-h3">
+    <h2 class="iso-h2" id="iso-h3">3. Panneaux imitation tuiles</h2>
+    <hr class="iso-rule" aria-hidden="true">
+    <p class="iso-p">Les panneaux imitation tuiles Isotuiles (acier galvanisé prélaqué) reproduisent l'aspect d'une
+      couverture traditionnelle — romane, canal, tuile plate ou ardoise — avec légèreté et rapidité de pose. Leurs
+      contraintes de pente sont plus strictes car le profil joue un rôle décoratif autant qu'étanche.</p>
+
+    <div class="iso-callout iso-callout-info" role="note">
+      <span class="iso-callout-label">💡 Préconisation Isotuiles</span>
+      <p>Isotuiles recommande une pente minimale de <strong>10 %</strong> pour l'ensemble de ses panneaux sandwich, afin
+        de garantir une évacuation correcte des eaux de pluie et l'étanchéité de la toiture. En dessous de ce seuil, des
+        risques de stagnation, d'infiltrations et de surcharge structurelle peuvent survenir.</p>
+    </div>
+
+    <div class="iso-table-wrap">
+      <table role="table" aria-label="Pentes recommandées pour panneaux imitation tuiles">
+        <thead>
+          <tr>
+            <th scope="col">Produit Isotuiles</th>
+            <th scope="col">Pente minimale</th>
+            <th scope="col">Pente recommandée</th>
+            <th scope="col">Profil</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Romane Canal</td>
+            <td>20 % (≈ 11°)</td>
+            <td>30 – 50 %</td>
+            <td><span class="iso-badge iso-badge-ok">Courant</span></td>
+          </tr>
+          <tr>
+            <td>Tuiles Plates</td>
+            <td>25 % (≈ 14°)</td>
+            <td>35 – 60 %</td>
+            <td><span class="iso-badge iso-badge-ok">Maison individuelle</span></td>
+          </tr>
+          <tr>
+            <td>Imitation ardoise</td>
+            <td>16 % (≈ 9°)</td>
+            <td>25 – 45 %</td>
+            <td><span class="iso-badge iso-badge-nav">Bretagne / Normandie</span></td>
+          </tr>
+          <tr>
+            <td>Zone neigeuse (C2 / C3)</td>
+            <td>30 % (≈ 17°)</td>
+            <td>45 – 80 %</td>
+            <td><span class="iso-badge iso-badge-min">Neige accumulée</span></td>
+          </tr>
+          <tr>
+            <td>En dessous du min. fabricant</td>
+            <td>—</td>
+            <td>—</td>
+            <td><span class="iso-badge iso-badge-no">Non recommandé</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="iso-callout iso-callout-info" role="note">
+      <span class="iso-callout-label">📐 Conseil avant commande</span>
+      <p>En rénovation sur charpente ancienne, mesurez toujours la pente réelle avant de commander. Une différence de 5
+        % peut nécessiter un produit de gamme différente ou l'ajout d'un écran sous-toiture HPV complémentaire.</p>
+    </div>
+  </section>
+
+  <hr class="iso-divider" aria-hidden="true">
+
+  <!-- ── SECTION 4 ── -->
+  <section class="iso-section" id="iso-s4" aria-labelledby="iso-h4">
+    <h2 class="iso-h2" id="iso-h4">4. Pentes minimales réglementaires (DTU)</h2>
+    <hr class="iso-rule" aria-hidden="true">
+    <p class="iso-p">En France, les exigences de pente sont encadrées par les <strong>Documents Techniques Unifiés
+        (DTU)</strong> et les avis techniques des fabricants. Ces deux références font foi en cas de sinistre et de
+      recours à l'assurance décennale.</p>
+
+    <div class="iso-table-wrap">
+      <table role="table" aria-label="DTU et pentes minimales réglementaires">
+        <thead>
+          <tr>
+            <th scope="col">Référence DTU</th>
+            <th scope="col">Type de couverture</th>
+            <th scope="col">Pente minimale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>DTU 40.35</td>
+            <td>Plaques nervurées acier / aluminium</td>
+            <td>5 % (3°) zone protégée · 7 % zone exposée</td>
+          </tr>
+          <tr>
+            <td>DTU 40.36</td>
+            <td>Plaques nervurées fibres-ciment</td>
+            <td>15 % (8,5°)</td>
+          </tr>
+          <tr>
+            <td>DTU 40.11</td>
+            <td>Ardoises naturelles</td>
+            <td>33 % (18°) minimum</td>
+          </tr>
+          <tr>
+            <td>DTU 40.21</td>
+            <td>Tuiles à emboîtement en terre cuite</td>
+            <td>33 % à 100 % selon modèle</td>
+          </tr>
+          <tr>
+            <td>DTU 40.22</td>
+            <td>Tuiles plates en terre cuite</td>
+            <td>100 % (45°) recommandé</td>
+          </tr>
+          <tr>
+            <td>DTU 40.29</td>
+            <td>Plaques ondulées bitumineuses</td>
+            <td>15 % (8,5°)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="iso-callout iso-callout-warn" role="note">
+      <span class="iso-callout-label">⚠ Garantie décennale – Point critique</span>
+      <p>Ne jamais descendre en dessous de la pente préconisée par l'<strong>Avis Technique</strong> du produit. En cas
+        de sinistre, une pente inférieure aux préconisations fabricant peut entraîner l'annulation de la garantie
+        décennale et de l'assurance dommages-ouvrage.</p>
+    </div>
+  </section>
+
+  <hr class="iso-divider" aria-hidden="true">
+
+  <!-- ── SECTION 5 – ACCORDÉON ── -->
+  <section class="iso-section" id="iso-s5" aria-labelledby="iso-h5">
+    <h2 class="iso-h2" id="iso-h5">5. Recommandations supplémentaires</h2>
+    <hr class="iso-rule" aria-hidden="true">
+    <p class="iso-p">Au-delà de la pente minimale réglementaire, plusieurs paramètres influencent la durabilité et les
+      performances de votre toiture en panneaux sandwich. Cliquez sur chaque thème pour en savoir plus.</p>
+
+    <div class="iso-accordion" role="list">
+
+      <div class="iso-acc-item" role="listitem">
+        <button class="iso-acc-btn" aria-expanded="false" aria-controls="iso-acc-1" id="iso-acc-btn-1">
+          <span>Écran sous-toiture HPV</span>
+          <span class="iso-acc-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="iso-acc-panel" id="iso-acc-1" role="region" aria-labelledby="iso-acc-btn-1">
+          <p>Pour les pentes inférieures à <strong>40 %</strong> avec des panneaux imitation tuiles, la pose d'un écran
+            sous-toiture <strong>HPV (Hautement Perméable à la Vapeur)</strong> est fortement conseillée. Il joue le
+            rôle de garde-eau en cas d'infiltration liée aux vents ou à la neige soufflée sous les éléments de
+            couverture.</p>
+        </div>
+      </div>
+
+      <div class="iso-acc-item" role="listitem">
+        <button class="iso-acc-btn" aria-expanded="false" aria-controls="iso-acc-2" id="iso-acc-btn-2">
+          <span>Recouvrements selon la pente</span>
+          <span class="iso-acc-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="iso-acc-panel" id="iso-acc-2" role="region" aria-labelledby="iso-acc-btn-2">
+          <p>Plus la pente est faible, plus le recouvrement doit être important :</p>
+          <ul>
+            <li><strong>Pente ≥ 15 %</strong> → recouvrement longitudinal de 150 mm minimum</li>
+            <li><strong>Pente 7 % – 14 %</strong> → recouvrement de 200 mm minimum</li>
+            <li><strong>Pente 3 % – 6 %</strong> → recouvrement de 250 mm + mastic butyle obligatoire</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="iso-acc-item" role="listitem">
+        <button class="iso-acc-btn" aria-expanded="false" aria-controls="iso-acc-3" id="iso-acc-btn-3">
+          <span>Fixations &amp; charges de neige (NV65)</span>
+          <span class="iso-acc-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="iso-acc-panel" id="iso-acc-3" role="region" aria-labelledby="iso-acc-btn-3">
+          <p>En zone neigeuse (C2 / C3 selon NV65), augmenter le nombre de fixations et prévoir des
+            <strong>arrêts-neige</strong>. Isotuiles recommande de visser sur la partie haute des ondes, de fixer chaque
+            emboîtement mâle/femelle, et de répartir les vis de manière homogène.</p>
+          <p>L'entraxe conseillé entre chaque panne est de <strong>2,00 m à 2,50 m</strong>. Pour des portées plus
+            importantes, réduire l'entraxe ou ajouter des supports intermédiaires.</p>
+        </div>
+      </div>
+
+      <div class="iso-acc-item" role="listitem">
+        <button class="iso-acc-btn" aria-expanded="false" aria-controls="iso-acc-4" id="iso-acc-btn-4">
+          <span>Ventilation &amp; condensation</span>
+          <span class="iso-acc-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="iso-acc-panel" id="iso-acc-4" role="region" aria-labelledby="iso-acc-btn-4">
+          <p>Laisser un espace de ventilation d'au moins <strong>40 mm</strong> entre l'isolant et le voligeage pour la
+            circulation de l'air. Cela prévient la condensation et préserve les performances thermiques de l'âme en
+            mousse polyuréthane haute densité sur le long terme.</p>
+        </div>
+      </div>
+
+      <div class="iso-acc-item" role="listitem">
+        <button class="iso-acc-btn" aria-expanded="false" aria-controls="iso-acc-5" id="iso-acc-btn-5">
+          <span>Entretien &amp; traitement antimousse</span>
+          <span class="iso-acc-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="iso-acc-panel" id="iso-acc-5" role="region" aria-labelledby="iso-acc-btn-5">
+          <p>Les pentes inférieures à <strong>25 %</strong> favorisent l'accumulation de mousses et lichens. Un
+            traitement hydrofuge et antimousse tous les <strong>3 à 5 ans</strong> est recommandé. Prévoir des crochets
+            de sécurité pour faciliter les interventions en toute sécurité.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="iso-divider" aria-hidden="true">
+
+  <!-- ── SECTION 6 – FENÊTRES DE TOIT ── -->
+  <section class="iso-section" id="iso-s6" aria-labelledby="iso-h6">
+    <div class="iso-dark-box">
+      <h2 class="iso-h2" id="iso-h6">6. Fenêtres de toit – spécificités de pente</h2>
+      <hr class="iso-rule" aria-hidden="true">
+      <p class="iso-p">L'intégration d'une fenêtre de toit (châssis de toit, lanterneau, tabatière) dans un panneau
+        Isotuiles nécessite des précautions particulières : la jonction fenêtre / couverture est un point singulier
+        critique. Nos panneaux sont <strong>compatibles avec les fenêtres de toit de type Velux</strong>.</p>
+
+      <h3 class="iso-h3">Pentes minimales par type de fenêtre</h3>
+      <ul class="iso-dark-list" role="list">
+        <li><strong>Fenêtre standard (type Velux GGL/GGU) :</strong> pente minimale de 15° (27 %). En dessous, un cadre
+          de relevage spécifique est obligatoire (ex : Velux EDP, Fakro XDP).</li>
+        <li><strong>Fenêtre à projection :</strong> pente minimale de 15° (27 %). L'ouverture vers l'extérieur impose
+          une pente suffisante pour l'étanchéité du cadre.</li>
+        <li><strong>Lanterneau plat / puits de lumière :</strong> pente de 2 % à 27 %, avec un relevé d'étanchéité d'au
+          moins 150 mm sur le pourtour.</li>
+        <li><strong>Tabatière (châssis fixe à charnière) :</strong> pente minimale de 20° (36 %) pour assurer le
+          ruissellement correct autour du cadre.</li>
+        <li><strong>Distance au faîtage :</strong> prévoir au minimum 600 mm entre la fenêtre et le faîtage pour un
+          recouvrement amont correct.</li>
+      </ul>
+
+      <h3 class="iso-h3">Raccordement sur panneaux Isotuiles</h3>
+      <p class="iso-p">Prévoir un <strong>chevêtre</strong> dans la charpente pour soutenir l'encadrement de la fenêtre.
+        Réaliser ensuite une découpe dans le panneau pour épouser sa forme, puis utiliser le <strong>kit d'étanchéité du
+          fabricant</strong> (solin aluminium ou acier prélaqué) complété d'un mastic polyuréthane sur tout le pourtour
+        du cadre.</p>
+
+      <h3 class="iso-h3">Points de vigilance</h3>
+      <ul class="iso-dark-list" role="list">
+        <li>En zone neigeuse : bavette anti-neige au bas du châssis, recouvrement latéral à 200 mm minimum.</li>
+        <li>Pour les imitation tuiles, utiliser les kits d'intégration spécifiques des fabricants de fenêtres pour un
+          rendu homogène.</li>
+        <li>Renforcer localement la charpente autour de l'ouverture pour maintenir la rigidité de l'ensemble.</li>
+      </ul>
+    </div>
+  </section>
+
+  <hr class="iso-divider" aria-hidden="true">
+
+  <!-- ── SECTION 7 – RÉGIONS ── -->
+  <section class="iso-section" id="iso-s7" aria-labelledby="iso-h7">
+    <h2 class="iso-h2" id="iso-h7">7. Pentes par région et style architectural</h2>
+    <hr class="iso-rule" aria-hidden="true">
+    <p class="iso-p">En France, la pente des toitures résulte d'un équilibre entre les contraintes climatiques locales
+      et les traditions architecturales régionales. Le PLU de chaque commune peut aussi imposer une pente précise —
+      renseignez-vous avant tout projet.</p>
+
+    <div class="iso-region-grid" role="list" aria-label="Pentes recommandées par région de France">
+      <div class="iso-region-card iso-accent" role="listitem">
+        <div class="iso-region-name">🏔 Alpes &amp; Haute-Savoie</div>
+        <div class="iso-region-pct">80 – 173 %</div>
+        <div class="iso-region-desc">45° à 60°. Fortes neiges. Déneigement naturel. Tôle, lauze, bardeau bois.</div>
+      </div>
+      <div class="iso-region-card" role="listitem">
+        <div class="iso-region-name">🌲 Vosges &amp; Jura</div>
+        <div class="iso-region-pct">60 – 100 %</div>
+        <div class="iso-region-desc">31° à 45°. Neige abondante. Toits débordants. Tuile plate ou bac acier.</div>
+      </div>
+      <div class="iso-region-card" role="listitem">
+        <div class="iso-region-name">🧱 Île-de-France &amp; Centre</div>
+        <div class="iso-region-pct">30 – 60 %</div>
+        <div class="iso-region-desc">17° à 31°. Pente standard. Tuile mécanique, ardoise. Zinc mansardé à Paris.</div>
+      </div>
+      <div class="iso-region-card iso-accent" role="listitem">
+        <div class="iso-region-name">⛵ Bretagne &amp; Normandie</div>
+        <div class="iso-region-pct">33 – 60 %</div>
+        <div class="iso-region-desc">18° à 31°. Vents forts, pluies fréquentes. Ardoise naturelle ou imitation ardoise.
+        </div>
+      </div>
+      <div class="iso-region-card" role="listitem">
+        <div class="iso-region-name">🌻 Sud-Ouest &amp; Gascogne</div>
+        <div class="iso-region-pct">30 – 50 %</div>
+        <div class="iso-region-desc">17° à 27°. Tuile romane ou canal. Résistance aux orages pyrénéens.</div>
+      </div>
+      <div class="iso-region-card iso-accent" role="listitem">
+        <div class="iso-region-name">☀ Provence &amp; Méditerranée</div>
+        <div class="iso-region-pct">15 – 40 %</div>
+        <div class="iso-region-desc">8,5° à 22°. Faible pluviométrie. Tuile canal à faible pente. Mistral : fixations
+          renforcées.</div>
+      </div>
+      <div class="iso-region-card" role="listitem">
+        <div class="iso-region-name">🦅 Alsace &amp; Lorraine</div>
+        <div class="iso-region-pct">60 – 100 %</div>
+        <div class="iso-region-desc">31° à 45°. Fortes pentes typiques des maisons à colombages. Tuile plate
+          Biberschwanz.</div>
+      </div>
+      <div class="iso-region-card" role="listitem">
+        <div class="iso-region-name">🌊 Littoral Atlantique</div>
+        <div class="iso-region-pct">33 – 50 %</div>
+        <div class="iso-region-desc">18° à 27°. Vents et pluies dominants. Ardoise ou imitation ardoise.</div>
+      </div>
+      <div class="iso-region-card" role="listitem">
+        <div class="iso-region-name">🏔 Auvergne &amp; Massif Central</div>
+        <div class="iso-region-pct">40 – 80 %</div>
+        <div class="iso-region-desc">22° à 39°. Lauze, ardoise locale. Fortes pentes pour la neige et les pluies
+          d'altitude.</div>
+      </div>
+      <div class="iso-region-card iso-accent" role="listitem">
+        <div class="iso-region-name">🌺 Corse</div>
+        <div class="iso-region-pct">25 – 50 %</div>
+        <div class="iso-region-desc">14° à 27°. Influence méditerranéenne + reliefs montagneux. Tuile canal ou lauze.
+        </div>
+      </div>
+    </div>
+
+    <h3 class="iso-h3">Styles architecturaux et pentes associées</h3>
+    <div class="iso-table-wrap">
+      <table role="table" aria-label="Pentes par style architectural">
+        <thead>
+          <tr>
+            <th scope="col">Style architectural</th>
+            <th scope="col">Pente typique</th>
+            <th scope="col">Couverture traditionnelle</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Maison provençale / mas</td>
+            <td>15 – 30 % (9 – 17°)</td>
+            <td>Tuile romane / canal</td>
+          </tr>
+          <tr>
+            <td>Chalet alpin / montagnard</td>
+            <td>80 – 173 % (39 – 60°)</td>
+            <td>Bardeau bois / lauze / tôle</td>
+          </tr>
+          <tr>
+            <td>Maison alsacienne à colombages</td>
+            <td>60 – 100 % (31 – 45°)</td>
+            <td>Tuile plate Biberschwanz</td>
+          </tr>
+          <tr>
+            <td>Longère bretonne</td>
+            <td>33 – 50 % (18 – 27°)</td>
+            <td>Ardoise naturelle bleue</td>
+          </tr>
+          <tr>
+            <td>Haussmannien (Paris)</td>
+            <td>60 – 100 % (31 – 45°)</td>
+            <td>Zinc naturel – combles mansardés</td>
+          </tr>
+          <tr>
+            <td>Pavillon banlieue (années 70 – 90)</td>
+            <td>33 – 50 % (18 – 27°)</td>
+            <td>Tuile mécanique à emboîtement</td>
+          </tr>
+          <tr>
+            <td>Bâtiment industriel / agricole</td>
+            <td>5 – 15 % (3 – 8,5°)</td>
+            <td>Bac acier nervuré</td>
+          </tr>
+          <tr>
+            <td>Architecture contemporaine</td>
+            <td>2 – 15 % (1 – 8,5°)</td>
+            <td>Toit plat, zinc debout, bac joint</td>
+          </tr>
+          <tr>
+            <td>Maison normande à pans de bois</td>
+            <td>50 – 70 % (27 – 35°)</td>
+            <td>Chaume / ardoise</td>
+          </tr>
+          <tr>
+            <td>Bastide gascon / mas languedocien</td>
+            <td>30 – 45 % (17 – 24°)</td>
+            <td>Tuile canal ou romane</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="iso-callout iso-callout-warn" role="note">
+      <span class="iso-callout-label">📌 PLU – Règle d'urbanisme locale</span>
+      <p>Dans de nombreuses communes, le <strong>Plan Local d'Urbanisme (PLU)</strong> impose une pente précise et des
+        matériaux spécifiques. Consultez le service urbanisme de votre mairie avant tout projet de construction ou de
+        rénovation.</p>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <div class="iso-cta-band" role="complementary" aria-label="Appel à l'action Isotuiles">
+    <div>
+      <h3>Votre projet de toiture en panneaux sandwich ?</h3>
+      <p>Nos conseillers Isotuiles vous accompagnent de l'estimation à la livraison sur mesure, partout en France.</p>
+    </div>
+    <a href="/pages/conctactez-nous" class="iso-btn-white" aria-label="Demander un devis gratuit Isotuiles">Demander un
+      devis gratuit ↗</a>
+  </div>
+
+</div><!-- /#iso-blog-pente -->
+
+<script>
+  (function () {
+    'use strict';
+
+    /* ── Convertisseur ── */
+    const inputPct = document.getElementById('iso-input-pct');
+    const inputDeg = document.getElementById('iso-input-deg');
+    const errPct = document.getElementById('iso-err-pct');
+    const errDeg = document.getElementById('iso-err-deg');
+
+    /* ── SVG refs ── */
+    const svgEl = document.getElementById('iso-roof-svg');
+    const roofShape = document.getElementById('iso-roof-shape');
+    const rampLine = document.getElementById('iso-ramp-line');
+    const dimH = document.getElementById('iso-dim-h');
+    const arcPath = document.getElementById('iso-arc-path');
+    const lblDeg = document.getElementById('iso-lbl-deg');
+    const lblPct = document.getElementById('iso-lbl-pct');
+    const lblH = document.getElementById('iso-lbl-h');
+    const faitage = document.getElementById('iso-faitage');
+
+    /* ── Stats ── */
+    const statPct = document.getElementById('iso-stat-pct');
+    const statDeg = document.getElementById('iso-stat-deg');
+    const statRise = document.getElementById('iso-stat-rise');
+    const qualifTxt = document.getElementById('iso-qualif-txt');
+
+    var lastValidPct = NaN;
+    var lastValidDeg = NaN;
+
+    function pctToDeg(p) { return Math.atan(p / 100) * (180 / Math.PI); }
+    function degToPct(d) { return Math.tan(d * Math.PI / 180) * 100; }
+
+    function qualifPente(pct) {
+      if (isNaN(pct)) return 'Entrez une valeur ci-dessus pour visualiser la pente';
+      if (pct < 3) return '🔴 Pente insuffisante – risque d\'infiltration très élevé';
+      if (pct < 5) return '🟠 Très faible – toit quasi-plat (industriel uniquement)';
+      if (pct < 10) return '🟡 Faible – en dessous du minimum Isotuiles (10 %)';
+      if (pct < 20) return '🟢 Minimum Isotuiles atteint – acceptable avec précautions';
+      if (pct < 40) return '🟢 Pente courante – bon drainage, pose standard';
+      if (pct < 70) return '🔵 Pente forte – maison individuelle, zones enneigées';
+      if (pct < 100) return '🔵 Pente très forte – style alsacien, vosgien';
+      return '🔵 Pente alpine ou mansardée';
+    }
+
+    function updateSVG(pctVal) {
+      /* Coordonnées fixes */
+      var baseX = 60, baseY = 115, endX = 310, endY = 115;
+      var baseLen = endX - baseX; /* 250 px = 100 cm */
+
+      if (isNaN(pctVal) || pctVal < 0) {
+        roofShape.setAttribute('points', baseX + ',' + baseY + ' ' + endX + ',' + baseY + ' ' + endX + ',' + baseY);
+        rampLine.setAttribute('x1', baseX); rampLine.setAttribute('y1', baseY);
+        rampLine.setAttribute('x2', endX); rampLine.setAttribute('y2', baseY);
+        dimH.setAttribute('x1', endX); dimH.setAttribute('y1', baseY);
+        dimH.setAttribute('x2', endX); dimH.setAttribute('y2', baseY);
+        arcPath.setAttribute('d', '');
+        lblDeg.textContent = '—';
+        lblPct.textContent = '';
+        faitage.setAttribute('cx', baseX); faitage.setAttribute('cy', baseY);
+        return;
+      }
+
+      /* Hauteur proportionnelle – cap à 80% de la hauteur SVG */
+      var maxH = 95;
+      var hRaw = (pctVal / 100) * baseLen;
+      var h = Math.min(hRaw, maxH);
+      var peakY = baseY - h;
+      var peakX = baseX; /* faîtage au bord gauche */
+
+      /* Triangle */
+      roofShape.setAttribute('points',
+        peakX + ',' + peakY + ' ' +
+        baseX + ',' + baseY + ' ' +
+        endX + ',' + baseY
+      );
+
+      /* Rampant */
+      rampLine.setAttribute('x1', peakX); rampLine.setAttribute('y1', peakY);
+      rampLine.setAttribute('x2', endX); rampLine.setAttribute('y2', baseY);
+
+      /* Ligne de hauteur */
+      dimH.setAttribute('x1', peakX); dimH.setAttribute('y1', peakY);
+      dimH.setAttribute('x2', peakX); dimH.setAttribute('y2', baseY);
+
+      /* Faitage */
+      faitage.setAttribute('cx', peakX);
+      faitage.setAttribute('cy', peakY);
+
+      /* Arc angle */
+      var degVal = pctToDeg(pctVal);
+      var arcR = 28;
+      var ax = baseX + arcR;
+      var ay = baseY;
+      var aEndX = baseX + arcR * Math.cos(-degVal * Math.PI / 180);
+      var aEndY = baseY + arcR * Math.sin(-degVal * Math.PI / 180);
+      var sweep = degVal > 0 ? 0 : 1;
+      arcPath.setAttribute('d',
+        'M ' + ax + ' ' + ay +
+        ' A ' + arcR + ' ' + arcR + ' 0 0 ' + sweep + ' ' + aEndX + ' ' + aEndY
+      );
+
+      /* Labels */
+      var dRound = Math.round(degVal * 10) / 10;
+      lblDeg.setAttribute('x', baseX + 32);
+      lblDeg.setAttribute('y', baseY - 5);
+      lblDeg.textContent = dRound + '°';
+
+      var midRampX = baseX + (endX - baseX) * 0.5;
+      var midRampY = peakY + (baseY - peakY) * 0.5;
+      lblPct.setAttribute('x', midRampX - 10);
+      lblPct.setAttribute('y', midRampY - 6);
+      lblPct.textContent = Math.round(pctVal * 10) / 10 + ' %';
+
+      lblH.setAttribute('x', peakX - 12);
+      lblH.setAttribute('y', peakY + h / 2 + 4);
+    }
+
+    function updateStats(pctVal) {
+      if (isNaN(pctVal) || pctVal < 0) {
+        statPct.innerHTML = '—<span>%</span>';
+        statDeg.innerHTML = '—<span>°</span>';
+        statRise.innerHTML = '—<span>cm</span>';
+        qualifTxt.textContent = qualifPente(NaN);
+        return;
+      }
+      var deg = pctToDeg(pctVal);
+      var rise = pctVal; /* cm par 100 cm */
+      statPct.innerHTML = (Math.round(pctVal * 10) / 10) + '<span>%</span>';
+      statDeg.innerHTML = (Math.round(deg * 10) / 10) + '<span>°</span>';
+      statRise.innerHTML = (Math.round(rise * 10) / 10) + '<span>cm</span>';
+      qualifTxt.textContent = qualifPente(pctVal);
+    }
+
+    function clearErrors() {
+      errPct.textContent = '';
+      errDeg.textContent = '';
+      inputPct.classList.remove('iso-error');
+      inputDeg.classList.remove('iso-error');
+    }
+
+    inputPct.addEventListener('input', function () {
+      clearErrors();
+      var raw = this.value.trim();
+      if (raw === '') {
+        inputDeg.value = '';
+        updateSVG(NaN);
+        updateStats(NaN);
+        return;
+      }
+      var v = parseFloat(raw);
+      if (isNaN(v) || v < 0) {
+        this.classList.add('iso-error');
+        errPct.textContent = 'Valeur invalide (nombre ≥ 0 requis)';
+        return;
+      }
+      if (v > 1000) {
+        this.classList.add('iso-error');
+        errPct.textContent = 'Valeur trop élevée (max 1000 %)';
+        return;
+      }
+      var deg = pctToDeg(v);
+      inputDeg.value = Math.round(deg * 100) / 100;
+      updateSVG(v);
+      updateStats(v);
+    });
+
+    inputDeg.addEventListener('input', function () {
+      clearErrors();
+      var raw = this.value.trim();
+      if (raw === '') {
+        inputPct.value = '';
+        updateSVG(NaN);
+        updateStats(NaN);
+        return;
+      }
+      var v = parseFloat(raw);
+      if (isNaN(v) || v < 0) {
+        this.classList.add('iso-error');
+        errDeg.textContent = 'Valeur invalide (nombre ≥ 0 requis)';
+        return;
+      }
+      if (v >= 90) {
+        this.classList.add('iso-error');
+        errDeg.textContent = 'Angle doit être < 90°';
+        return;
+      }
+      var pct = degToPct(v);
+      inputPct.value = Math.round(pct * 100) / 100;
+      updateSVG(pct);
+      updateStats(pct);
+    });
+
+    /* ── Accordéon ── */
+    var accBtns = document.querySelectorAll('#iso-blog-pente .iso-acc-btn');
+    accBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var panelId = this.getAttribute('aria-controls');
+        var panel = document.getElementById(panelId);
+        var isOpen = this.getAttribute('aria-expanded') === 'true';
+
+        /* Fermer tous */
+        accBtns.forEach(function (b) {
+          b.setAttribute('aria-expanded', 'false');
+          var p = document.getElementById(b.getAttribute('aria-controls'));
+          if (p) p.classList.remove('iso-open');
+        });
+
+        /* Ouvrir celui-ci si était fermé */
+        if (!isOpen) {
+          this.setAttribute('aria-expanded', 'true');
+          panel.classList.add('iso-open');
+        }
+      });
+    });
+
+    /* ── Init SVG ── */
+    updateSVG(NaN);
+
+  })();
+</script>

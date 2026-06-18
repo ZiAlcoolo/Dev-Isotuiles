@@ -1,6 +1,9 @@
 <!-- Splide CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide-core.min.css">
 
+<!-- model-viewer (3D) -->
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+
 <section id="hero-v2">
 
   <!-- ══ DESKTOP ══════════════════════════════════════ -->
@@ -28,24 +31,15 @@
 
     <div id="hv2-right">
 
-      <!-- Zone image + hotspots -->
+      <!-- Zone produit : image statique -> bascule vers le modèle 3D -->
       <div id="hv2-img-wrap">
-        <img id="hv2-product-img" src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/rouge.webp?v=1744188622"
-          alt="Panneau sandwich isolant Isotuiles">
 
-        <!-- HOTSPOTS — ajuste top/left en % selon l'image réelle -->
-        <div class="hv2-hotspot" data-slide="0" style="top:28%;left:37%">
-          <div class="hv2-hs-tooltip">Aspect naturel</div>
-        </div>
-        <div class="hv2-hotspot" data-slide="1" style="top:34%;left:63%">
-          <div class="hv2-hs-tooltip">Isolation thermique</div>
-        </div>
-        <div class="hv2-hotspot" data-slide="2" style="top:62%;left:55%">
-          <div class="hv2-hs-tooltip">Coût réduit</div>
-        </div>
-        <div class="hv2-hotspot" data-slide="3" style="top:68%;left:27%">
-          <div class="hv2-hs-tooltip">Pose rapide</div>
-        </div>
+        <model-viewer id="hv2-model" alt="Panneau sandwich isolé en vue 3D"
+          src="https://cdn.shopify.com/3d/models/85b3a860c83fc573/tydftfulyliugliu.glb" ar shadow-intensity="1"
+          camera-controls touch-action="pan-y" auto-rotate auto-rotate-delay="0" rotation-per-second="18deg"
+          interaction-prompt="none" loading="eager">
+        </model-viewer>
+
       </div>
 
       <!-- CAROUSEL DESKTOP (Splide) -->
@@ -53,37 +47,43 @@
         <div class="splide__track">
           <ul class="splide__list">
             <li class="splide__slide hv2-slide">
-              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/smart-home-checked.png" alt="icone d'illustration"></div>
+              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/smart-home-checked.png"
+                  alt="icone d'illustration"></div>
               <div class="hv2-slide-title">Aspect naturel</div>
               <div class="hv2-slide-desc">Rendu tuile traditionnelle parfaitement intégré à tout type d'architecture,
                 sans compromis esthétique.</div>
             </li>
             <li class="splide__slide hv2-slide">
-              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/temperature.png" alt="icone d'illustration"></div>
+              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/temperature.png"
+                  alt="icone d'illustration"></div>
               <div class="hv2-slide-title">Isolation thermique</div>
               <div class="hv2-slide-desc">Mousse polyuréthane haute densité pour des performances thermiques supérieures
                 et des économies d'énergie durables.</div>
             </li>
             <li class="splide__slide hv2-slide">
-              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/bribery.png" alt="icone d'illustration"></div>
+              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/bribery.png"
+                  alt="icone d'illustration"></div>
               <div class="hv2-slide-title">Coût réduit</div>
               <div class="hv2-slide-desc">Un coût d'intervention 30 % moins cher qu'une rénovation toiture
                 traditionnelle à performance équivalente.</div>
             </li>
             <li class="splide__slide hv2-slide">
-              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/time-span.png" alt="icone d'illustration"></div>
+              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/time-span.png"
+                  alt="icone d'illustration"></div>
               <div class="hv2-slide-title">Pose rapide</div>
               <div class="hv2-slide-desc">Installation 2× plus rapide grâce à la pose directe sur la charpente existante
                 — sans démolition.</div>
             </li>
             <li class="splide__slide hv2-slide">
-              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/length.png" alt="icone d'illustration"></div>
+              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/length.png"
+                  alt="icone d'illustration"></div>
               <div class="hv2-slide-title">Sur mesure</div>
               <div class="hv2-slide-desc">Découpe aux dimensions exactes de ton chantier, sans chute inutile ni surcoût
                 matière.</div>
             </li>
             <li class="splide__slide hv2-slide">
-              <div class="hv2-slide-icon"><img src="https://img.icons8.com/fluency-systems-regular/500/no-audio.png" alt="icone d'illustration"></div>
+              <div class="hv2-slide-icon"><img src="https://img.icons8.com/fluency-systems-regular/500/no-audio.png"
+                  alt="icone d'illustration"></div>
               <div class="hv2-slide-title">Isolation phonique</div>
               <div class="hv2-slide-desc">Atténuation sonore renforcée, idéale pour les zones à forte exposition au
                 bruit extérieur (pluie, circulation…).</div>
@@ -102,8 +102,12 @@
     </div>
     <div id="hv2-mob-card">
       <div class="hv2-mob-img-zone">
-        <img src="https://cdn.shopify.com/s/files/1/0909/7605/9715/files/rouge.webp?v=1744188622"
-          alt="Panneau sandwich Isotuiles" class="hv2-mob-img">
+        <model-viewer id="hv2-mob-model" alt="Panneau sandwich isolé en vue 3D"
+          src="https://cdn.shopify.com/3d/models/85b3a860c83fc573/tydftfulyliugliu.glb" ar shadow-intensity="1"
+          camera-controls touch-action="pan-y" auto-rotate auto-rotate-delay="0" rotation-per-second="18deg"
+          interaction-prompt="none" loading="eager" class="hv2-mob-img">
+        </model-viewer>
+
       </div>
       <p class="hv2-mob-desc">Une isolation performante, une esthétique soignée, et des économies garanties.</p>
       <!-- CAROUSEL MOBILE (Splide) -->
@@ -111,32 +115,38 @@
         <div class="splide__track">
           <ul class="splide__list">
             <li class="splide__slide hv2-slide">
-              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/smart-home-checked.png" alt="icone d'illustration"></div>
+              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/smart-home-checked.png"
+                  alt="icone d'illustration"></div>
               <div class="hv2-slide-title">Aspect naturel</div>
               <div class="hv2-slide-desc">Rendu tuile traditionnelle intégré à tout type d'architecture.</div>
             </li>
             <li class="splide__slide hv2-slide">
-              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/temperature.png" alt="icone d'illustration"></div>
+              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/temperature.png"
+                  alt="icone d'illustration"></div>
               <div class="hv2-slide-title">Thermique</div>
               <div class="hv2-slide-desc">Mousse polyuréthane haute densité pour des performances optimales.</div>
             </li>
             <li class="splide__slide hv2-slide">
-              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/bribery.png" alt="icone d'illustration"></div>
+              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/bribery.png"
+                  alt="icone d'illustration"></div>
               <div class="hv2-slide-title">-30 % de coût</div>
               <div class="hv2-slide-desc">30 % moins cher qu'une rénovation toiture traditionnelle.</div>
             </li>
             <li class="splide__slide hv2-slide">
-              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/time-span.png" alt="icone d'illustration"></div>
+              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/time-span.png"
+                  alt="icone d'illustration"></div>
               <div class="hv2-slide-title">Pose rapide</div>
               <div class="hv2-slide-desc">2× plus rapide, pose directe sur charpente existante.</div>
             </li>
             <li class="splide__slide hv2-slide">
-              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/length.png" alt="icone d'illustration"></div>
+              <div class="hv2-slide-icon"><img src="https://img.icons8.com/sf-regular/500/length.png"
+                  alt="icone d'illustration"></div>
               <div class="hv2-slide-title">Sur mesure</div>
               <div class="hv2-slide-desc">Découpe aux dimensions exactes de votre chantier.</div>
             </li>
             <li class="splide__slide hv2-slide">
-              <div class="hv2-slide-icon"><img src="https://img.icons8.com/fluency-systems-regular/500/no-audio.png" alt="icone d'illustration"></div>
+              <div class="hv2-slide-icon"><img src="https://img.icons8.com/fluency-systems-regular/500/no-audio.png"
+                  alt="icone d'illustration"></div>
               <div class="hv2-slide-title">Phonique</div>
               <div class="hv2-slide-desc">Atténuation sonore renforcée pour un confort maximal.</div>
             </li>
@@ -274,6 +284,14 @@
     color: var(--c-dark);
   }
 
+  .hv2-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .hv2-btn {
+    transition: transform .25s ease;
+  }
+
   .hv2-btn-arrow {
     display: flex;
     align-items: center;
@@ -310,6 +328,7 @@
 
   /* ── Colonne droite ───────────────────────────────────── */
   #hv2-right {
+    margin-top: 2rem;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -324,18 +343,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 3rem 1rem;
     min-height: 280px;
-    max-height: 50vh;
+    /* max-height: 50vh; */
+    height: stretch;
   }
 
   #hv2-product-img {
     width: 120%;
     max-width: 45vw;
     filter: drop-shadow(5px 15px 18px rgba(0, 0, 0, .42));
-    animation: hv2pulse 10s ease-in-out infinite;
-    position: relative;
+    position: absolute;
     z-index: 1;
+    animation: hv2pulse 10s ease-in-out infinite;
+    transition: opacity .6s ease;
   }
 
   @keyframes hv2pulse {
@@ -350,75 +370,24 @@
     }
   }
 
-  /* ── Hotspots ─────────────────────────────────────────── */
-  .hv2-hotspot {
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    background: var(--c-dark);
-    border: 2.5px solid #fff;
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 10;
-    transition: transform .25s, box-shadow .25s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .hv2-hotspot::after {
-    content: '';
-    position: absolute;
-    inset: -3px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, .5);
-    animation: hv2ripple 2s ease-out infinite;
-  }
-
-  @keyframes hv2ripple {
-    0% {
-      transform: scale(1);
-      opacity: .9;
-    }
-
-    100% {
-      transform: scale(2.2);
-      opacity: 0;
-    }
-  }
-
-  .hv2-hotspot:hover {
-    transform: scale(1.35);
-    box-shadow: 0 0 0 5px rgba(255, 255, 255, .25);
-  }
-
-  .hv2-hotspot.active {
-    background: #fff;
-    border-color: var(--c-dark);
-  }
-
-  .hv2-hotspot.active::after {
-    border-color: rgba(255, 255, 255, .7);
-  }
-
-  .hv2-hs-tooltip {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--c-dark);
-    color: #fff;
-    font-size: .7rem;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 8px;
-    white-space: nowrap;
-    pointer-events: none;
+  #hv2-product-img.hv2-hide {
     opacity: 0;
-    transition: opacity .2s;
+    pointer-events: none;
   }
 
-  .hv2-hotspot:hover .hv2-hs-tooltip {
+  #hv2-model {
+    width: 100%;
+    height: 100%;
+    min-height: 280px;
+    /* max-height: 50vh; */
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity .7s ease;
+    --poster-color: transparent;
+  }
+
+  #hv2-model.hv2-show {
     opacity: 1;
   }
 
@@ -435,7 +404,7 @@
     display: flex;
     flex-direction: column;
   }
-  
+
   #hv2-splide {
     min-height: 25vh;
     position: absolute;
@@ -443,43 +412,61 @@
     left: 0;
     right: 0;
     overflow: hidden;
+    z-index: 3;
   }
+
   #hv2-splide-mob {
     overflow: hidden;
   }
 
-  /* Slides */
+  /* Slides — version "modernisée" : carte verre plus nette, micro-interactions */
   .hv2-slide {
-    background: rgba(255, 255, 255, .12);
-    border: 1.5px solid rgba(255, 255, 255, .22);
-    border-radius: 14px;
-    padding: .85rem .75rem;
+    background: rgba(255, 255, 255, .1);
+    border: 1px solid rgba(255, 255, 255, .2);
+    border-radius: 16px;
+    padding: .9rem .85rem;
     color: #fff;
     cursor: pointer;
-    transition: background .3s, border-color .3s, transform .3s;
-    /* NE PAS mettre de width ici — c'est Splide qui la calcule */
+    backdrop-filter: blur(6px);
+    opacity: 1;
+    transition: background .35s, border-color .35s, transform .35s, box-shadow .35s, opacity .35s;
   }
 
   .hv2-slide.is-active-custom {
-    background: rgba(255, 255, 255, .22);
-    border-color: rgba(255, 255, 255, .65);
-    transform: scale(1.02);
+    background: rgba(255, 255, 255, .2);
+    border-color: rgba(255, 255, 255, .6);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 24px -8px rgba(0, 0, 0, .35);
   }
 
-  .hv2-slide:not(.is-active) {
+  /* L'opacité réduite des slides inactives ne s'applique
+     qu'une fois Splide réellement initialisé (classe posée par
+     la librairie sur le conteneur), pour ne jamais se retrouver
+     avec des bulles invisibles si le script Splide ne s'exécute pas. */
+  .splide.is-initialized .hv2-slide:not(.is-active) {
     opacity: .4;
   }
 
   .hv2-slide:hover {
-    background: rgba(255, 255, 255, .2);
-    border-color: rgba(255, 255, 255, .5);
+    background: rgba(255, 255, 255, .18);
+    border-color: rgba(255, 255, 255, .45);
+    transform: translateY(-2px);
   }
 
   .hv2-slide-icon {
-    margin-bottom: .35rem;
-    height: 1.2rem;
+    margin-bottom: .4rem;
+    height: 1.25rem;
     display: flex;
+    transition: transform .35s ease;
+    transform-origin: center;
+    width: fit-content;
   }
+
+  .hv2-slide.is-active-custom .hv2-slide-icon,
+  .hv2-slide:hover .hv2-slide-icon {
+    transform: scale(1.5) rotate(-10deg);
+  }
+
   .hv2-slide-icon img {
     height: 100%;
     filter: invert();
@@ -524,7 +511,7 @@
     align-items: center !important;
     justify-content: center !important;
     cursor: pointer !important;
-    transition: background .2s !important;
+    transition: background .2s, transform .2s !important;
     position: static !important;
     top: auto !important;
     left: auto !important;
@@ -542,6 +529,7 @@
 
   .splide__arrow:hover {
     background: rgba(255, 255, 255, .28) !important;
+    transform: scale(1.08) !important;
   }
 
   .splide__arrow:disabled {
@@ -549,12 +537,10 @@
     cursor: default !important;
   }
 
-  /* Splide met svg dans les arrows par défaut — on les cache, on met le texte en HTML */
   .splide__arrow svg {
     display: none !important;
   }
 
-  /* Wrapper flèches : flex row, aligné à droite */
   .splide__arrows {
     display: flex !important;
     flex-direction: row !important;
@@ -592,7 +578,6 @@
     width: 18px;
   }
 
-  /* Barre de nav (dots + arrows) groupés */
   .hv2-nav-bar {
     display: flex;
     align-items: center;
@@ -620,13 +605,6 @@
       display: flex;
       flex-direction: column;
       gap: .4rem;
-    }
-
-    .hv2-pretitle {
-      font-size: .78rem;
-      text-transform: uppercase;
-      letter-spacing: .07em;
-      color: #666;
     }
 
     #hv2-mob-text h1 {
@@ -659,12 +637,35 @@
     }
 
     .hv2-mob-img {
-      position: relative;
-      top: 2rem;
-      width: 82vw;
-      max-width: 340px;
+      position: absolute;
+      top: 0;
+      border-radius: 20px;
+      width: 100%;
       filter: drop-shadow(3px 8px 14px rgba(0, 0, 0, .42));
+    }
+
+    #hv2-mob-product-img {
       animation: hv2pulse 10s ease-in-out infinite;
+      transition: opacity .6s ease;
+      z-index: 1;
+    }
+
+    #hv2-mob-product-img.hv2-hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #hv2-mob-model {
+      height: 34vw;
+      max-height: 340px;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity .7s ease;
+      --poster-color: transparent;
+    }
+
+    #hv2-mob-model.hv2-show {
+      opacity: 1;
     }
 
     .hv2-mob-desc {
@@ -683,6 +684,15 @@
     #hv2-mobile .hv2-btns {
       justify-content: center;
     }
+
+    #hv2-img-wrap {
+      max-height: 50vh;
+    }
+
+    #hv2-model {
+      max-height: 50vh;
+    }
+
   }
 </style>
 
@@ -724,13 +734,6 @@
       });
     }
 
-    /* ─── Sync hotspots ─── */
-    function syncHotspots(idx) {
-      document.querySelectorAll('.hv2-hotspot').forEach(function (h) {
-        h.classList.toggle('active', parseInt(h.dataset.slide, 10) === idx);
-      });
-    }
-
     /* ─── Options communes ─── */
     var base = {
       type: 'loop',
@@ -763,11 +766,9 @@
         injectNavBar(desktopEl);
         setCustomArrows(desktopEl);
         syncActive(desktopEl, 0);
-        syncHotspots(0);
       });
       desktop.on('moved', function (newIdx) {
         syncActive(desktopEl, newIdx);
-        syncHotspots(newIdx);
       });
       desktop.mount();
     }
@@ -793,12 +794,53 @@
       mobile.mount();
     }
 
-    /* ─── Hotspots → carousel ─── */
-    document.querySelectorAll('.hv2-hotspot').forEach(function (hs) {
-      hs.addEventListener('click', function () {
-        if (desktop) desktop.go(parseInt(hs.dataset.slide, 10));
-      });
-    });
+    /* ─── Transition image -> modèle 3D ───────────────────────
+       Scopé sur le conteneur parent (#hv2-img-wrap / .hv2-mob-img-zone)
+       plutôt que sur des IDs globaux, pour être robuste même si la
+       section Liquid est dupliquée dans le DOM (éditeur Shopify,
+       app embeds, etc.). ─────────────────────────────────────── */
+    function wireModelSwap(model) {
+      if (!model) return;
+      var wrap = model.closest('#hv2-img-wrap, .hv2-mob-img-zone') || model.parentElement;
+      if (!wrap) return;
+
+      var img = wrap.querySelector('img.hv2-mob-img, #hv2-product-img, img[id$="product-img"]');
+      var badge = wrap.querySelector('[id*="3d-badge"]');
+
+      var swapped = false;
+
+      function swap() {
+        if (swapped) return;
+        swapped = true;
+        model.classList.add('hv2-show');
+        if (img) img.classList.add('hv2-hide');
+        if (badge) badge.classList.add('hv2-show');
+        console.log('[hv2] swap 3D déclenché pour', model.id || model);
+      }
+
+      function isReady() {
+        return !!(model.modelIsVisible || model.loaded === true);
+      }
+
+      model.addEventListener('load', swap);
+
+      var pollId = setInterval(function () {
+        if (isReady()) {
+          clearInterval(pollId);
+          swap();
+        }
+      }, 300);
+
+      setTimeout(function () {
+        clearInterval(pollId);
+        swap();
+      }, 7000);
+    }
+
+    // On cible TOUS les <model-viewer> présents (gère le cas où la section
+    // serait dupliquée dans le DOM par l'éditeur Shopify) plutôt que de
+    // chercher un seul ID qui pourrait être ambigu.
+    document.querySelectorAll('model-viewer[id*="hv2"]').forEach(wireModelSwap);
 
   })();
 </script>
