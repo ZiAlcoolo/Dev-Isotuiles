@@ -48,7 +48,7 @@
   <header class="iso-head">
     <p class="iso-eyebrow">Configurateur 3D</p>
     <h2 class="iso-title">Composez votre toiture et visualisez-la en 3D</h2>
-    <p class="iso-sub">Panneau, finition, type de toit, dimensions, accessoires et fixations : visualisez le tout en 3D, puis recevez votre estimation et votre demande de devis.</p>
+    <p class="iso-sub">Panneau, finition, type de toit, dimensions, accessoires et fixations : visualisez le tout en 3D, recevez votre estimation et votre demande de devis, puis finalisez votre commande directement sur notre site web ou en contactant nos conseillers.</p>
   </header>
 
   <nav class="iso-steps" aria-label="Étapes du configurateur">
@@ -234,7 +234,7 @@
 #iso-config .iso-head{text-align:center; margin-bottom:24px}
 #iso-config .iso-eyebrow{margin:0 0 6px; font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:rgba(255,255,255,.7); font-weight:600}
 #iso-config .iso-title{margin:0 0 10px; font-size:clamp(1.4rem,3.4vw,2rem); font-weight:800; letter-spacing:-.02em; color:white}
-#iso-config .iso-sub{margin:0 auto; max-width:640px; font-size:.94rem; color:rgba(255,255,255,.82)}
+#iso-config .iso-sub{margin:0 auto; max-width:810px; font-size:.94rem; color:rgba(255,255,255,.82)}
 
 #iso-config .iso-steps{margin:0 0 22px}
 #iso-config .iso-steps-list{display:flex; gap:6px; list-style:none; margin:0 0 12px; padding:0; overflow-x:auto}
@@ -458,6 +458,11 @@
     {id:"bac_rive",nom:"Rive latérale",len:2.0,gammes:["bac"],calc:function(m,A,R){var on=m.vergeLen>0;return{rel:on,qty:on?Math.ceil(m.vergeLen/2):0,on:on};}},
     {id:"bac_rive_mur",nom:"Rive contre mur",len:2.0,gammes:["bac"],calc:function(m,A,R){var on=false;return{rel:false,qty:on?Math.ceil(A/2):0,on:false};}},
     {id:"bac_cache",nom:"Cache mousse Bac Acier",len:1.0,gammes:["bac"],calc:function(m,A,R){return{rel:true,qty:Math.ceil(m.eaveLen),on:true};}},
+    {id:"bac_faitiere_90",nom:"Faîtière double 90°",len:2.0,gammes:["bac"],calc:function(m,A,R){var on=m.ridgeLen>0;return {rel:on,qty:on?Math.ceil(m.ridgeLen/2):0,on:false};}},
+    {id:"bac_faitiere_crantee",nom:"Faîtière double crantée",len:2.0,gammes:["bac"],calc:function(m,A,R){var on=m.ridgeLen>0;return{rel:on,qty:on?Math.ceil(m.ridgeLen/2):0,on:!0}}},
+    {id:"bac_rive_profilee",nom:"Rive contre mur profilée",len:2.0,gammes:["bac"],calc:function(m,A,R){return{rel:!1,qty:Math.ceil(A/2),on:!1}}},
+    {id:"omega",nom:"Profilés Omega",unit:"pièce(s)",gammes:["romane","plates","bac"],calc:function(m,A,R){var nb=Math.ceil(A/0.6);return{rel:!0,qty:nb,on:!1}}},
+
     // --- Commun à toutes les gammes ---
     {id:"vis_couture",nom:"Vis de couture",pack:100,unit:"pack(s) de 100",sub:"fixation des accessoires · vendu par 100",gammes:["romane","plates"],calc:function(m,A,R){var structML=m.ridgeLen+m.vergeLen+m.eaveLen+(m.type==="mono"?A:0);var units=Math.ceil(structML*3);return{rel:true,qty:Math.max(1,Math.ceil(units/100)),on:true};}}
   ];
@@ -510,7 +515,7 @@
     // ACCESSOIRES : id -> handle (string) ou fonction(state)->handle
     accessoires: {
       // Tuile (Romane / Plates)
-      faitage_dp:   'faitage',
+      faitage_dp:   'faitage-double-pente',
       faitage_mur:  'faitage-contre-mur',
       faitage_ferm: 'faitage-de-fermeture',
       rive_U:       'rive-laterale-u',
@@ -522,11 +527,19 @@
       bac_faitiere_ferm: 'faitiere-de-fermeture-crantee',
       bac_rive:          'rive-laterale',
       bac_rive_mur:      'rive-contre-mur-bac-acier',
-      bac_cache:         'cache-mousse-bac-acier'
+      bac_cache:         'cache-mousse-bac-acier',
+      bac_faitiere_90:       'faitiere-double-90deg',
+      bac_faitiere_crantee:  'faitiere-double-crantee-bac-acier',
+      bac_rive_profilee:     'rive-contre-mur-profilee-bac-acier',
+      omega:                 'profiles-metalliques-omega'
       // vis_couture : aucun produit Shopify correspondant trouvé -> non ajouté au panier
     },
     // VISSERIE : charpente -> handle (VIS BOIS = vis-150mm, VIS ACIER = vis-125mm)
-    visserie: { bois:'vis-150mm', acier:'vis-125mm' }
+    visserie: { 
+      bois:'vis-150mm', 
+      acier:'vis-125mm',
+      bac:'vis-bac-acier'
+    }
   };
 
   /* Lecture du catalogue injecté par Liquid (inerte hors Shopify) */
@@ -852,7 +865,7 @@
     function bindPointer(){
       var el=renderer.domElement;
       el.addEventListener('pointerdown',function(e){ dragging=true; lastX=e.clientX; lastY=e.clientY; el.setPointerCapture&&el.setPointerCapture(e.pointerId); });
-      el.addEventListener('pointermove',function(e){ if(!dragging) return; targetRotY+=(e.clientX-lastX)*0.01; rotX = clamp(rotX + (e.clientY - lastY) * 0.008, -1.48, -0.20); lastX=e.clientX; lastY=e.clientY; });
+      el.addEventListener('pointermove',function(e){ if(!dragging) return; targetRotY+=(e.clientX-lastX)*0.01; rotX = clamp(rotX + (e.clientY - lastY) * 0.008, -0.5, 1.50); lastX=e.clientX; lastY=e.clientY; });
       function up(e){ dragging=false; try{ el.releasePointerCapture&&e.pointerId!=null&&el.releasePointerCapture(e.pointerId); }catch(_){} }
       el.addEventListener('pointerup',up); el.addEventListener('pointerleave',up); el.addEventListener('pointercancel',up);
       el.addEventListener('wheel',function(e){ e.preventDefault(); targetDist=clamp(targetDist+(e.deltaY>0?0.5:-0.5),4.2,8.5); },{passive:false});
