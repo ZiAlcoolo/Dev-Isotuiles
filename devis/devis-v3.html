@@ -357,7 +357,7 @@
 
 #iso-config .iso-modal{position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(0,20,45,.55); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px)}
 #iso-config .iso-modal-box{position:relative; width:100%; max-width:420px; background:linear-gradient(140deg,#002F5C,#2F6CA2); border:1px solid var(--iso-line-2); border-radius:18px; padding:26px 24px; box-shadow:0 24px 60px rgba(0,20,45,.5); text-align:center}
-#iso-config .iso-modal-title{margin:0 0 8px; font-size:1.15rem; font-weight:800; color: white;}
+#iso-config .iso-modal-title{margin:0 0 8px; font-size:1.15rem; font-weight:800;color:#fff;}
 #iso-config .iso-modal-sub{margin:0 0 18px; font-size:.9rem; color:rgba(255,255,255,.8)}
 #iso-config .iso-modal-actions{display:flex; flex-direction:column; gap:10px}
 #iso-config .iso-modal-close{position:absolute; top:10px; right:12px; background:none; border:none; color:#fff; font-size:1.5rem; line-height:1; cursor:pointer; opacity:.7}
@@ -444,13 +444,22 @@
   ];
 
   var ACCESSOIRES=[
+    // --- Accessoires TUILE (Romane Canal + Tuiles Plates) ---
     {id:"faitage_dp",nom:"Faîtage double pente",len:1.0,gammes:["romane","plates"],calc:function(m,A,R){var on=m.ridgeLen>0;return{rel:on,qty:on?Math.ceil(m.ridgeLen):0,on:on};}},
     {id:"faitage_mur",nom:"Faîtage contre mur",len:2.1,gammes:["romane","plates"],calc:function(m,A,R){var on=m.type==="mono";return{rel:on,qty:on?Math.ceil(A/2.1):0,on:on};}},
     {id:"faitage_ferm",nom:"Faîtage de fermeture",len:2.1,gammes:["romane","plates"],calc:function(m,A,R){var on=m.type==="mono";return{rel:on,qty:on?Math.ceil(A/2.1):0,on:on};}},
     {id:"rive_U",nom:"Rive latérale U",len:2.1,gammes:["romane","plates"],calc:function(m,A,R){var on=m.vergeLen>0;return{rel:on,qty:on?Math.ceil(m.vergeLen/2.1):0,on:on};}},
     {id:"rive_L",nom:"Rive latérale L",len:2.1,gammes:["romane","plates"],calc:function(m,A,R){var on=m.vergeLen>0;return{rel:on,qty:on?Math.ceil(m.vergeLen/2.1):0,on:false};}},
     {id:"caches",nom:"Caches mousses",len:1.0,gammes:["romane","plates"],calc:function(m,A,R){return{rel:true,qty:Math.ceil(m.eaveLen),on:true};}},
-    {id:"vis_couture",nom:"Vis de couture",pack:100,unit:"pack(s) de 100",sub:"fixation des accessoires · vendu par 100",gammes:["romane","plates","bac"],calc:function(m,A,R){var structML=m.ridgeLen+m.vergeLen+m.eaveLen+(m.type==="mono"?A:0);var units=Math.ceil(structML*3);return{rel:true,qty:Math.max(1,Math.ceil(units/100)),on:true};}}
+    // --- Accessoires BAC ACIER ---
+    {id:"bac_faitiere_dp",nom:"Faîtière double 120°",len:2.0,gammes:["bac"],calc:function(m,A,R){var on=m.ridgeLen>0;return{rel:on,qty:on?Math.ceil(m.ridgeLen/2):0,on:on};}},
+    {id:"bac_faitiere_mur",nom:"Faîtière contre mur crantée",len:2.0,gammes:["bac"],calc:function(m,A,R){var on=m.type==="mono";return{rel:on,qty:on?Math.ceil(A/2):0,on:on};}},
+    {id:"bac_faitiere_ferm",nom:"Faîtière de fermeture crantée",len:2.0,gammes:["bac"],calc:function(m,A,R){var on=m.type==="mono";return{rel:on,qty:on?Math.ceil(A/2):0,on:on};}},
+    {id:"bac_rive",nom:"Rive latérale",len:2.0,gammes:["bac"],calc:function(m,A,R){var on=m.vergeLen>0;return{rel:on,qty:on?Math.ceil(m.vergeLen/2):0,on:on};}},
+    {id:"bac_rive_mur",nom:"Rive contre mur",len:2.0,gammes:["bac"],calc:function(m,A,R){var on=false;return{rel:false,qty:on?Math.ceil(A/2):0,on:false};}},
+    {id:"bac_cache",nom:"Cache mousse Bac Acier",len:1.0,gammes:["bac"],calc:function(m,A,R){return{rel:true,qty:Math.ceil(m.eaveLen),on:true};}},
+    // --- Commun à toutes les gammes ---
+    {id:"vis_couture",nom:"Vis de couture",pack:100,unit:"pack(s) de 100",sub:"fixation des accessoires · vendu par 100",gammes:["romane","plates"],calc:function(m,A,R){var structML=m.ridgeLen+m.vergeLen+m.eaveLen+(m.type==="mono"?A:0);var units=Math.ceil(structML*3);return{rel:true,qty:Math.max(1,Math.ceil(units/100)),on:true};}}
   ];
 
   var ICONS={
@@ -500,12 +509,20 @@
     },
     // ACCESSOIRES : id -> handle (string) ou fonction(state)->handle
     accessoires: {
+      // Tuile (Romane / Plates)
       faitage_dp:   'faitage',
       faitage_mur:  'faitage-contre-mur',
       faitage_ferm: 'faitage-de-fermeture',
       rive_U:       'rive-laterale-u',
       rive_L:       'rive-laterale-l',
-      caches:       function(){ return thickToken()==='60' ? 'cache-mousse-ep-60-100-mm' : 'cache-mousse-ep-40-80-mm'; }
+      caches:       function(){ return thickToken()==='60' ? 'cache-mousse-ep-60-100-mm' : 'cache-mousse-ep-40-80-mm'; },
+      // Bac Acier
+      bac_faitiere_dp:   'faitiere-double-120deg',
+      bac_faitiere_mur:  'faitiere-contre-mur-crantee',
+      bac_faitiere_ferm: 'faitiere-de-fermeture-crantee',
+      bac_rive:          'rive-laterale',
+      bac_rive_mur:      'rive-contre-mur-bac-acier',
+      bac_cache:         'cache-mousse-bac-acier'
       // vis_couture : aucun produit Shopify correspondant trouvé -> non ajouté au panier
     },
     // VISSERIE : charpente -> handle (VIS BOIS = vis-150mm, VIS ACIER = vis-125mm)
@@ -655,7 +672,7 @@
 
   var iso3D=(function(){
     var ok=false, renderer, scene, camera, group, matRoof, matFoam, slopeMeshes=[], foamMesh, ridgeMesh, ground;
-    var rotY=0.7, rotX=-0.5, targetRotY=0.7, dist=6.0, targetDist=6.0, dragging=false, lastX=0,lastY=0, mount, key='';
+    var rotY=0.7, rotX=0.1, targetRotY=0.7, dist=6.0, targetDist=6.0, dragging=false, lastX=0,lastY=0, mount, key='';
     var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
     /* modules réels (m) par profil : largeur motif (mw), hauteur de rang (mh), + carreau de texture nx×ny */
@@ -806,11 +823,11 @@
         renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
         renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
         renderer.outputEncoding=THREE.sRGBEncoding; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.02;
-        renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+        renderer.shadowMap.enabled=false; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
       }catch(e){ return false; }
       mount.appendChild(renderer.domElement);
       scene=new THREE.Scene(); scene.environment=makeEnv();
-      camera=new THREE.PerspectiveCamera(34,1,0.1,100); camera.position.set(0,0.4,dist);
+      camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100); camera.position.set(0, 1.8, dist); camera.lookAt(0, 0, 0);
       scene.add(new THREE.AmbientLight(0xffffff,0.35));
       scene.add(new THREE.HemisphereLight(0xffffff,0x33424f,0.45));
       var keyL=new THREE.DirectionalLight(0xffffff,1.15); keyL.position.set(4,7,5); keyL.castShadow=true;
@@ -835,7 +852,7 @@
     function bindPointer(){
       var el=renderer.domElement;
       el.addEventListener('pointerdown',function(e){ dragging=true; lastX=e.clientX; lastY=e.clientY; el.setPointerCapture&&el.setPointerCapture(e.pointerId); });
-      el.addEventListener('pointermove',function(e){ if(!dragging) return; targetRotY+=(e.clientX-lastX)*0.01; rotX=clamp(rotX+(e.clientY-lastY)*0.008,-1.15,0.25); lastX=e.clientX; lastY=e.clientY; });
+      el.addEventListener('pointermove',function(e){ if(!dragging) return; targetRotY+=(e.clientX-lastX)*0.01; rotX = clamp(rotX + (e.clientY - lastY) * 0.008, -1.48, -0.20); lastX=e.clientX; lastY=e.clientY; });
       function up(e){ dragging=false; try{ el.releasePointerCapture&&e.pointerId!=null&&el.releasePointerCapture(e.pointerId); }catch(_){} }
       el.addEventListener('pointerup',up); el.addEventListener('pointerleave',up); el.addEventListener('pointercancel',up);
       el.addEventListener('wheel',function(e){ e.preventDefault(); targetDist=clamp(targetDist+(e.deltaY>0?0.5:-0.5),4.2,8.5); },{passive:false});
@@ -1076,8 +1093,9 @@
         handle:pr.handle, res:rv, qty:pr.qty, tooLong:tooLong,
         unitTxt:(pr.unit==='m²'?'m²':'panneau(x) de '+fmt(pr.R,2)+' m'), props:props });
     });
-    // accessoires sélectionnés (variantes incluant la teinte de tuile)
-    var accCol=SHOP_MAP.accColour[state.couleur.nom]||'';
+    // accessoires sélectionnés (variantes incluant la teinte)
+    var accCol = state.produit==='bac' ? ((state.couleur.nom||'').match(/\d{4}/)||[''])[0]   // Bac : code RAL
+                                       : (SHOP_MAP.accColour[state.couleur.nom]||'');          // Tuile : libellé
     selectedAccessoires().forEach(function(a){
       var id=null; ACCESSOIRES.forEach(function(x){ if(x.nom===a.nom) id=x.id; });
       var hv=SHOP_MAP.accessoires[id]; if(!hv) return;            // ex. vis_couture : pas de produit
@@ -1135,7 +1153,7 @@
   }
 
   function summaryText(contact){
-    var c=compute(), acc=selectedAccessoires(), sc=screwsCount();
+    var c=compute(), acc=selectedAccessoires(), sc=screwsCount(), pr=panelRows();
     var L=['Demande de devis — Configurateur Isotuiles','==========================================',
       '— Configuration —',
       'Gamme : '+ISO.produits[state.produit].nom,
@@ -1143,15 +1161,13 @@
       'Épaisseur : '+state.epaisseur,
       'Type de toit : '+typeNom(),
       'Dimensions : '+dimsText(),'',
-      '— Estimation panneaux —',
-      'Surface : '+fmt(c.surface,1)+' m²',
-      'Longueur de panneau : '+fmt(c.longP,2)+' m',
-      'Nombre de panneaux : ≈ '+c.nb,
-      'Métrage linéaire : ≈ '+fmt(c.metrage,1)+' m',
+      '— Panneaux —'];
+    pr.forEach(function(r){ L.push((r.lbl?r.lbl+' : ':'')+'longueur '+fmt(r.R,2)+' m · '+r.qty+' '+r.unit+' · '+fmt(r.surf,1)+' m²'); });
+    L.push('Surface totale : '+fmt(c.surface,1)+' m²',
       'Délai indicatif : '+c.delai,'',
       '— Fixations —',
       'Charpente : '+(state.charpente==='bois'?'Bois':'Acier'),
-      'Visserie : ≈ '+sc.qty+' '+sc.label+' · '+sc.packs+' pack(s) de 100 (entraxe '+state.entraxe+' m)'];
+      'Visserie : ≈ '+sc.qty+' '+sc.label+' · '+sc.packs+' pack(s) de 100 (entraxe '+state.entraxe+' m)');
     if(acc.length){ L.push('','— Accessoires —'); acc.forEach(function(a){ L.push('• '+a.nom+' : '+accQtyText(a)); }); }
     if(c.prix!=null) L.push('','Estimation indicative : ≈ '+fmt(c.prix,0)+' € HT');
     if(contact){ L.push('','— Coordonnées —',
