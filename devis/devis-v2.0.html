@@ -11,7 +11,7 @@
         rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-    <link rel="stylesheet" href="./devis-v1.css">
+    <link rel="stylesheet" href="./devis-v2.css">
 </head>
 
 <body>
@@ -352,26 +352,6 @@
             <div class="eyebrow">Étape 4 sur 7</div>
             <h1 class="stitle">Accessoires de pose</h1>
             <p class="ssub">Quantités suggérées selon vos dimensions. Ajustez si nécessaire.</p>
-
-            <!-- Sélecteur type de charpente (impacte le choix des vis) -->
-            <div
-                style="background:var(--select-light,#FDF3EE);border:1.5px solid var(--primary-color);border-radius:10px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-                <div style="font-weight:600;font-size:14px;white-space:nowrap">🏗️ Type de charpente :</div>
-                <div style="display:flex;gap:12px">
-                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px">
-                        <input type="radio" name="charpente" value="bois" id="charp-bois" checked
-                            onchange="S.charpente=this.value">
-                        <span>Bois <span style="font-size:12px;color:var(--ink-muted)">(vis 125 ou 150mm)</span></span>
-                    </label>
-                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px">
-                        <input type="radio" name="charpente" value="acier" id="charp-acier"
-                            onchange="S.charpente=this.value">
-                        <span>Métal / Acier <span style="font-size:12px;color:var(--ink-muted)">(vis
-                                auto-foreuses)</span></span>
-                    </label>
-                </div>
-            </div>
-
             <div id="acc-loading" style="text-align:center;padding:40px;color:var(--ink-muted);font-size:14px">
                 ⏳ Chargement des accessoires…
             </div>
@@ -476,10 +456,9 @@
                 <div class="fg" style="max-width:400px">
                     <label class="fl">Type d'accès <span class="rstar">*</span></label>
                     <select id="acc-sel" onchange="calcLiv(); valLivraison()">
-                        <option value="">— Type d'accès —</option>
                         <option value="standard">Standard — camion 19T</option>
-                        <option value="difficile">Accès difficile — camion grue</option>
-                        <option value="hayon">Hayon élévateur requis</option>
+                        <!-- <option value="difficile">Accès difficile — camion grue</option> -->
+                        <!-- <option value="hayon">Hayon élévateur requis</option> -->
                     </select>
                     <div class="emsg" id="e-acces">Champ requis.</div>
                 </div>
@@ -653,103 +632,33 @@
         // ══════════════════════════════════════════════════════════════
         //  VARIANT IDs SHOPIFY
         // ══════════════════════════════════════════════════════════════
-        // ══════════════════════════════════════════════════════════════
-        //  VARIANT IDs PANNEAUX ROMANE CANAL — 4 coloris complets
-        // ══════════════════════════════════════════════════════════════
         const VARIANTS = {
             'romane-canal': {
-                // ── Terracotta — nouveau produit (handle: panneau-sandwich-terracotta) ──
                 'terracotta': {
                     '40-80': {
-                        2100: 54522082722115, 2450: 54522082787651, 2800: 54522082853187, 3150: 54522082918723,
-                        3500: 54522082984259, 3850: 54522083049795, 4200: 54522083115331, 4550: 54522083180867,
-                        4900: 54522083246403, 5250: 54522083311939, 5600: 54522083377475, 5950: 54522083443011,
-                        6300: 54522083508547, 6650: 54522083574083, 7000: 54522083639619, 7350: 54522083705155,
-                        7700: 54522083770691, 8050: 54522083836227, 8400: 54522083901763, 8750: 54522083967299,
-                        9100: 54522084032835, 9450: 54522084098371, 9800: 54522084163907, 10150: 54522084229443,
-                        10500: 54522084294979, 10850: 54522084360515, 11200: 54522084426051, 11550: 54522084491587,
-                        11900: 54522084557123, 12250: 54522084622659,
+                        2100: 52960045105475, 2450: 52960045138243, 2800: 52960045171011, 3150: 52960045203779,
+                        3500: 52960045236547, 3850: 52960045269315, 4200: 52960045302083, 4550: 52960045334851,
+                        4900: 52960045367619, 5250: 52960045400387, 5600: 52960045433155, 5950: 52960045465923,
+                        6300: 52960045498691, 6650: 52960045531459, 7000: 52960045564227, 7350: 52960045596995,
+                        7700: 52960045629763, 8050: 52960045662531, 8400: 52960045695299, 8750: 52960045728067,
+                        9100: 52960045760835, 9450: 52960045793603, 9800: 52960045826371, 10150: 52960045859139,
+                        10500: 52960045891907, 10850: 52960045924675, 11200: 52960045957443, 11550: 52960045990211,
+                        11900: 52960046022979, 12250: 52960046055747,
                     },
                     '60-105': {
-                        2100: 54522082754883, 2450: 54522082820419, 2800: 54522082885955, 3150: 54522082951491,
-                        3500: 54522083017027, 3850: 54522083082563, 4200: 54522083148099, 4550: 54522083213635,
-                        4900: 54522083279171, 5250: 54522083344707, 5600: 54522083410243, 5950: 54522083475779,
-                        6300: 54522083541315, 6650: 54522083606851, 7000: 54522083672387, 7350: 54522083737923,
-                        7700: 54522083803459, 8050: 54522083868995, 8400: 54522083934531, 8750: 54522084000067,
-                        9100: 54522084065603, 9450: 54522084131139, 9800: 54522084196675, 10150: 54522084262211,
-                        10500: 54522084327747, 10850: 54522084393283, 11200: 54522084458819, 11550: 54522084524355,
-                        11900: 54522084589891, 12250: 54522084655427,
+                        2100: 52965014241603, 2450: 52965014274371, 2800: 52965014307139, 3150: 52965014339907,
+                        3500: 52965014372675, 3850: 52965014405443, 4200: 52965014438211, 4550: 52965014470979,
+                        4900: 52965014503747, 5250: 52965014536515, 5600: 52965014569283, 5950: 52965014602051,
+                        6300: 52965014634819, 6650: 52965014667587, 7000: 52965014700355, 7350: 52965014733123,
+                        7700: 52965014765891, 8050: 52965014798659, 8400: 52965014831427, 8750: 52965014864195,
+                        9100: 52965014896963, 9450: 52965014929731, 9800: 52965014962499, 10150: 52965014995267,
+                        10500: 52965015028035, 10850: 52965015060803, 11200: 52965015093571, 11550: 52965015126339,
+                        11900: 52965015159107, 12250: 52965015191875,
                     },
                 },
-                // ── Gris Anthracite — ancien produit (handle: panneau-sandwich-gris-anthracite) ──
-                'gris-anthracite': {
-                    '40-80': {
-                        2100: 52965022236995, 2450: 52965022302531, 2800: 52965022368067, 3150: 52965022433603,
-                        3500: 52965022499139, 3850: 52965022564675, 4200: 52965022630211, 4550: 52965022695747,
-                        4900: 52965022761283, 5250: 52965022826819, 5600: 52965022892355, 5950: 52965022957891,
-                        6300: 52965023023427, 6650: 52965023088963, 7000: 52965023154499, 7350: 52965023220035,
-                        7700: 52965023285571, 8050: 52965023351107, 8400: 52965023416643, 8750: 52965023482179,
-                        9100: 52965023547715, 9450: 52965023613251, 9800: 52965023678787, 10150: 52965023744323,
-                        10500: 52965023809859, 10850: 52965023875395, 11200: 52965023940931, 11550: 52965024006467,
-                        11900: 52965024072003, 12250: 52965024137539,
-                    },
-                    '60-105': {
-                        2100: 52965022269763, 2450: 52965022335299, 2800: 52965022400835, 3150: 52965022466371,
-                        3500: 52965022531907, 3850: 52965022597443, 4200: 52965022662979, 4550: 52965022728515,
-                        4900: 52965022794051, 5250: 52965022859587, 5600: 52965022925123, 5950: 52965022990659,
-                        6300: 52965023056195, 6650: 52965023121731, 7000: 52965023187267, 7350: 52965023252803,
-                        7700: 52965023318339, 8050: 52965023383875, 8400: 52965023449411, 8750: 52965023514947,
-                        9100: 52965023580483, 9450: 52965023646019, 9800: 52965023711555, 10150: 52965023777091,
-                        10500: 52965023842627, 10850: 52965023908163, 11200: 52965023973699, 11550: 52965024039235,
-                        11900: 52965024104771, 12250: 52965024170307,
-                    },
-                },
-                // ── Pastel Vieillie — ancien produit (handle: panneau-sandwich-pastel-vieillie) ──
-                'pastel-vieillie': {
-                    '40-80': {
-                        2100: 52965017911619, 2450: 52965017977155, 2800: 52965018042691, 3150: 52965018108227,
-                        3500: 52965018173763, 3850: 52965018239299, 4200: 52965018304835, 4550: 52965018370371,
-                        4900: 52965018435907, 5250: 52965018501443, 5600: 52965018566979, 5950: 52965018632515,
-                        6300: 52965018698051, 6650: 52965018763587, 7000: 52965018829123, 7350: 52965018894659,
-                        7700: 52965018960195, 8050: 52965019025731, 8400: 52965019091267, 8750: 52965019156803,
-                        9100: 52965019222339, 9450: 52965019287875, 9800: 52965019353411, 10150: 52965019418947,
-                        10500: 52965019484483, 10850: 52965019550019, 11200: 52965019615555, 11550: 52965019681091,
-                        11900: 52965019746627, 12250: 52965019812163,
-                    },
-                    '60-105': {
-                        2100: 52965017944387, 2450: 52965018009923, 2800: 52965018075459, 3150: 52965018140995,
-                        3500: 52965018206531, 3850: 52965018272067, 4200: 52965018337603, 4550: 52965018403139,
-                        4900: 52965018468675, 5250: 52965018534211, 5600: 52965018599747, 5950: 52965018665283,
-                        6300: 52965018730819, 6650: 52965018796355, 7000: 52965018861891, 7350: 52965018927427,
-                        7700: 52965018992963, 8050: 52965019058499, 8400: 52965019124035, 8750: 52965019189571,
-                        9100: 52965019255107, 9450: 52965019320643, 9800: 52965019386179, 10150: 52965019451715,
-                        10500: 52965019517251, 10850: 52965019582787, 11200: 52965019648323, 11550: 52965019713859,
-                        11900: 52965019779395, 12250: 52965019844931,
-                    },
-                },
-                // ── Rouge Vieillie — nouveau produit (handle: panneau-sandwich-rouge-vieillie) ──
-                'rouge-vieillie': {
-                    '40-80': {
-                        2100: 54522086097219, 2450: 54522086162755, 2800: 54522086228291, 3150: 54522086293827,
-                        3500: 54522086359363, 3850: 54522086424899, 4200: 54522086490435, 4550: 54522086555971,
-                        4900: 54522086621507, 5250: 54522086687043, 5600: 54522086752579, 5950: 54522086818115,
-                        6300: 54522086883651, 6650: 54522086949187, 7000: 54522087014723, 7350: 54522087080259,
-                        7700: 54522087145795, 8050: 54522087211331, 8400: 54522087276867, 8750: 54522087342403,
-                        9100: 54522087407939, 9450: 54522087473475, 9800: 54522087539011, 10150: 54522087604547,
-                        10500: 54522087670083, 10850: 54522087735619, 11200: 54522087801155, 11550: 54522087866691,
-                        11900: 54522087932227, 12250: 54522087997763,
-                    },
-                    '60-105': {
-                        2100: 54522086129987, 2450: 54522086195523, 2800: 54522086261059, 3150: 54522086326595,
-                        3500: 54522086392131, 3850: 54522086457667, 4200: 54522086523203, 4550: 54522086588739,
-                        4900: 54522086654275, 5250: 54522086719811, 5600: 54522086785347, 5950: 54522086850883,
-                        6300: 54522086916419, 6650: 54522086981955, 7000: 54522087047491, 7350: 54522087113027,
-                        7700: 54522087178563, 8050: 54522087244099, 8400: 54522087309635, 8750: 54522087375171,
-                        9100: 54522087440707, 9450: 54522087506243, 9800: 54522087571779, 10150: 54522087637315,
-                        10500: 54522087702851, 10850: 54522087768387, 11200: 54522087833923, 11550: 54522087899459,
-                        11900: 54522087964995, 12250: 54522088030531,
-                    },
-                },
+                'gris-anthracite': { '40-80': null, '60-105': null },
+                'rouge-vieillie': { '40-80': null, '60-105': null },
+                'pastel-vieillie': { '40-80': null, '60-105': null },
             },
             'tuile-plate': {
                 'gris-anthracite-tp': { '50-77': null },
@@ -775,72 +684,7 @@
             },
         };
 
-        // ══════════════════════════════════════════════════════════════
-        //  VARIANT IDs ACCESSOIRES ROMANE CANAL
-        //  Chaque accessoire a sa propre logique de sélection :
-        //  - Rives L/U      : color + panLen (mm)
-        //  - Faitage ferm/cm: color + ceil(largeurBat) en mètres entiers
-        //  - Cache mousse   : color (1 variante par couleur)
-        //  - Vis 125/150    : matiere (bois|acier) + color
-        // ══════════════════════════════════════════════════════════════
-
-        // Rive Latérale L — par couleur panneau + longueur mm (2100 à 10500)
-        const RIVE_L_VARIANTS = {
-            'terracotta': { 2100: 52958122312003, 2450: 52959929794883, 2800: 52959929827651, 3150: 52959929860419, 3500: 52959929893187, 3850: 52959929925955, 4200: 52959929958723, 4550: 52959929991491, 4900: 52959930024259, 5250: 52959930057027, 5600: 52959930089795, 5950: 52959930122563, 6300: 52959930155331, 6650: 52959930188099, 7000: 52959930220867, 7350: 52959930253635, 7700: 52959930286403, 8050: 52959930319171, 8400: 52959930351939, 8750: 52959930384707, 9100: 52959930417475, 9450: 52959930450243, 9800: 52959930483011, 10150: 52959930515779, 10500: 52959930548547 },
-            'gris-anthracite': { 2100: 52958122049859, 2450: 52959928222019, 2800: 52959928254787, 3150: 52959928287555, 3500: 52959928320323, 3850: 52959928353091, 4200: 52959928385859, 4550: 52959928418627, 4900: 52959928451395, 5250: 52959928484163, 5600: 52959928516931, 5950: 52959928549699, 6300: 52959928582467, 6650: 52959928615235, 7000: 52959928648003, 7350: 52959928680771, 7700: 52959928713539, 8050: 52959928746307, 8400: 52959928779075, 8750: 52959928811843, 9100: 52959928844611, 9450: 52959928877379, 9800: 52959928910147, 10150: 52959928942915, 10500: 52959928975683 },
-            'rouge-vieillie': { 2100: 52958122443075, 2450: 52959930581315, 2800: 52959930614083, 3150: 52959930646851, 3500: 52959930679619, 3850: 52959930712387, 4200: 52959930745155, 4550: 52959930777923, 4900: 52959930810691, 5250: 52959930843459, 5600: 52959930876227, 5950: 52959930908995, 6300: 52959930941763, 6650: 52959930974531, 7000: 52959931007299, 7350: 52959931040067, 7700: 52959931072835, 8050: 52959931105603, 8400: 52959931138371, 8750: 52959931171139, 9100: 52959931203907, 9450: 52959931236675, 9800: 52959931269443, 10150: 52959931302211, 10500: 52959931334979 },
-            'pastel-vieillie': { 2100: 52958122180931, 2450: 52959929008451, 2800: 52959929041219, 3150: 52959929073987, 3500: 52959929106755, 3850: 52959929139523, 4200: 52959929172291, 4550: 52959929205059, 4900: 52959929237827, 5250: 52959929270595, 5600: 52959929303363, 5950: 52959929336131, 6300: 52959929368899, 6650: 52959929401667, 7000: 52959929434435, 7350: 52959929467203, 7700: 52959929499971, 8050: 52959929532739, 8400: 52959929565507, 8750: 52959929598275, 9100: 52959929631043, 9450: 52959929663811, 9800: 52959929696579, 10150: 52959929729347, 10500: 52959929762115 },
-        };
-
-        // Rive Latérale U — même structure
-        const RIVE_U_VARIANTS = {
-            'terracotta': { 2100: 51719203488067, 2450: 52959921668419, 2800: 52959921701187, 3150: 52959921733955, 3500: 52959921766723, 3850: 52959921799491, 4200: 52959921832259, 4550: 52959921865027, 4900: 52959921897795, 5250: 52959921930563, 5600: 52959921963331, 5950: 52959921996099, 6300: 52959922028867, 6650: 52959922061635, 7000: 52959922094403, 7350: 52959922127171, 7700: 52959922159939, 8050: 52959922192707, 8400: 52959922225475, 8750: 52959922258243, 9100: 52959922291011, 9450: 52959922323779, 9800: 52959922356547, 10150: 52959922389315, 10500: 52959922422083 },
-            'gris-anthracite': { 2100: 51719203225923, 2450: 52959920095555, 2800: 52959920128323, 3150: 52959920161091, 3500: 52959920193859, 3850: 52959920226627, 4200: 52959920259395, 4550: 52959920292163, 4900: 52959920324931, 5250: 52959920357699, 5600: 52959920390467, 5950: 52959920423235, 6300: 52959920456003, 6650: 52959920488771, 7000: 52959920521539, 7350: 52959920554307, 7700: 52959920587075, 8050: 52959920619843, 8400: 52959920652611, 8750: 52959920685379, 9100: 52959920718147, 9450: 52959920750915, 9800: 52959920783683, 10150: 52959920816451, 10500: 52959920849219 },
-            'rouge-vieillie': { 2100: 51719203619139, 2450: 52959922454851, 2800: 52959922487619, 3150: 52959922520387, 3500: 52959922553155, 3850: 52959922585923, 4200: 52959922618691, 4550: 52959922651459, 4900: 52959922684227, 5250: 52959922716995, 5600: 52959922749763, 5950: 52959922782531, 6300: 52959922815299, 6650: 52959922848067, 7000: 52959922880835, 7350: 52959922913603, 7700: 52959922946371, 8050: 52959922979139, 8400: 52959923011907, 8750: 52959923044675, 9100: 52959923077443, 9450: 52959923110211, 9800: 52959923142979, 10150: 52959923175747, 10500: 52959923208515 },
-            'pastel-vieillie': { 2100: 51719203356995, 2450: 52959920881987, 2800: 52959920914755, 3150: 52959920947523, 3500: 52959920980291, 3850: 52959921013059, 4200: 52959921045827, 4550: 52959921078595, 4900: 52959921111363, 5250: 52959921144131, 5600: 52959921176899, 5950: 52959921209667, 6300: 52959921242435, 6650: 52959921275203, 7000: 52959921307971, 7350: 52959921340739, 7700: 52959921373507, 8050: 52959921406275, 8400: 52959921439043, 8750: 52959921471811, 9100: 52959921504579, 9450: 52959921537347, 9800: 52959921570115, 10150: 52959921602883, 10500: 52959921635651 },
-        };
-
-        // Faitage de fermeture — par couleur + longueur entière en m (2 à 12)
-        const FAIT_FERM_VARIANTS = {
-            'terracotta': { 2: 52959942639939, 3: 52969142354243, 4: 52969142387011, 5: 52969142419779, 6: 52969142452547, 7: 52969142485315, 8: 52969142518083, 9: 52969142550851, 10: 52969142583619, 11: 52969142616387, 12: 52969142649155 },
-            'gris-anthracite': { 2: 52959941067075, 3: 52969141698883, 4: 52969141731651, 5: 52969141764419, 6: 52969141797187, 7: 52969141829955, 8: 52969141862723, 9: 52969141895491, 10: 52969141928259, 11: 52969141961027, 12: 52969141993795 },
-            'rouge-vieillie': { 2: 52959943426371, 3: 52969142681923, 4: 52969142714691, 5: 52969142747459, 6: 52969142780227, 7: 52969142812995, 8: 52969142845763, 9: 52969142878531, 10: 52969142911299, 11: 52969142944067, 12: 52969142976835 },
-            'pastel-vieillie': { 2: 52959941853507, 3: 52969142026563, 4: 52969142059331, 5: 52969142092099, 6: 52969142124867, 7: 52969142157635, 8: 52969142190403, 9: 52969142223171, 10: 52969142255939, 11: 52969142288707, 12: 52969142321475 },
-        };
-
-        // Faitage contre mur — même structure
-        const FAIT_CM_VARIANTS = {
-            'terracotta': { 2: 52959968592195, 3: 52969140945219, 4: 52969140977987, 5: 52969141010755, 6: 52969141043523, 7: 52969141076291, 8: 52969141109059, 9: 52969141141827, 10: 52969141174595, 11: 52969141207363, 12: 52969141240131 },
-            'gris-anthracite': { 2: 52959967019331, 3: 52969140289859, 4: 52969140322627, 5: 52969140355395, 6: 52969140388163, 7: 52969140420931, 8: 52969140453699, 9: 52969140486467, 10: 52969140519235, 11: 52969140552003, 12: 52969140584771 },
-            'rouge-vieillie': { 2: 52959969378627, 3: 52969141272899, 4: 52969141305667, 5: 52969141338435, 6: 52969141371203, 7: 52969141403971, 8: 52969141436739, 9: 52969141469507, 10: 52969141502275, 11: 52969141535043, 12: 52969141567811 },
-            'pastel-vieillie': { 2: 52959967805763, 3: 52969140617539, 4: 52969140650307, 5: 52969140683075, 6: 52969140715843, 7: 52969140748611, 8: 52969140781379, 9: 52969140814147, 10: 52969140846915, 11: 52969140879683, 12: 52969140912451 },
-        };
-
-        // Cache mousse ép. 40/80 — par couleur, 1 variante, qté = nb panneaux
-        const CM_40_VARIANTS = {
-            'gris-anthracite': 51719192576323,
-            'pastel-vieillie': 51719192707395,
-            'terracotta': 51719192838467,
-            'rouge-vieillie': 51719192969539,
-        };
-        // Cache mousse ép. 60/105
-        const CM_60_VARIANTS = {
-            'gris-anthracite': 52958132732227,
-            'pastel-vieillie': 52958132764995,
-            'terracotta': 52958132797763,
-            'rouge-vieillie': 52958132830531,
-        };
-
-        // Vis 125mm — par matière charpente (bois|acier) + couleur
-        const VIS_125_VARIANTS = {
-            bois: { 'rouge-vieillie': 52207874638147, 'terracotta': 52207920021827, 'pastel-vieillie': 52207920054595, 'gris-anthracite': 52207920087363 },
-            acier: { 'rouge-vieillie': 52207874670915, 'terracotta': 52207920120131, 'pastel-vieillie': 52207920152899, 'gris-anthracite': 52207920185667 },
-        };
-        // Vis 150mm
-        const VIS_150_VARIANTS = {
-            bois: { 'rouge-vieillie': 52207875817795, 'terracotta': 52207901376835, 'pastel-vieillie': 52207901409603, 'gris-anthracite': 52207901442371 },
-            acier: { 'rouge-vieillie': 52207875850563, 'terracotta': 52207901475139, 'pastel-vieillie': 52207901507907, 'gris-anthracite': 52207901540675 },
-        };
+        const ACC_VARIANT_IDS = {};
 
         const CCOLOR = {
             'terracotta': '#C4724A', 'gris-anthracite': '#4A4A4A',
@@ -917,15 +761,15 @@
                 if (m) { types.add(m.type); if (m.thick) thicks.add(m.thick); }
             });
             return {
-                id: raw.id,
-                n: raw.nom || raw.designation || '',
-                d: raw.description || '',
-                p: parseFloat(raw.prix_unitaire_ht) || 0,
-                u: raw.unite || 'pièce',
-                img: raw.image || '',
-                link: raw.lien || '',
-                sg: raw['suggéré'] === true || String(raw['suggéré']).toLowerCase() === 'true',
-                type: raw.type || '',
+                id: raw.Id,
+                n: raw.Nom || raw.Designation || '',
+                d: raw.Description || '',
+                p: parseFloat(raw.Prix_unitaire_ht) || 0,
+                u: raw.Unité || 'pièce',
+                img: raw.Image || '',
+                link: raw.Lien || '',
+                sg: raw['Suggéré'] === true || String(raw['Suggéré']).toLowerCase() === 'true',
+                type: raw.Type || '',
                 th: thicks.size === 1 ? [...thicks][0] : null,
                 t: [...types],
             };
@@ -936,7 +780,7 @@
                 const raw = await getCachedSheetData("Accessoires", 30);
                 if (raw) {
                     ACCS_LOADED = {};
-                    Object.values(raw).forEach(r => { if (r.id) ACCS_LOADED[r.id] = parseAccessoire(r); });
+                    Object.values(raw).forEach(r => { if (r.Id) ACCS_LOADED[r.Id] = parseAccessoire(r); });
                     console.log(`✅ ${Object.keys(ACCS_LOADED).length} accessoires chargés`);
                 }
             } catch (e) { console.error('Erreur init :', e); }
@@ -955,7 +799,6 @@
             dimMode: 'expert',
             surf: 0, panQty: 0, panLen: 0,
             accs: {},
-            charpente: 'bois',  // 'bois' | 'acier' — type de charpente pour le choix des vis
             dept: null, access: null, livPrice: 0, livVol: 0, livKg: 0,
             client: {},
             qnum: null,
@@ -1406,132 +1249,32 @@
         }
 
         // ══════════════════════════════════════════════════════════════
-        //  HELPERS — sélection variant accessoire selon son type Shopify
-        // ══════════════════════════════════════════════════════════════
-
-        function getAccVariantId(accId) {
-            const color = S.color;
-
-            // Rives L/U — variant par couleur + longueur du panneau (max 10500mm)
-            if (accId === 'rive-l' || (ACCS_LOADED[accId]?.n || '').toLowerCase().includes('rive') && (ACCS_LOADED[accId]?.n || '').includes('L')) {
-                const tbl = RIVE_L_VARIANTS[color] || {};
-                const avail = Object.keys(tbl).map(Number).sort((a, b) => a - b);
-                const match = avail.filter(l => l <= Math.min(S.panLen, 10500)).pop() || avail[0];
-                return tbl[match] || null;
-            }
-            if (accId === 'rive-u') {
-                const tbl = RIVE_U_VARIANTS[color] || {};
-                const avail = Object.keys(tbl).map(Number).sort((a, b) => a - b);
-                const match = avail.filter(l => l <= Math.min(S.panLen, 10500)).pop() || avail[0];
-                return tbl[match] || null;
-            }
-            // Correspondance par ID Google Sheets
-            if (accId === 'A1' || accId === 'A2') {
-                const tbl = accId === 'A1' ? RIVE_L_VARIANTS[color] : RIVE_U_VARIANTS[color];
-                if (!tbl) return null;
-                const avail = Object.keys(tbl).map(Number).sort((a, b) => a - b);
-                const match = avail.filter(l => l <= Math.min(S.panLen, 10500)).pop() || avail[0];
-                return tbl[match] || null;
-            }
-            if (accId === 'A3') {
-                const tbl = RIVE_U_VARIANTS[color] || {};
-                const avail = Object.keys(tbl).map(Number).sort((a, b) => a - b);
-                const match = avail.filter(l => l <= Math.min(S.panLen, 10500)).pop() || avail[0];
-                return tbl[match] || null;
-            }
-
-            // Faitage fermeture — variant par couleur + largeur bâtiment (m entier, 2 à 12)
-            if (accId === 'faitage-f' || accId === 'A8') {
-                const tbl = FAIT_FERM_VARIANTS[color] || {};
-                const largBat = S.surf > 0 ? Math.sqrt(S.surf) : 2;
-                const m = Math.min(Math.max(2, Math.ceil(largBat)), 12);
-                return tbl[m] || null;
-            }
-            // Faitage contre mur
-            if (accId === 'faitage-cm' || accId === 'A20' || accId === 'A21') {
-                const tbl = FAIT_CM_VARIANTS[color] || {};
-                const largBat = S.surf > 0 ? Math.sqrt(S.surf) : 2;
-                const m = Math.min(Math.max(2, Math.ceil(largBat)), 12);
-                return tbl[m] || null;
-            }
-
-            // Cache mousse — variant par couleur
-            if (accId === 'cm-40' || accId === 'A4') return CM_40_VARIANTS[color] || null;
-            if (accId === 'cm-60' || accId === 'A5') return CM_60_VARIANTS[color] || null;
-
-            // Vis — variant par type charpente + couleur
-            if (accId === 'vis-125' || accId === 'A18') {
-                return (VIS_125_VARIANTS[S.charpente] || {})[color] || null;
-            }
-            if (accId === 'vis-150' || accId === 'A19') {
-                return (VIS_150_VARIANTS[S.charpente] || {})[color] || null;
-            }
-
-            return null;
-        }
-
-        // ══════════════════════════════════════════════════════════════
-        //  PANIER SHOPIFY — logique complète avec vrais variant IDs
+        //  PANIER SHOPIFY
         // ══════════════════════════════════════════════════════════════
         async function addCart() {
             const items = [], missing = [];
-
-            // ── Panneaux ─────────────────────────────────────────────
-            const panVid = VARIANTS[S.type]?.[S.color]?.[S.thick]?.[S.panLen];
-            if (panVid) {
-                items.push({
-                    id: panVid,
-                    quantity: S.panQty,
-                    properties: {
-                        'Type': S.typeName,
-                        'Coloris': S.colorName,
-                        'Épaisseur': S.thickName,
-                        'Longueur': (S.panLen / 1000).toFixed(3).replace(/\.?0+$/, '') + ' m',
-                        'N° Devis': S.qnum,
-                    }
-                });
-            } else {
-                missing.push('Panneaux ' + S.typeName + ' ' + S.colorName);
-            }
-
-            // ── Accessoires ──────────────────────────────────────────
+            const vid = getVariantId(S.panLen);
+            if (vid) {
+                items.push({ id: vid, quantity: S.panQty, properties: { 'Type': S.typeName, 'Coloris': S.colorName, 'Épaisseur': S.thickName, 'Longueur': (S.panLen / 1000).toFixed(3).replace(/\.?0+$/, '') + '  m', 'N° Devis': S.qnum } });
+            } else { missing.push('Panneaux ' + S.typeName + ' ' + S.colorName); }
             Object.entries(S.accs).forEach(([id, a]) => {
                 if (!a.chk || a.qty === 0) return;
-                const vid = getAccVariantId(id);
-                const name = ACCS_LOADED[id]?.n || id;
-                if (vid) {
-                    items.push({ id: vid, quantity: a.qty, properties: { 'N° Devis': S.qnum } });
-                } else {
-                    missing.push(name);
-                }
+                const v = ACC_VARIANT_IDS[id];
+                if (v) items.push({ id: v, quantity: a.qty });
+                else if (ACCS_LOADED[id]) missing.push(ACCS_LOADED[id].n);
             });
-
-            if (items.length === 0) {
-                showToast('⚠️ Aucun article à ajouter au panier.', true);
-                return;
-            }
-
+            if (missing.length > 0 && items.length === 0) { showToast('⚠️ IDs Shopify manquants : ' + missing.join(', '), true); return; }
+            if (items.length === 0) { showToast('⚠️ Aucun article à ajouter.', true); return; }
             const btn = document.querySelector('.btn-ok');
             if (btn) { btn.disabled = true; btn.textContent = '⏳ Ajout en cours…'; }
-
             try {
-                const resp = await fetch('/cart/add.js', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ items })
-                });
-                if (!resp.ok) throw new Error('HTTP ' + resp.status);
-
-                if (missing.length > 0) {
-                    showToast('⚠️ ' + items.length + ' article(s) ajouté(s). Non disponibles en ligne : ' + missing.join(', '));
-                } else {
-                    showToast('✓ ' + items.length + ' article(s) ajouté(s) au panier !');
-                }
-                setTimeout(() => { window.location.href = '/cart'; }, 1500);
-
+                const r = await fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ items }) });
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                showToast(missing.length > 0 ? '⚠️ Panier partiel — manquants : ' + missing.join(', ') : '✓ ' + items.length + ' article(s) ajouté(s) !');
+                setTimeout(() => { window.location.href = '/cart'; }, 1200);
             } catch (err) {
-                console.error('Cart error:', err);
-                showToast('❌ Erreur d\'ajout au panier. Réessayez ou contactez-nous.', true);
+                console.error(err);
+                showToast('❌ Erreur d\'ajout au panier.', true);
                 if (btn) { btn.disabled = false; btn.textContent = '🛒 Ajouter au panier'; }
             }
         }
@@ -1547,21 +1290,30 @@
                 const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
                 const T = totals(), W = 210, M = 16, CW = W - M * 2;
                 let y = 0;
-                const CLAY = [196, 114, 74], INK = [26, 22, 18], INKS = [74, 63, 53], MUT = [138, 122, 110], STO = [245, 240, 235], WHI = [253, 250, 247];
+                const BLUE = [0, 47, 92], INK = [26, 26, 26], INKS = [30, 30, 30], MUT = [3, 74, 118], STO = [217, 236, 252], WHI = [247, 250, 253];
                 const sf = (style = 'normal', sz = 10, col = INK) => { doc.setFont('helvetica', style); doc.setFontSize(sz); doc.setTextColor(...col); };
                 const rct = (x, y, w, h, col, rr = 0) => { doc.setFillColor(...col); rr > 0 ? doc.roundedRect(x, y, w, h, rr, rr, 'F') : doc.rect(x, y, w, h, 'F'); };
                 const ln = (x1, y1, x2, y2, col = STO, lw = 0.3) => { doc.setDrawColor(...col); doc.setLineWidth(lw); doc.line(x1, y1, x2, y2); };
 
                 rct(0, 0, W, 42, INK);
                 doc.setFont('helvetica', 'bold'); doc.setFontSize(24); doc.setTextColor(...WHI);
-                doc.text('Iso', M, 18); const iw = doc.getTextWidth('Iso');
-                doc.setTextColor(...CLAY); doc.text('tuiles', M + iw, 18);
-                sf('normal', 9, MUT); doc.text('Panneaux sandwich & couverture — Direct usine', M, 25);
-                sf('normal', 8, [180, 170, 160]);
+                try {
+                    const logoUrl = 'https://isotuiles.fr/cdn/shop/files/logo-white.webp';
+                    // On ajoute l'image (jsPDF convertit en interne si l'image est chargée via une balise img ou canvas)
+                    // Coordonnées : M (marge), 8 (y), largeur: 35mm, hauteur: auto (calculée via ratio)
+                    doc.addImage(logoUrl, 'WEBP', M, 8, 35, 15);
+                } catch (e) {
+                    // Fallback au texte si l'image échoue (CORS ou format)
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(24); doc.setTextColor(...WHI);
+                    doc.text('Iso', M, 18); const iw = doc.getTextWidth('Iso');
+                    doc.setTextColor(...BLUE); doc.text('tuiles', M + iw, 18);
+                }
+                sf('normal', 9, WHI); doc.text('Panneaux sandwich & couverture — Direct usine', M, 25);
+                sf('normal', 8, [192, 200, 215]);
                 ['Zone d\'Activité de Gemeillan — 33480 Sainte-Hélène', 'Tél : 06 76 45 67 57 — Lun-Ven 08h-19h', 'isotuiles@gmail.com — isotuiles.fr'].forEach((l, i) => doc.text(l, W - M, 14 + i * 6, { align: 'right' }));
-                rct(0, 42, W, 14, CLAY);
+                rct(0, 42, W, 14, BLUE);
                 sf('bold', 13, WHI); doc.text('DEVIS', M, 51.5);
-                sf('normal', 9, [253, 240, 230]); doc.text('N° ' + S.qnum, M + 24, 51.5);
+                sf('normal', 9, [192, 200, 215]); doc.text('N° ' + S.qnum, M + 24, 51.5);
                 const td = new Date(), tv = new Date(td); tv.setDate(tv.getDate() + 30);
                 const fd = d => d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
                 doc.text('Émis le ' + fd(td) + '  |  Valable jusqu\'au ' + fd(tv), W - M, 51.5, { align: 'right' });
@@ -1570,16 +1322,16 @@
                 const cl = S.client || {};
                 const bH = 52, sX = W - M - 54;
                 rct(M, y, CW - 58, bH, STO, 3);
-                sf('bold', 8, CLAY); doc.text('CLIENT / CHANTIER', M + 6, y + 9);
-                ln(M + 6, y + 11, M + CW - 62, y + 11, CLAY, 0.4);
+                sf('bold', 8, BLUE); doc.text('CLIENT / CHANTIER', M + 6, y + 9);
+                ln(M + 6, y + 11, M + CW - 62, y + 11, BLUE, 0.4);
                 sf('bold', 10, INK); doc.text(cl.soc || [cl.prenom, cl.nom].filter(Boolean).join(' '), M + 6, y + 18);
                 if (cl.soc) { sf('normal', 9, INKS); doc.text([cl.prenom, cl.nom].filter(Boolean).join(' '), M + 6, y + 24); }
                 sf('normal', 9, INKS);
                 // Adresse décomposée dans le PDF
                 [cl.rue, cl.complement, [cl.cp, cl.ville].filter(Boolean).join(' '), cl.pays !== 'France' ? cl.pays : null, cl.tel, cl.email].filter(Boolean).forEach((l, i) => doc.text(l, M + 6, y + 26 + i * 4.8));
                 rct(sX, y, 54, bH, STO, 3);
-                sf('bold', 8, CLAY); doc.text('COLORIS CHOISI', sX + 4, y + 9);
-                ln(sX + 4, y + 11, sX + 50, y + 11, CLAY, 0.4);
+                sf('bold', 8, BLUE); doc.text('COLORIS CHOISI', sX + 4, y + 9);
+                ln(sX + 4, y + 11, sX + 50, y + 11, BLUE, 0.4);
                 const hex = CCOLOR[S.color] || '#888';
                 doc.setFillColor(parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16));
                 doc.roundedRect(sX + 4, y + 14, 46, 22, 2, 2, 'F');
@@ -1589,8 +1341,8 @@
 
                 if (cl.rem) {
                     rct(M, y, CW, 13, [255, 248, 242], 3);
-                    doc.setDrawColor(...CLAY); doc.setLineWidth(0.5); doc.line(M, y, M, y + 13);
-                    sf('italic', 8, INKS); doc.text(doc.splitTextToSize('📝 ' + cl.rem, CW - 10), M + 5, y + 6);
+                    doc.setDrawColor(...BLUE); doc.setLineWidth(0.5); doc.line(M, y, M, y + 13);
+                    sf('italic', 8, INKS); doc.text(doc.splitTextToSize('Commentaires : ' + cl.rem, CW - 10), M + 5, y + 6);
                     y += 17;
                 }
 
@@ -1608,10 +1360,10 @@
                 const tierStr = tMax ? `Palier ${tMin}–${tMax} m²` : `Palier +${tMin} m²`;
                 doc.autoTable({
                     startY: y, margin: { left: M, right: M },
-                    head: [['Désignation', 'Coloris', 'Épaisseur', 'Quantité', 'Longueur', 'Surface', 'Prix/m² HT', 'Total HT']],
-                    body: [[tn, S.colorName, S.thickName, S.panQty + ' pann.', (S.panLen / 1000).toFixed(3).replace(/\.?0+$/, '') + ' m', T.psurf.toFixed(1) + ' m²', f2(T.p) + ' €\n' + tierStr, f2(T.ptot) + ' €']],
-                    styles: { fontSize: 9, cellPadding: 3.5, textColor: INK, lineColor: [220, 213, 206], lineWidth: 0.3 },
-                    headStyles: { fillColor: CLAY, textColor: WHI, fontStyle: 'bold', fontSize: 8 },
+                    head: [['Désignation', 'Coloris', 'Ép.', 'Qté', 'Longueur', 'Surface', 'Prix/m² HT', 'Total HT']],
+                    body: [[tn, S.colorName, S.thickName, S.panQty + ' pann.', (S.panLen / 1000).toFixed(3).replace(/\.?0+$/, '') + ' m', T.psurf.toFixed(1) + ' m²', f2(T.p) + ' €\n' + tierStr, f2(T.ptot) + '€']],
+                    styles: { fontSize: 9, cellPadding: 3.5, textColor: INK, lineColor: [244, 247, 253], lineWidth: 0.2 },
+                    headStyles: { fillColor: BLUE, textColor: WHI, fontStyle: 'bold', fontSize: 8 },
                     alternateRowStyles: { fillColor: STO },
                     columnStyles: { 0: { cellWidth: 32 }, 1: { cellWidth: 28 }, 2: { cellWidth: 20 }, 3: { cellWidth: 18, halign: 'center' }, 4: { cellWidth: 18, halign: 'right' }, 5: { cellWidth: 18, halign: 'right' }, 6: { cellWidth: 26, halign: 'right' }, 7: { cellWidth: 24, halign: 'right', fontStyle: 'bold' } },
                     theme: 'grid',
@@ -1622,10 +1374,10 @@
                     y = stitle('ACCESSOIRES DE POSE', y);
                     doc.autoTable({
                         startY: y, margin: { left: M, right: M },
-                        head: [['Désignation', 'Unité', 'Quantité', 'Prix unitaire HT', 'Total HT']],
+                        head: [['Désignation', 'Unité', 'Qté', 'Prix unitaire HT', 'Total HT']],
                         body: T.alines.map(l => [l.name, l.unit, l.qty, f2(l.up) + ' €', f2(l.sub) + ' €']),
-                        styles: { fontSize: 9, cellPadding: 3.5, textColor: INK, lineColor: [220, 213, 206], lineWidth: 0.3 },
-                        headStyles: { fillColor: CLAY, textColor: WHI, fontStyle: 'bold', fontSize: 8 },
+                        styles: { fontSize: 9, cellPadding: 3.5, textColor: INK, lineColor: [244, 247, 253], lineWidth: 0.3 },
+                        headStyles: { fillColor: BLUE, textColor: WHI, fontStyle: 'bold', fontSize: 8 },
                         alternateRowStyles: { fillColor: STO },
                         columnStyles: { 0: { cellWidth: 72 }, 1: { cellWidth: 20 }, 2: { cellWidth: 22, halign: 'center' }, 3: { cellWidth: 36, halign: 'right' }, 4: { cellWidth: 28, halign: 'right', fontStyle: 'bold' } },
                         theme: 'grid',
@@ -1641,8 +1393,8 @@
                     startY: y, margin: { left: M, right: M },
                     head: [['Adresse de livraison', 'Type d\'accès', 'Volume est.', 'Poids est.', 'Montant HT']],
                     body: [[adrPDF || dL.replace(/^\d+ — /, '').trim(), aL, S.livVol + ' m³', fN(S.livKg) + ' kg', f2(S.livPrice || 0) + ' €']],
-                    styles: { fontSize: 9, cellPadding: 3.5, textColor: INK, lineColor: [220, 213, 206], lineWidth: 0.3 },
-                    headStyles: { fillColor: CLAY, textColor: WHI, fontStyle: 'bold', fontSize: 8 },
+                    styles: { fontSize: 9, cellPadding: 3.5, textColor: INK, lineColor: [244, 247, 253], lineWidth: 0.3 },
+                    headStyles: { fillColor: BLUE, textColor: WHI, fontStyle: 'bold', fontSize: 8 },
                     alternateRowStyles: { fillColor: STO },
                     columnStyles: { 0: { cellWidth: 52 }, 1: { cellWidth: 44 }, 2: { cellWidth: 20, halign: 'right' }, 3: { cellWidth: 22, halign: 'right' }, 4: { cellWidth: 30, halign: 'right', fontStyle: 'bold' } },
                     theme: 'grid',
@@ -1652,7 +1404,7 @@
 
                 if (y > 228) { doc.addPage(); y = 20; }
                 const tX = W - M - 92, tW = 92;
-                const rows = [{ l: 'Total HT', v: f2(T.ht) + ' €', b: false }, { l: 'TVA (20 %)', v: f2(T.tva) + ' €', b: false }, { l: 'Total TTC', v: f2(T.ttc) + ' €', b: true }];
+                const rows = [{ l: 'Total HT', v: f2(T.ht) + '€', b: false }, { l: 'TVA (20 %)', v: f2(T.tva) + '€', b: false }, { l: 'Total TTC', v: f2(T.ttc) + ' €', b: true }];
                 rct(tX, y, tW, rows.length * 10 + 14, STO, 3);
                 rows.forEach((r, i) => {
                     const ly = y + 10 + i * 10;
@@ -1661,15 +1413,15 @@
                     doc.text(r.l, tX + 6, ly + 2); doc.setFont('helvetica', 'bold'); doc.text(r.v, tX + tW - 5, ly + 2, { align: 'right' });
                 });
                 y += rows.length * 10 + 22;
-                rct(tX, y, tW, 18, CLAY, 3);
-                sf('normal', 8, [253, 240, 230]); doc.text('Acompte à verser (50 %)', tX + tW / 2, y + 6, { align: 'center' });
+                rct(tX, y, tW, 18, BLUE, 3);
+                sf('normal', 8, [244, 247, 253]); doc.text('Acompte à verser (50 %)', tX + tW / 2, y + 6, { align: 'center' });
                 sf('bold', 13, WHI); doc.text(f2(T.ac) + ' € HT', tX + tW / 2, y + 14, { align: 'center' });
                 y += 26;
 
                 if (y > 240) { doc.addPage(); y = 20; }
-                rct(M, y, CW - 96, 46, STO, 3);
-                sf('bold', 8, CLAY); doc.text('CONDITIONS DE VENTE', M + 6, y + 8);
-                ln(M + 6, y + 10, M + CW - 100, y + 10, CLAY, 0.4);
+                rct(M, y, CW - 80, 46, STO, 3);
+                sf('bold', 8, BLUE); doc.text('CONDITIONS DE VENTE', M + 6, y + 8);
+                ln(M + 6, y + 10, M + CW - 84, y + 10, BLUE, 0.4);
                 sf('normal', 7.5, INKS);
                 ['• Acompte de 50 % exigible à la commande pour mise en fabrication.',
                     '• Solde réglé impérativement avant le déchargement sur chantier.',
@@ -1682,7 +1434,7 @@
                 const np = doc.getNumberOfPages();
                 for (let i = 1; i <= np; i++) {
                     doc.setPage(i); rct(0, 287, W, 10, INK);
-                    sf('normal', 7.5, MUT);
+                    sf('normal', 7.5, WHI);
                     doc.text('Isotuiles — Zone d\'Activité de Gemeillan, 33480 Sainte-Hélène', M, 293);
                     doc.text('Devis ' + S.qnum + ' | Page ' + i + '/' + np, W - M, 293, { align: 'right' });
                 }
