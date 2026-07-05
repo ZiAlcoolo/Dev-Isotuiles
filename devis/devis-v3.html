@@ -430,7 +430,7 @@
         epaisseurs:["50/77 mm"] },
       bac:{ nom:"Bac Acier", sousTitre:"Panneau sandwich nervuré", profil:"bac", largeurUtile:1.00, delai:"5 à 8 semaines",
         img:"https://cdn.shopify.com/s/files/1/0909/7605/9715/files/bac-acier-illustration.png?v=1774001720",
-        couleurs:[{nom:"RAL 7016 Anthracite",hex:"#383E42"},{nom:"RAL 8012 Rouge oxyde",hex:"#642424"},{nom:"RAL 3009 Rouge terre",hex:"#703731"},{nom:"RAL 9006 Aluminium",hex:"#A5A8A6"},{nom:"RAL 9010 Blanc",hex:"#EDE8DC"},{nom:"RAL 6005 Vert",hex:"#114232"},{nom:"Autre RAL",hex:"#7C8A99"}],
+        couleurs:[{nom:"RAL 9010 Blanc",hex:"#EDE8DC"},{nom:"RAL 9005 Noir Profond",hex:"#0E0E10"},{nom:"RAL 7016 Anthracite",hex:"#383E42"},{nom:"RAL 8004 Tuile Rouge",hex:"#8D4931"},{nom:"RAL 3009 Rouge terre",hex:"#703731"},{nom:"RAL 9006 Aluminium",hex:"#A5A8A6"},{nom:"RAL 6005 Vert",hex:"#114232"},{nom:"Autre RAL",hex:"#7C8A99"}],
         epaisseurs:["30 mm","40 mm","60 mm","80 mm","100 mm"] }
     }
   };
@@ -461,7 +461,7 @@
     {id:"bac_faitiere_90",nom:"Faîtière double 90°",len:2.0,gammes:["bac"],calc:function(m,A,R){var on=m.ridgeLen>0;return {rel:on,qty:on?Math.ceil(m.ridgeLen/2):0,on:false};}},
     {id:"bac_faitiere_crantee",nom:"Faîtière double crantée",len:2.0,gammes:["bac"],calc:function(m,A,R){var on=m.ridgeLen>0;return{rel:on,qty:on?Math.ceil(m.ridgeLen/2):0,on:!0}}},
     {id:"bac_rive_profilee",nom:"Rive contre mur profilée",len:2.0,gammes:["bac"],calc:function(m,A,R){return{rel:!1,qty:Math.ceil(A/2),on:!1}}},
-    {id:"omega",nom:"Profilés Omega",unit:"pièce(s)",gammes:["romane","plates","bac"],calc:function(m,A,R){var nb=Math.ceil(A/0.6);return{rel:!0,qty:nb,on:!1}}},
+    {id:"omega",nom:"Profilés Omega",len:1.0, unit:"pièce(s)",gammes:["romane","plates","bac"],calc:function(m,A,R){var nb=Math.ceil(A/0.6);return{rel:!0,qty:nb,on:!1}}},
 
     // --- Commun à toutes les gammes ---
     {id:"vis_couture",nom:"Vis de couture",pack:100,unit:"pack(s) de 100",sub:"fixation des accessoires · vendu par 100",gammes:["romane","plates"],calc:function(m,A,R){var structML=m.ridgeLen+m.vergeLen+m.eaveLen+(m.type==="mono"?A:0);var units=Math.ceil(structML*3);return{rel:true,qty:Math.max(1,Math.ceil(units/100)),on:true};}}
@@ -504,8 +504,16 @@
       'romane|Gris anthracite':  'romane-canal-gris-anthracite',
       'plates|Rouge terracotta':     'tuiles-plates-terracotta',
       'plates|Gris anthracite':      'tuiles-plates-gris-anthracite-ral-7016',
-      "plates|Gris terre d'ombre":   'tuiles-plates-gris-terre-d-ombre-ral-7022'
-      // 'bac|...': '...'   // à compléter après import du CSV Bac
+      "plates|Gris terre d'ombre":   'tuiles-plates-gris-terre-d-ombre-ral-7022',
+
+      // BAC ACIER
+      'bac|RAL 9010 Blanc': 'bac-acier-blanc-ral-9010',
+      'bac|RAL 9005 Noir Profond': 'bac-acier-noir-profond-ral-9005',
+      'bac|RAL 7016 Anthracite': 'bac-acier-anthracite-ral-7016',
+      'bac|RAL 8004 Tuile Rouge': 'bac-acier-tuile-rouge-ral-8004',
+      'bac|RAL 3009 Rouge terre': 'bac-acier-rouge-fonce-ral-3009',
+      'bac|RAL 9006 Aluminium': 'bac-acier-metal-argente-ral-9006',
+      'bac|RAL 6005 Vert': 'bac-acier-vert-fonce-ral-6005',
     },
     // Teinte configurateur -> libellé "Couleur" des variantes accessoires/visserie
     accColour: {
@@ -619,7 +627,7 @@
   function $(id){ return document.getElementById(id); }
   function qa(s){ return Array.prototype.slice.call(root.querySelectorAll(s)); }
   function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
-  function fmt(n,d){ return n.toLocaleString('fr-FR',{minimumFractionDigits:d||0,maximumFractionDigits:d||0}); }
+  function fmt(n,d){ if(n===undefined || n===null || isNaN(n)) return "-"; return n.toLocaleString('fr-FR',{minimumFractionDigits:d||0,maximumFractionDigits:d||0}); }
 
   /* longueurs disponibles 2,10 → 15,75 par pas de 0,35 */
   function longueurs(){ var a=[]; for(var v=ISO.panneau.longueurMin; v<=ISO.panneau.longueurMax+1e-9; v+=ISO.panneau.pas){ a.push(Math.round(v*100)/100); } return a; }
@@ -1010,12 +1018,18 @@
     var fresh = accSig()!==state._accSig; state._accSig=accSig();
     var w=$('iso-acc'); w.innerHTML='';
     accForGamme().forEach(function(a){
+          console.log(a.id, a.len);
       var c=a.calc(m,A,R);
+          console.log({
+        id:a.id,
+        nom:a.nom,
+        calc:c
+    });
       if(fresh || !state.accessoires[a.id]) state.accessoires[a.id]={included:c.on, qty:c.qty};
       var st=state.accessoires[a.id];
       var row=document.createElement('div'); row.className='iso-acc-row'+(st.included?' is-on':'');
       var badge=c.rel?'<span class="iso-acc-badge">conseillé</span>':'';
-      var sub=a.sub?a.sub:('vendu en '+fmt(a.len,a.len%1?2:0)+' ml');
+      var sub;if(a.sub){sub=a.sub}else if(a.len!==undefined){sub='vendu en '+fmt(a.len,a.len%1?2:0)+' ml'}else{sub=''}
       var unit=a.unit?a.unit:'pièce(s)';
       row.innerHTML=
         '<input type="checkbox" class="iso-acc-cb"'+(st.included?' checked':'')+' aria-label="Inclure '+a.nom+'">'+
