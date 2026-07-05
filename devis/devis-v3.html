@@ -149,7 +149,7 @@
 
         <div class="iso-cta-row">
           <button type="button" class="iso-btn iso-btn-primary" id="iso-cart">Ajouter au panier</button>
-          <button type="button" class="iso-btn iso-btn-ghost" id="iso-devis">Demander mon devis</button>
+          <button type="button" class="iso-btn iso-btn-ghost" id="iso-devis">Envoyer le devis</button>
           <button type="button" class="iso-btn iso-btn-ghost" id="iso-pdf">Télécharger le PDF</button>
           <button type="button" class="iso-btn iso-btn-ghost" id="iso-copy">Copier le récapitulatif</button>
         </div>
@@ -163,7 +163,11 @@
             <label class="iso-field iso-col2"><span class="iso-field-lbl">Société <em>(facultatif)</em></span><input class="iso-input" id="f-societe" type="text" autocomplete="organization"></label>
             <label class="iso-field"><span class="iso-field-lbl">Téléphone *</span><input class="iso-input" id="f-tel" type="tel" autocomplete="tel"></label>
             <label class="iso-field"><span class="iso-field-lbl">Email *</span><input class="iso-input" id="f-email" type="email" autocomplete="email"></label>
-            <label class="iso-field iso-col2"><span class="iso-field-lbl">Adresse de livraison complète *</span><textarea class="iso-input iso-textarea" id="f-adresse" rows="2" autocomplete="street-address"></textarea></label>
+            <label class="iso-field iso-col2"><span class="iso-field-lbl">Rue et numéro *</span><input class="iso-input" id="f-rue" type="text" autocomplete="address-line1" placeholder="12 rue des Tuiliers"></label>
+            <label class="iso-field iso-col2"><span class="iso-field-lbl">Complément d'adresse <em>(facultatif)</em></span><input class="iso-input" id="f-complement" type="text" autocomplete="address-line2" placeholder="Bâtiment, étage, lieu-dit…"></label>
+            <label class="iso-field"><span class="iso-field-lbl">Code postal *</span><input class="iso-input" id="f-cp" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="33480"></label>
+            <label class="iso-field"><span class="iso-field-lbl">Ville *</span><input class="iso-input" id="f-ville" type="text" autocomplete="address-level2" placeholder="Sainte-Hélène"></label>
+            <label class="iso-field iso-col2"><span class="iso-field-lbl">Pays *</span><input class="iso-input" id="f-pays" type="text" value="France" autocomplete="country-name"></label>
             <label class="iso-field"><span class="iso-field-lbl">Type de livraison *</span>
               <select class="iso-input" id="f-livraison">
                 <option value="Livraison" selected>Livraison</option>
@@ -182,7 +186,8 @@
           </div>
           <p id="iso-form-err" class="iso-form-err iso-hidden"></p>
           <div class="iso-cta-row">
-            <button type="button" class="iso-btn iso-btn-primary" id="iso-send">Envoyer ma demande</button>
+            <button type="button" class="iso-btn iso-btn-primary" id="iso-send">Envoyer le devis à Isotuiles</button>
+            <button type="button" class="iso-btn iso-btn-ghost" id="iso-form-pdf">Télécharger le PDF</button>
           </div>
         </div>
 
@@ -199,6 +204,19 @@
       <button type="button" class="iso-btn iso-btn-primary" id="iso-next" disabled>Suivant</button>
     </div>
   </footer>
+
+  <!-- Modale : télécharger le PDF avec ou sans coordonnées -->
+  <div id="iso-pdf-modal" class="iso-modal iso-hidden" role="dialog" aria-modal="true" aria-labelledby="iso-pdf-modal-t">
+    <div class="iso-modal-box">
+      <button type="button" class="iso-modal-close" id="iso-pdf-cancel" aria-label="Fermer">×</button>
+      <h3 class="iso-modal-title" id="iso-pdf-modal-t">Télécharger le devis en PDF</h3>
+      <p class="iso-modal-sub">Souhaitez-vous ajouter vos coordonnées au document ?</p>
+      <div class="iso-modal-actions">
+        <button type="button" class="iso-btn iso-btn-primary" id="iso-pdf-with">Avec mes coordonnées</button>
+        <button type="button" class="iso-btn iso-btn-ghost" id="iso-pdf-without">Sans mes coordonnées</button>
+      </div>
+    </div>
+  </div>
 
 </div>
 
@@ -242,7 +260,7 @@
 #iso-config .iso-screen{display:none; animation:iso-fade .3s ease}
 #iso-config .iso-screen.is-shown{display:block}
 @keyframes iso-fade{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:none}}
-#iso-config .iso-screen-title{margin:0 0 14px; font-size:1.1rem; font-weight:700; color: white;}
+#iso-config .iso-screen-title{margin:0 0 14px; font-size:1.1rem; font-weight:700; color:white}
 #iso-config .iso-screen-title.iso-mt{margin-top:24px}
 #iso-config .iso-note{margin:0 0 14px; font-size:.82rem; color:rgba(255,255,255,.7)}
 #iso-config .iso-mt-s{margin-top:8px}
@@ -337,6 +355,14 @@
 #iso-config .iso-cta-row{display:flex; flex-wrap:wrap; gap:12px; margin-top:18px}
 #iso-config .iso-disclaimer{margin:14px 0 0; font-size:.78rem; color:rgba(255,255,255,.65)}
 
+#iso-config .iso-modal{position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(0,20,45,.55); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px)}
+#iso-config .iso-modal-box{position:relative; width:100%; max-width:420px; background:linear-gradient(140deg,#002F5C,#2F6CA2); border:1px solid var(--iso-line-2); border-radius:18px; padding:26px 24px; box-shadow:0 24px 60px rgba(0,20,45,.5); text-align:center}
+#iso-config .iso-modal-title{margin:0 0 8px; font-size:1.15rem; font-weight:800; color: white;}
+#iso-config .iso-modal-sub{margin:0 0 18px; font-size:.9rem; color:rgba(255,255,255,.8)}
+#iso-config .iso-modal-actions{display:flex; flex-direction:column; gap:10px}
+#iso-config .iso-modal-close{position:absolute; top:10px; right:12px; background:none; border:none; color:#fff; font-size:1.5rem; line-height:1; cursor:pointer; opacity:.7}
+#iso-config .iso-modal-close:hover{opacity:1}
+
 #iso-config .iso-shop{margin-top:16px; display:grid; gap:10px}
 #iso-config .iso-shop-head{font-size:.72rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:rgba(255,255,255,.75)}
 #iso-config .iso-shop-row{display:flex; align-items:center; gap:12px; padding:11px 14px; border-radius:12px; background:rgba(255,255,255,.95); color:var(--iso-dark)}
@@ -371,10 +397,20 @@
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
 <script>
 (function(){
   "use strict";
+
+  /* Logo blanc préchargé pour le PDF (dataURL, pour jsPDF) */
+  var LOGO_URL='https://cdn.shopify.com/s/files/1/0909/7605/9715/files/logo-isotuiles-white.png?v=1783256368';
+  var LOGO_DATA=null;
+  (function(){ try{ var im=new Image(); im.crossOrigin='anonymous';
+    im.onload=function(){ try{ var cv=document.createElement('canvas'); cv.width=im.naturalWidth; cv.height=im.naturalHeight;
+      cv.getContext('2d').drawImage(im,0,0); LOGO_DATA={data:cv.toDataURL('image/png'), w:im.naturalWidth, h:im.naturalHeight}; }catch(e){} };
+    im.onerror=function(){}; im.src=LOGO_URL; }catch(e){} })();
 
   /* =====================================================================
      DONNÉES — modifiez librement.
@@ -385,15 +421,15 @@
     prixM2:null,                                     // ex: {romane:42,plates:48,bac:35}
     produits:{
       romane:{ nom:"Romane Canal", sousTitre:"Imitation tuile traditionnelle", profil:"canal", largeurUtile:1.00, delai:"3 à 5 semaines",
-        img:"https://cdn.shopify.com/s/files/1/0909/7605/9715/files/romane-canal-illustration.png?v=1774001720",   // ← collez ici l'URL d'une image de la gamme (ex. https://isotuiles.fr/cdn/shop/files/romane.jpg)
+        img:"https://cdn.shopify.com/s/files/1/0909/7605/9715/files/romane-canal-illustration.png?v=1774001720",
         couleurs:[{nom:"Rouge terracotta",hex:"#A4472C"},{nom:"Rouge vieilli",hex:"#7E3A2C"},{nom:"Pastel vieilli",hex:"#C08763"},{nom:"Gris anthracite",hex:"#3A4044"}],
-        epaisseurs:["40/80 mm","60/100 mm"] },
+        epaisseurs:["40/80 mm","60/105 mm"] },
       plates:{ nom:"Tuiles Plates", sousTitre:"Imitation tuile moderne", profil:"plate", largeurUtile:1.00, delai:"5 à 8 semaines",
-        img:"https://cdn.shopify.com/s/files/1/0909/7605/9715/files/tuiles-plates-illustration.png?v=1783252228",   // ← URL image gamme
+        img:"https://cdn.shopify.com/s/files/1/0909/7605/9715/files/tuiles-plates-illustration.png?v=1783252228",
         couleurs:[{nom:"Gris anthracite",hex:"#3A4044"},{nom:"Gris terre d'ombre",hex:"#5A5149"},{nom:"Rouge terracotta",hex:"#A4472C"}],
         epaisseurs:["50/77 mm"] },
       bac:{ nom:"Bac Acier", sousTitre:"Panneau sandwich nervuré", profil:"bac", largeurUtile:1.00, delai:"5 à 8 semaines",
-        img:"https://cdn.shopify.com/s/files/1/0909/7605/9715/files/bac-acier-illustration.png?v=1774001720",   // ← URL image gamme
+        img:"https://cdn.shopify.com/s/files/1/0909/7605/9715/files/bac-acier-illustration.png?v=1774001720",
         couleurs:[{nom:"RAL 7016 Anthracite",hex:"#383E42"},{nom:"RAL 8012 Rouge oxyde",hex:"#642424"},{nom:"RAL 3009 Rouge terre",hex:"#703731"},{nom:"RAL 9006 Aluminium",hex:"#A5A8A6"},{nom:"RAL 9010 Blanc",hex:"#EDE8DC"},{nom:"RAL 6005 Vert",hex:"#114232"},{nom:"Autre RAL",hex:"#7C8A99"}],
         epaisseurs:["30 mm","40 mm","60 mm","80 mm","100 mm"] }
     }
@@ -444,14 +480,18 @@
      ===================================================================== */
   var SHOP_MAP = {
     maxLongueur: 12.25,                       // longueur max commandable (au-delà : sur devis)
+    // Unité de vente par gamme : 'piece' (qté = nb panneaux) ou 'm2' (qté = surface)
+    panelUnit: { romane:'piece', plates:'m2', bac:'piece' },
     // PANNEAUX : 'gamme|Teinte (libellé configurateur)' -> handle produit
     panelHandles: {
       'romane|Rouge terracotta': 'romane-canal-terracotta',
       'romane|Rouge vieilli':    'romane-canal-rouge-vieillie',
       'romane|Pastel vieilli':   'romane-canal-pastel-vieillie',
-      'romane|Gris anthracite':  'romane-canal-gris-anthracite'
-      // 'plates|...': '...',   // à compléter (handles cassés + prix à confirmer)
-      // 'bac|...':    '...'
+      'romane|Gris anthracite':  'romane-canal-gris-anthracite',
+      'plates|Rouge terracotta':     'tuiles-plates-terracotta',
+      'plates|Gris anthracite':      'tuiles-plates-gris-anthracite-ral-7016',
+      "plates|Gris terre d'ombre":   'tuiles-plates-gris-terre-d-ombre-ral-7022'
+      // 'bac|...': '...'   // à compléter après import du CSV Bac
     },
     // Teinte configurateur -> libellé "Couleur" des variantes accessoires/visserie
     accColour: {
@@ -497,7 +537,39 @@
     return {product:p, variant:p.variants[0], approx:true};
   }
   /* longueur (m) -> libellé option "Taille" Shopify : 5.25 -> "5.250 mm" */
-  function tailleStr(m){ var mm=Math.round(m*1000), s=String(mm); return (s.length>3? s.slice(0,-3)+'.'+s.slice(-3):s)+' mm'; }
+  function tailleStr(m){ var mm=Math.round(m*1000), s=String(mm); return (s.length>3? s.slice(0,-3)+'.'+s.slice(-3):s)+'mm'; }
+  function panelUnitFor(){ return (SHOP_MAP.panelUnit&&SHOP_MAP.panelUnit[state.produit])||'piece'; }
+  function panelQty(){ var c=compute(), u=panelUnitFor();
+    if(u==='m2') return {qty:Math.max(1,Math.ceil(c.surface)), unit:'m²'};
+    if(u==='ml') return {qty:Math.max(1,Math.ceil(c.metrage)), unit:'ml'};
+    return {qty:Math.max(1,c.nb), unit:'panneau(x)'};
+  }
+  /* Lignes de panneaux : 1 ligne, ou 2 lignes (longueurs différentes) pour 2 pans inégaux.
+     Chaque ligne = { lbl, R (longueur m), surf (m²), qty, unit, price, total, handle, hue } */
+  function panelRows(){
+    var c=compute(), u=panelUnitFor(), hue=thickToken(), handle=panelHandleFor();
+    var lu=(ISO.produits[state.produit].largeurUtile)||ISO.panneau.largeurUtileParDefaut;
+    var A=state.largeur||0, pans;
+    if(state.typeToit==='2inegaux'){
+      pans=[{lbl:'Pan gauche', R:state.rampantG||0}, {lbl:'Pan droit', R:state.rampantD||0}];
+    } else {
+      pans=[{lbl:'', R:c.longP}];
+    }
+    return pans.map(function(pan){
+      var R=pan.R;
+      var surf = state.typeToit==='2inegaux' ? A*R : c.surface;
+      var qty, unit;
+      if(u==='m2'){ qty=Math.max(1,Math.ceil(surf)); unit='m²'; }
+      else if(u==='ml'){ qty=Math.max(1,Math.ceil(surf/lu)); unit='ml'; }
+      else { qty = state.typeToit==='2inegaux' ? Math.max(1,Math.ceil(A/lu)) : Math.max(1,c.nb); unit='panneau(x)'; }
+      var price=null;
+      if(SHOP.ok && R>0 && R<=SHOP_MAP.maxLongueur){
+        var rv=shopVariant(handle,[tailleStr(R),hue],true);
+        if(rv && rv.variant && rv.variant.price!=null) price=rv.variant.price/100;
+      }
+      return { lbl:pan.lbl, R:R, surf:surf, qty:qty, unit:unit, price:price, total:(price!=null?price*qty:null), handle:handle, hue:hue };
+    });
+  }
   /* classe d'épaisseur (40 ou 60) pour matcher "40 mm / 80 mm" / "60 mm / 105 mm" */
   function thickToken(){ var n=(state.epaisseur||'').match(/\d+/); return n?n[0]:''; }
   function panelHandleFor(){
@@ -990,27 +1062,31 @@
 
   /* ----- Shopify : lignes de commande, affichage, panier ----- */
   function orderItems(){
-    var c=compute(), items=[];
-    // panneau principal : variante = longueur (Taille) × épaisseur -> prix exact
-    var handle=panelHandleFor(), taille=tailleStr(c.longP), hue=thickToken();
-    var tooLong=c.longP>SHOP_MAP.maxLongueur;
-    var rv = tooLong ? {product:shopProduct(handle), variant:null, nomatch:true, tooLong:true}
-                     : shopVariant(handle, [taille, hue], true);
-    items.push({ label:ISO.produits[state.produit].nom+' — '+state.couleur.nom+' · '+state.epaisseur+' · '+fmt(c.longP,2)+' m',
-      handle:handle, res:rv, qty:Math.max(1,c.nb), unitTxt:'panneau(x) de '+fmt(c.longP,2)+' m', tooLong:tooLong,
-      props:{ 'Type de toit':typeNom(), 'Dimensions':dimsText(), 'Longueur de panneau':fmt(c.longP,2)+' m',
-        'Surface':fmt(c.surface,1)+' m²', 'Finition':state.couleur.nom, 'Épaisseur':state.epaisseur } });
+    var items=[];
+    // panneaux : 1 ligne, ou 2 pour deux pans inégaux (longueurs différentes)
+    panelRows().forEach(function(pr){
+      var tooLong=pr.R>SHOP_MAP.maxLongueur;
+      var rv = tooLong ? {product:shopProduct(pr.handle), variant:null, nomatch:true, tooLong:true}
+                       : shopVariant(pr.handle, [tailleStr(pr.R), pr.hue], true);
+      var props={ 'Type de toit':typeNom(), 'Dimensions':dimsText(), 'Longueur de panneau':fmt(pr.R,2)+' m',
+        'Surface':fmt(pr.surf,1)+' m²', 'Finition':state.couleur.nom, 'Épaisseur':state.epaisseur };
+      if(pr.lbl) props['Pan']=pr.lbl;
+      items.push({ kind:'panel',
+        label:ISO.produits[state.produit].nom+' — '+state.couleur.nom+' · '+state.epaisseur+(pr.lbl?' · '+pr.lbl:'')+' · '+fmt(pr.R,2)+' m',
+        handle:pr.handle, res:rv, qty:pr.qty, tooLong:tooLong,
+        unitTxt:(pr.unit==='m²'?'m²':'panneau(x) de '+fmt(pr.R,2)+' m'), props:props });
+    });
     // accessoires sélectionnés (variantes incluant la teinte de tuile)
     var accCol=SHOP_MAP.accColour[state.couleur.nom]||'';
     selectedAccessoires().forEach(function(a){
       var id=null; ACCESSOIRES.forEach(function(x){ if(x.nom===a.nom) id=x.id; });
       var hv=SHOP_MAP.accessoires[id]; if(!hv) return;            // ex. vis_couture : pas de produit
       var h=(typeof hv==='function')?hv():hv;
-      items.push({ label:a.nom, handle:h, res:shopVariant(h,[accCol]), qty:a.qty, unitTxt:(a.pack?'pack(s)':'pièce(s)'), props:{} });
+      items.push({ kind:'acc', label:a.nom, handle:h, res:shopVariant(h,[accCol]), qty:a.qty, unitTxt:(a.pack?'pack(s)':'pièce(s)'), props:{} });
     });
     // visserie (variante = teinte ; produit selon charpente)
     var sc=screwsCount(), vh=SHOP_MAP.visserie[state.charpente];
-    if(vh) items.push({ label:sc.type, handle:vh, res:shopVariant(vh,[accCol]), qty:sc.packs, unitTxt:'pack(s) de 100', props:{'Entraxe':state.entraxe+' m'} });
+    if(vh) items.push({ kind:'acc', label:sc.type, handle:vh, res:shopVariant(vh,[accCol]), qty:sc.packs, unitTxt:'pack(s) de 100', props:{'Entraxe':state.entraxe+' m'} });
     return items;
   }
   function renderShop(){
@@ -1021,11 +1097,11 @@
     }
     var items=orderItems(), html='<div class="iso-shop-head">Produits correspondants</div>', total=0, allPriced=true, anyResolved=false, missing=0;
     items.forEach(function(it){
-        if(it.res && it.res.variant){
-            anyResolved=true; var p=it.res.product, v=it.res.variant;
+      if(it.res && it.res.variant){
+        anyResolved=true; var p=it.res.product, v=it.res.variant;
         var line=v.price*it.qty; if(v.price!=null){ total+=line; } else allPriced=false;
         html+='<div class="iso-shop-row">'+
-          (p.image?`<img class="iso-shop-thumb" src="${p.image}" alt="">`:'<span class="iso-shop-thumb"></span>')+
+          (p.image?'<img class="iso-shop-thumb" src="'+p.image+'" alt="">':'<span class="iso-shop-thumb"></span>')+
           '<div class="iso-shop-main"><div class="iso-shop-name">'+p.title+'</div><div class="iso-shop-sub">'+it.qty+' '+it.unitTxt+(v.price!=null?(' · '+money(v.price)+' /u'):'')+(it.res.approx?' · variante par défaut':'')+'</div></div>'+
           (v.price!=null?'<span class="iso-shop-price">'+money(line)+'</span>':'')+
           '<a class="iso-shop-link" href="'+prodUrl(p,v)+'" target="_blank" rel="noopener">Voir ↗</a>'+
@@ -1134,15 +1210,36 @@
   $('iso-cart').addEventListener('click',function(){ addToCart(this); });
   $('iso-devis').addEventListener('click',function(){ var f=$('iso-form'); f.classList.remove('iso-hidden'); f.scrollIntoView({behavior:'smooth',block:'nearest'}); $('f-prenom').focus(); });
   $('iso-copy').addEventListener('click',function(){ copy(summaryText(null),this); });
-  $('iso-send').addEventListener('click',function(){
-    var btn=this;
-    var c={ prenom:val('f-prenom'),nom:val('f-nom'),societe:val('f-societe'),tel:val('f-tel'),email:val('f-email'),adresse:val('f-adresse'),livraison:val('f-livraison'),periode:val('f-periode') };
-    var err=$('iso-form-err'); var miss=[];
+  function readForm(){
+    var rue=val('f-rue'), complement=val('f-complement'), cp=val('f-cp'), ville=val('f-ville'), pays=val('f-pays')||'France';
+    var adresse=[rue, complement, [cp,ville].filter(Boolean).join(' '), (pays&&pays.toLowerCase()!=='france')?pays:''].filter(Boolean).join(', ');
+    return { prenom:val('f-prenom'),nom:val('f-nom'),societe:val('f-societe'),tel:val('f-tel'),email:val('f-email'),
+      rue:rue, complement:complement, cp:cp, ville:ville, pays:pays, adresse:adresse,
+      livraison:val('f-livraison'),periode:val('f-periode') };
+  }
+  function validateForm(){
+    var c=readForm(), miss=[];
     if(!c.prenom) miss.push('prénom'); if(!c.nom) miss.push('nom'); if(!c.tel) miss.push('téléphone');
-    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(c.email)) miss.push('email valide'); if(!c.adresse) miss.push('adresse');
-    if(miss.length){ err.style.color=''; err.classList.remove('iso-hidden'); err.textContent='Merci de compléter : '+miss.join(', ')+'.'; return; }
-    err.classList.add('iso-hidden');
-    sendDevis(c, btn, err);
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(c.email)) miss.push('email valide');
+    if(!c.rue) miss.push('rue'); if(!c.cp) miss.push('code postal'); if(!c.ville) miss.push('ville');
+    var err=$('iso-form-err');
+    if(miss.length){ err.style.color=''; err.classList.remove('iso-hidden'); err.textContent='Merci de compléter : '+miss.join(', ')+'.'; return null; }
+    err.classList.add('iso-hidden'); return c;
+  }
+  $('iso-send').addEventListener('click',function(){ var c=validateForm(); if(c) sendDevis(c, this, $('iso-form-err')); });
+  $('iso-form-pdf').addEventListener('click',function(){ var c=validateForm(); if(c) genPDF(this); });
+
+  /* modale PDF : avec ou sans coordonnées */
+  function pdfModal(open){ $('iso-pdf-modal').classList.toggle('iso-hidden', !open); }
+  $('iso-pdf').addEventListener('click',function(){ pdfModal(true); });
+  $('iso-pdf-cancel').addEventListener('click',function(){ pdfModal(false); });
+  $('iso-pdf-modal').addEventListener('click',function(e){ if(e.target===this) pdfModal(false); });
+  $('iso-pdf-without').addEventListener('click',function(){ pdfModal(false); genPDF(this); });
+  $('iso-pdf-with').addEventListener('click',function(){
+    pdfModal(false); var f=$('iso-form'); f.classList.remove('iso-hidden');
+    var err=$('iso-form-err'); err.style.color='#8ff0b0'; err.classList.remove('iso-hidden');
+    err.textContent='Complétez vos coordonnées puis cliquez sur « Télécharger le PDF ».';
+    f.scrollIntoView({behavior:'smooth',block:'nearest'}); $('f-prenom').focus();
   });
   function sendDevis(c, btn, err){
     var subject='Demande de devis toiture — '+c.prenom+' '+c.nom;
@@ -1178,7 +1275,7 @@
 
   /* ----- Coordonnées éventuelles (si le formulaire est rempli) ----- */
   function getContactOrNull(){
-    var c={ prenom:val('f-prenom'),nom:val('f-nom'),societe:val('f-societe'),tel:val('f-tel'),email:val('f-email'),adresse:val('f-adresse'),livraison:val('f-livraison'),periode:val('f-periode') };
+    var c=readForm();
     return (c.nom||c.email||c.tel) ? c : null;
   }
 
@@ -1229,7 +1326,159 @@
     var a=document.createElement('a'); a.href=url; a.download='devis-isotuiles.pdf'; document.body.appendChild(a); a.click();
     setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },1500);
   }
-  $('iso-pdf').addEventListener('click',downloadPDF);
+  function genPDF(btn){
+    if(!(window.jspdf && window.jspdf.jsPDF)){ downloadPDF(); return; }   // secours : PDF texte
+    var orig = btn ? btn.textContent : '';
+    if(btn){ btn.disabled=true; btn.textContent='Génération…'; }
+    try{
+      var jsPDF=window.jspdf.jsPDF, doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+      var W=210, M=16, CW=W-M*2, y=0;
+      var BLUE=[0,47,92], INK=[26,26,26], INKS=[40,40,40], STO=[224,238,251], WHI=[247,250,253], GLD=[255,248,242];
+      function sf(s,sz,col){ doc.setFont('helvetica',s||'normal'); doc.setFontSize(sz||10); doc.setTextColor.apply(doc,col||INK); }
+      function rct(x,yy,w,h,col,rr){ doc.setFillColor.apply(doc,col); if(rr){doc.roundedRect(x,yy,w,h,rr,rr,'F');}else{doc.rect(x,yy,w,h,'F');} }
+      function ln(x1,y1,x2,y2,col,lw){ doc.setDrawColor.apply(doc,col||STO); doc.setLineWidth(lw||0.3); doc.line(x1,y1,x2,y2); }
+      function m2(n){ return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+      function stitle(t){ rct(M,y,CW,8,INK,2); sf('bold',9,WHI); doc.text(t,M+5,y+5.5); y+=12; }
+
+      // ---- données ----
+      var c=getContactOrNull()||{}, comp=compute();
+      var pRows=panelRows();
+      var accLines=[];
+      if(SHOP.ok){
+        orderItems().filter(function(it){ return it.kind==='acc'; }).forEach(function(it){
+          var up=(it.res&&it.res.variant&&it.res.variant.price!=null)?it.res.variant.price/100:null;
+          accLines.push({name:it.label,unit:it.unitTxt,qty:it.qty,up:up,sub:(up!=null?up*it.qty:null)}); });
+      } else {
+        selectedAccessoires().forEach(function(a){ accLines.push({name:a.nom,unit:(a.pack?'pack(s)':'pièce(s)'),qty:a.qty,up:null,sub:null}); });
+        var sc0=screwsCount(); accLines.push({name:sc0.type,unit:'pack(s) de 100',qty:sc0.packs,up:null,sub:null});
+      }
+      var panelSum=0, panelPriced=pRows.length>0;
+      pRows.forEach(function(r){ if(r.total!=null) panelSum+=r.total; else panelPriced=false; });
+      var hasPrices=panelPriced, ht=panelSum;
+      accLines.forEach(function(l){ if(l.sub!=null) ht+=l.sub; });
+      var tva=ht*0.20, ttc=ht+tva, ac=ttc*0.5;
+      var qnum='IT-'+(new Date()).toISOString().slice(2,10).replace(/-/g,'')+'-'+Math.floor(1000+Math.random()*9000);
+
+      // ---- en-tête ----
+      rct(0,0,W,42,INK);
+      if(LOGO_DATA){
+        var lw=34, lh=lw*(LOGO_DATA.h/LOGO_DATA.w); if(lh>22){ lh=22; lw=lh*(LOGO_DATA.w/LOGO_DATA.h); }
+        try{ doc.addImage(LOGO_DATA.data,'PNG',M,8,lw,lh); }catch(e){ doc.setFont('helvetica','bold'); doc.setFontSize(24); doc.setTextColor.apply(doc,WHI); doc.text('Iso',M,20); var iwf=doc.getTextWidth('Iso'); doc.setTextColor(120,175,225); doc.text('tuiles',M+iwf,20); }
+      } else {
+        doc.setFont('helvetica','bold'); doc.setFontSize(24); doc.setTextColor.apply(doc,WHI);
+        doc.text('Iso',M,20); var iw=doc.getTextWidth('Iso'); doc.setTextColor(120,175,225); doc.text('tuiles',M+iw,20);
+      }
+      sf('normal',8,[190,200,215]);
+      ['Zone d\'Activité de Gemeillan — 33480 Sainte-Hélène','Tél : 06 76 45 67 57 — Lun-Ven 08h-19h','isotuiles@gmail.com — isotuiles.fr']
+        .forEach(function(l,i){ doc.text(l,W-M,13+i*6,{align:'right'}); });
+      rct(0,42,W,14,BLUE);
+      sf('bold',13,WHI); doc.text('DEVIS',M,51.5);
+      sf('normal',9,[200,215,235]); doc.text('N° '+qnum,M+24,51.5);
+      var td=new Date(), tv=new Date(td); tv.setDate(tv.getDate()+30);
+      var fd=function(d){ return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}); };
+      doc.text('Émis le '+fd(td)+'  |  Valable jusqu\'au '+fd(tv),W-M,51.5,{align:'right'});
+      y=64;
+
+      // ---- client + coloris ----
+      var bH=46, sX=W-M-54;
+      rct(M,y,CW-58,bH,STO,3);
+      sf('bold',8,BLUE); doc.text('CLIENT / CHANTIER',M+6,y+9); ln(M+6,y+11,M+CW-62,y+11,BLUE,0.4);
+      var who=c.societe||[c.prenom,c.nom].filter(Boolean).join(' ')||'—';
+      sf('bold',10,INK); doc.text(who,M+6,y+18);
+      var yy=y+24;
+      if(c.societe&&(c.prenom||c.nom)){ sf('normal',9,INKS); doc.text([c.prenom,c.nom].filter(Boolean).join(' '),M+6,yy); yy+=5; }
+      sf('normal',9,INKS);
+      var adr=[c.rue, c.complement, [c.cp,c.ville].filter(Boolean).join(' '), (c.pays&&c.pays.toLowerCase()!=='france')?c.pays:''].filter(Boolean);
+      adr.concat([c.tel,c.email].filter(Boolean)).forEach(function(l){ doc.text(l,M+6,yy); yy+=4.8; });
+      rct(sX,y,54,bH,STO,3);
+      sf('bold',8,BLUE); doc.text('COLORIS CHOISI',sX+4,y+9); ln(sX+4,y+11,sX+50,y+11,BLUE,0.4);
+      var hex=(state.couleur&&state.couleur.hex)||'#888888';
+      doc.setFillColor(parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16));
+      doc.roundedRect(sX+4,y+14,46,18,2,2,'F'); doc.setDrawColor(200,190,180); doc.setLineWidth(0.3); doc.roundedRect(sX+4,y+14,46,18,2,2,'S');
+      sf('bold',8,INKS); doc.text((state.couleur&&state.couleur.nom)||'—',sX+27,y+40,{align:'center',maxWidth:48});
+      y+=bH+10;
+
+      // ---- panneaux ----
+      stitle('PANNEAUX');
+      doc.autoTable({ startY:y, margin:{left:M,right:M},
+        head:[['Désignation','Coloris','Ép.','Qté','Long.','Surf.','P.U. HT','Total HT']],
+        body:pRows.map(function(r){ return [ISO.produits[state.produit].nom+(r.lbl?' — '+r.lbl:''), state.couleur.nom, state.epaisseur, r.qty+' '+r.unit,
+          fmt(r.R,2)+' m', fmt(r.surf,1)+' m²',
+          r.price!=null?m2(r.price)+' €':'—', r.total!=null?m2(r.total)+' €':'—']; }),
+        styles:{fontSize:8,cellPadding:2.4,textColor:INK,lineColor:[235,242,250],lineWidth:0.2,overflow:'linebreak'},
+        headStyles:{fillColor:BLUE,textColor:WHI,fontStyle:'bold',fontSize:7.5},
+        alternateRowStyles:{fillColor:[245,249,253]},
+        columnStyles:{0:{cellWidth:28},1:{cellWidth:24},2:{cellWidth:20},3:{cellWidth:16,halign:'center'},4:{cellWidth:16,halign:'right'},5:{cellWidth:16,halign:'right'},6:{cellWidth:24,halign:'right'},7:{cellWidth:34,halign:'right',fontStyle:'bold'}},
+        theme:'grid' });
+      y=doc.lastAutoTable.finalY+8;
+
+      // ---- accessoires ----
+      if(accLines.length){
+        stitle('ACCESSOIRES & FIXATIONS');
+        doc.autoTable({ startY:y, margin:{left:M,right:M},
+          head:[['Désignation','Unité','Qté','P.U. HT','Total HT']],
+          body:accLines.map(function(l){ return [l.name,l.unit,String(l.qty),l.up!=null?m2(l.up)+' €':'—',l.sub!=null?m2(l.sub)+' €':'—']; }),
+          styles:{fontSize:8,cellPadding:2.4,textColor:INK,lineColor:[235,242,250],lineWidth:0.2,overflow:'linebreak'},
+          headStyles:{fillColor:BLUE,textColor:WHI,fontStyle:'bold',fontSize:7.5},
+          alternateRowStyles:{fillColor:[245,249,253]},
+          columnStyles:{0:{cellWidth:70},1:{cellWidth:26},2:{cellWidth:16,halign:'center'},3:{cellWidth:30,halign:'right'},4:{cellWidth:36,halign:'right',fontStyle:'bold'}},
+          theme:'grid' });
+        y=doc.lastAutoTable.finalY+8;
+      }
+
+      // ---- livraison ----
+      if(c.livraison||c.periode){
+        stitle('LIVRAISON');
+        doc.autoTable({ startY:y, margin:{left:M,right:M},
+          head:[['Type de livraison','Début estimé','Type de toit']],
+          body:[[c.livraison||'—', c.periode||'—', typeNom()]],
+          styles:{fontSize:8,cellPadding:2.4,textColor:INK,lineColor:[235,242,250],lineWidth:0.2},
+          headStyles:{fillColor:BLUE,textColor:WHI,fontStyle:'bold',fontSize:7.5},
+          alternateRowStyles:{fillColor:[245,249,253]}, theme:'grid' });
+        y=doc.lastAutoTable.finalY+8;
+      }
+
+      // ---- totaux ----
+      if(y>232){ doc.addPage(); y=20; }
+      if(hasPrices){
+        var tX=W-M-92, tW=92, rows=[['Total HT',m2(ht)+' €',false],['TVA (20 %)',m2(tva)+' €',false],['Total TTC',m2(ttc)+' €',true]];
+        rct(tX,y,tW,rows.length*10+6,STO,3);
+        rows.forEach(function(r,i){ var ly=y+8+i*10;
+          if(r[2]) rct(tX,ly-4,tW,12,INK,2);
+          doc.setFont('helvetica',r[2]?'bold':'normal'); doc.setFontSize(r[2]?11:9); doc.setTextColor.apply(doc,r[2]?WHI:INKS);
+          doc.text(r[0],tX+6,ly+2); doc.setFont('helvetica','bold'); doc.text(r[1],tX+tW-5,ly+2,{align:'right'}); });
+        y+=rows.length*10+12;
+        rct(tX,y,tW,18,BLUE,3);
+        sf('normal',8,[210,225,240]); doc.text('Acompte à verser (50 %)',tX+tW/2,y+6,{align:'center'});
+        sf('bold',13,WHI); doc.text(m2(ac)+' € TTC',tX+tW/2,y+14,{align:'center'}); y+=26;
+      } else {
+        rct(M,y,CW,14,GLD,3); doc.setDrawColor.apply(doc,BLUE); doc.setLineWidth(0.5); doc.line(M,y,M,y+14);
+        sf('italic',8.5,INKS); doc.text('Tarifs communiqués dans le devis final — métrage et prix confirmés par notre équipe.',M+5,y+8.5); y+=20;
+      }
+
+      // ---- conditions ----
+      if(y>235){ doc.addPage(); y=20; }
+      rct(M,y,CW,44,STO,3);
+      sf('bold',8,BLUE); doc.text('CONDITIONS DE VENTE',M+6,y+8); ln(M+6,y+10,M+CW-6,y+10,BLUE,0.4);
+      sf('normal',7.5,INKS);
+      ['• Acompte de 50 % exigible à la commande pour mise en fabrication.',
+       '• Solde réglé impérativement avant le déchargement sur chantier.',
+       '• Délai de fabrication et livraison : 5 à 8 semaines selon la gamme.',
+       '• Prix indiqués hors taxes (HT), TVA en vigueur applicable.',
+       '• Devis valable 30 jours à compter de la date d\'émission.',
+       '• Panneaux fabriqués sur mesure — aucun retour accepté.'
+      ].forEach(function(cd,i){ doc.text(cd,M+6,y+16+i*4.5); });
+
+      // ---- pied de page ----
+      var np=doc.getNumberOfPages();
+      for(var i=1;i<=np;i++){ doc.setPage(i); rct(0,287,W,10,INK); sf('normal',7.5,WHI);
+        doc.text('Isotuiles — Zone d\'Activité de Gemeillan, 33480 Sainte-Hélène',M,293);
+        doc.text('Devis '+qnum+'  |  Page '+i+'/'+np,W-M,293,{align:'right'}); }
+
+      doc.save('Devis_Isotuiles_'+qnum+'.pdf');
+    } catch(err){ console.error(err); downloadPDF(); }
+    if(btn){ btn.disabled=false; btn.textContent=orig; }
+  }
 
   /* ----- Init ----- */
   function boot(){
