@@ -254,7 +254,12 @@
 #iso-config .iso-card:hover{background:var(--iso-glass-2); border-color:var(--iso-line-2)}
 #iso-config .iso-card.is-sel{background:rgba(255,255,255,.95); color:var(--iso-dark); border-color:#fff; box-shadow:0 8px 22px rgba(0,0,0,.22)}
 #iso-config .iso-card.is-sel .iso-card-sub{color:var(--iso-med)}
-#iso-config .iso-card-ico{flex:none; width:48px; height:40px; border-radius:8px; display:grid; place-items:center; background:rgba(255,255,255,.14)}
+#iso-config .iso-card-ico{flex:none; width:48px; height:40px; border-radius:8px; display:grid; place-items:center; background:rgba(255,255,255,.14); overflow:hidden}
+#iso-config .iso-card-ico.has-img{cursor:zoom-in}
+#iso-config .iso-card-ico img{width:100%; height:100%; object-fit:cover; display:block}
+#iso-config .iso-zoom{position:fixed; z-index:9999; width:240px; height:240px; border-radius:14px; overflow:hidden; box-shadow:0 18px 44px rgba(0,20,45,.45); border:2px solid #fff; opacity:0; transform:scale(.94); pointer-events:none; transition:opacity .12s, transform .12s; background:#0b2a4a}
+#iso-config .iso-zoom.show{opacity:1; transform:scale(1)}
+#iso-config .iso-zoom img{width:100%; height:100%; object-fit:cover; display:block}
 #iso-config .iso-card.is-sel .iso-card-ico{background:rgba(0,47,92,.08)}
 #iso-config .iso-card-ico svg{width:36px; height:30px}
 #iso-config .iso-card-txt{display:flex; flex-direction:column}
@@ -380,12 +385,15 @@
     prixM2:null,                                     // ex: {romane:42,plates:48,bac:35}
     produits:{
       romane:{ nom:"Romane Canal", sousTitre:"Imitation tuile traditionnelle", profil:"canal", largeurUtile:1.00, delai:"3 à 5 semaines",
+        img:"https://cdn.shopify.com/s/files/1/0909/7605/9715/files/romane-canal-illustration.png?v=1774001720",   // ← collez ici l'URL d'une image de la gamme (ex. https://isotuiles.fr/cdn/shop/files/romane.jpg)
         couleurs:[{nom:"Rouge terracotta",hex:"#A4472C"},{nom:"Rouge vieilli",hex:"#7E3A2C"},{nom:"Pastel vieilli",hex:"#C08763"},{nom:"Gris anthracite",hex:"#3A4044"}],
         epaisseurs:["40/80 mm","60/100 mm"] },
       plates:{ nom:"Tuiles Plates", sousTitre:"Imitation tuile moderne", profil:"plate", largeurUtile:1.00, delai:"5 à 8 semaines",
+        img:"https://cdn.shopify.com/s/files/1/0909/7605/9715/files/tuiles-plates-illustration.png?v=1783252228",   // ← URL image gamme
         couleurs:[{nom:"Gris anthracite",hex:"#3A4044"},{nom:"Gris terre d'ombre",hex:"#5A5149"},{nom:"Rouge terracotta",hex:"#A4472C"}],
         epaisseurs:["50/77 mm"] },
       bac:{ nom:"Bac Acier", sousTitre:"Panneau sandwich nervuré", profil:"bac", largeurUtile:1.00, delai:"5 à 8 semaines",
+        img:"https://cdn.shopify.com/s/files/1/0909/7605/9715/files/bac-acier-illustration.png?v=1774001720",   // ← URL image gamme
         couleurs:[{nom:"RAL 7016 Anthracite",hex:"#383E42"},{nom:"RAL 8012 Rouge oxyde",hex:"#642424"},{nom:"RAL 3009 Rouge terre",hex:"#703731"},{nom:"RAL 9006 Aluminium",hex:"#A5A8A6"},{nom:"RAL 9010 Blanc",hex:"#EDE8DC"},{nom:"RAL 6005 Vert",hex:"#114232"},{nom:"Autre RAL",hex:"#7C8A99"}],
         epaisseurs:["30 mm","40 mm","60 mm","80 mm","100 mm"] }
     }
@@ -400,13 +408,13 @@
   ];
 
   var ACCESSOIRES=[
-    {id:"faitage_dp",nom:"Faîtage double pente",len:1.0,calc:function(m,A,R){var on=m.ridgeLen>0;return{rel:on,qty:on?Math.ceil(m.ridgeLen):0,on:on};}},
-    {id:"faitage_mur",nom:"Faîtage contre mur",len:2.1,calc:function(m,A,R){var on=m.type==="mono";return{rel:on,qty:on?Math.ceil(A/2.1):0,on:on};}},
-    {id:"faitage_ferm",nom:"Faîtage de fermeture",len:2.1,calc:function(m,A,R){var on=m.type==="mono";return{rel:on,qty:on?Math.ceil(A/2.1):0,on:on};}},
-    {id:"rive_U",nom:"Rive latérale U",len:2.1,calc:function(m,A,R){var on=m.vergeLen>0;return{rel:on,qty:on?Math.ceil(m.vergeLen/2.1):0,on:on};}},
-    {id:"rive_L",nom:"Rive latérale L",len:2.1,calc:function(m,A,R){var on=m.vergeLen>0;return{rel:on,qty:on?Math.ceil(m.vergeLen/2.1):0,on:false};}},
-    {id:"caches",nom:"Caches mousses",len:1.0,calc:function(m,A,R){return{rel:true,qty:Math.ceil(m.eaveLen),on:true};}},
-    {id:"vis_couture",nom:"Vis de couture",pack:100,unit:"pack(s) de 100",sub:"fixation des accessoires · vendu par 100",calc:function(m,A,R){var structML=m.ridgeLen+m.vergeLen+m.eaveLen+(m.type==="mono"?A:0);var units=Math.ceil(structML*3);return{rel:true,qty:Math.max(1,Math.ceil(units/100)),on:true};}}
+    {id:"faitage_dp",nom:"Faîtage double pente",len:1.0,gammes:["romane","plates"],calc:function(m,A,R){var on=m.ridgeLen>0;return{rel:on,qty:on?Math.ceil(m.ridgeLen):0,on:on};}},
+    {id:"faitage_mur",nom:"Faîtage contre mur",len:2.1,gammes:["romane","plates"],calc:function(m,A,R){var on=m.type==="mono";return{rel:on,qty:on?Math.ceil(A/2.1):0,on:on};}},
+    {id:"faitage_ferm",nom:"Faîtage de fermeture",len:2.1,gammes:["romane","plates"],calc:function(m,A,R){var on=m.type==="mono";return{rel:on,qty:on?Math.ceil(A/2.1):0,on:on};}},
+    {id:"rive_U",nom:"Rive latérale U",len:2.1,gammes:["romane","plates"],calc:function(m,A,R){var on=m.vergeLen>0;return{rel:on,qty:on?Math.ceil(m.vergeLen/2.1):0,on:on};}},
+    {id:"rive_L",nom:"Rive latérale L",len:2.1,gammes:["romane","plates"],calc:function(m,A,R){var on=m.vergeLen>0;return{rel:on,qty:on?Math.ceil(m.vergeLen/2.1):0,on:false};}},
+    {id:"caches",nom:"Caches mousses",len:1.0,gammes:["romane","plates"],calc:function(m,A,R){return{rel:true,qty:Math.ceil(m.eaveLen),on:true};}},
+    {id:"vis_couture",nom:"Vis de couture",pack:100,unit:"pack(s) de 100",sub:"fixation des accessoires · vendu par 100",gammes:["romane","plates","bac"],calc:function(m,A,R){var structML=m.ridgeLen+m.vergeLen+m.eaveLen+(m.type==="mono"?A:0);var units=Math.ceil(structML*3);return{rel:true,qty:Math.max(1,Math.ceil(units/100)),on:true};}}
   ];
 
   var ICONS={
@@ -799,10 +807,27 @@
     var w=$('iso-gammes'); w.innerHTML='';
     Object.keys(ISO.produits).forEach(function(key){ var p=ISO.produits[key];
       var b=document.createElement('button'); b.type='button'; b.className='iso-card'; b.dataset.key=key; b.setAttribute('aria-pressed','false');
-      b.innerHTML='<span class="iso-card-ico">'+ICONS[p.profil]+'</span><span class="iso-card-txt"><span class="iso-card-name">'+p.nom+'</span><span class="iso-card-sub">'+p.sousTitre+' · délai '+p.delai+'</span></span><span class="iso-card-check">✓</span>';
+      var ico = p.img ? '<span class="iso-card-ico has-img" data-img="'+p.img+'"><img src="'+p.img+'" alt="'+p.nom+'" loading="lazy"></span>'
+                      : '<span class="iso-card-ico">'+ICONS[p.profil]+'</span>';
+      b.innerHTML=ico+'<span class="iso-card-txt"><span class="iso-card-name">'+p.nom+'</span><span class="iso-card-sub">'+p.sousTitre+' · délai '+p.delai+'</span></span><span class="iso-card-check">✓</span>';
       b.addEventListener('click',function(){ selectGamme(key); }); w.appendChild(b);
     });
+    bindZoom();
     syncGammeSel();
+  }
+  /* aperçu agrandi de l'image de gamme au survol de l'icône */
+  function bindZoom(){
+    var zoom=$('iso-zoom'); if(!zoom){ zoom=document.createElement('div'); zoom.id='iso-zoom'; zoom.className='iso-zoom'; zoom.innerHTML='<img alt="">'; root.appendChild(zoom); }
+    var img=zoom.querySelector('img');
+    qa('#iso-gammes .iso-card-ico.has-img').forEach(function(ico){
+      ico.addEventListener('mouseenter',function(){ img.src=ico.dataset.img; zoom.classList.add('show'); });
+      ico.addEventListener('mousemove',function(e){
+        var pad=18, w=zoom.offsetWidth||240, h=zoom.offsetHeight||240;
+        var x=Math.min(e.clientX+pad, window.innerWidth-w-8), y=Math.min(e.clientY+pad, window.innerHeight-h-8);
+        zoom.style.left=Math.max(8,x)+'px'; zoom.style.top=Math.max(8,y)+'px';
+      });
+      ico.addEventListener('mouseleave',function(){ zoom.classList.remove('show'); });
+    });
   }
   function selectGamme(k){ if(state.produit!==k){ state.couleur=null; state.epaisseur=null; } state.produit=k; syncGammeSel(); renderCouleurs(); renderEpaisseurs(); paintRoof(); refresh(); }
   function syncGammeSel(){ qa('#iso-gammes .iso-card').forEach(function(c){ var on=c.dataset.key===state.produit; c.classList.toggle('is-sel',on); c.setAttribute('aria-pressed',on); }); }
@@ -877,11 +902,12 @@
     box.innerHTML='<span><b>'+sc.type+'</b> · '+density()+' vis/m²</span><span class="iso-screws-q">≈ '+sc.qty+' vis · '+sc.packs+' pack(s) de 100</span>';
   }
   function accSig(){ return [state.typeToit,state.largeur,state.rampant,state.rampantG,state.rampantD].join('|'); }
+  function accForGamme(){ return ACCESSOIRES.filter(function(a){ return !a.gammes || a.gammes.indexOf(state.produit)>=0; }); }
   function renderAccessoires(){
     var rc=currentCorners(false), m=rc.meta, A=state.largeur||0, R=mainR();
     var fresh = accSig()!==state._accSig; state._accSig=accSig();
     var w=$('iso-acc'); w.innerHTML='';
-    ACCESSOIRES.forEach(function(a){
+    accForGamme().forEach(function(a){
       var c=a.calc(m,A,R);
       if(fresh || !state.accessoires[a.id]) state.accessoires[a.id]={included:c.on, qty:c.qty};
       var st=state.accessoires[a.id];
@@ -919,7 +945,7 @@
     return {surface:surface,longP:longP,nb:nb,metrage:metrage,prix:prix,hors:hors,delai:ISO.produits[state.produit].delai,meta:rc.meta};
   }
   function selectedAccessoires(){
-    var out=[]; ACCESSOIRES.forEach(function(a){ var st=state.accessoires[a.id]; if(st&&st.included&&st.qty>0) out.push({nom:a.nom,qty:st.qty,len:a.len,pack:a.pack,unit:a.unit}); }); return out;
+    var out=[]; accForGamme().forEach(function(a){ var st=state.accessoires[a.id]; if(st&&st.included&&st.qty>0) out.push({nom:a.nom,qty:st.qty,len:a.len,pack:a.pack,unit:a.unit}); }); return out;
   }
   function accQtyText(a){ return a.pack ? (a.qty+' '+(a.unit||'pack(s) de 100')) : (a.qty+' × '+fmt(a.len,a.len%1?2:0)+' ml'); }
   function typeNom(){ var n=state.typeToit; TYPES.forEach(function(t){ if(t.id===state.typeToit) n=t.nom; }); return n; }
@@ -995,11 +1021,11 @@
     }
     var items=orderItems(), html='<div class="iso-shop-head">Produits correspondants</div>', total=0, allPriced=true, anyResolved=false, missing=0;
     items.forEach(function(it){
-      if(it.res && it.res.variant){
-        anyResolved=true; var p=it.res.product, v=it.res.variant;
+        if(it.res && it.res.variant){
+            anyResolved=true; var p=it.res.product, v=it.res.variant;
         var line=v.price*it.qty; if(v.price!=null){ total+=line; } else allPriced=false;
         html+='<div class="iso-shop-row">'+
-          (p.image?'<img class="iso-shop-thumb" src="'+p.image+'" alt="">':'<span class="iso-shop-thumb"></span>')+
+          (p.image?`<img class="iso-shop-thumb" src="${p.image}" alt="">`:'<span class="iso-shop-thumb"></span>')+
           '<div class="iso-shop-main"><div class="iso-shop-name">'+p.title+'</div><div class="iso-shop-sub">'+it.qty+' '+it.unitTxt+(v.price!=null?(' · '+money(v.price)+' /u'):'')+(it.res.approx?' · variante par défaut':'')+'</div></div>'+
           (v.price!=null?'<span class="iso-shop-price">'+money(line)+'</span>':'')+
           '<a class="iso-shop-link" href="'+prodUrl(p,v)+'" target="_blank" rel="noopener">Voir ↗</a>'+
@@ -1109,16 +1135,42 @@
   $('iso-devis').addEventListener('click',function(){ var f=$('iso-form'); f.classList.remove('iso-hidden'); f.scrollIntoView({behavior:'smooth',block:'nearest'}); $('f-prenom').focus(); });
   $('iso-copy').addEventListener('click',function(){ copy(summaryText(null),this); });
   $('iso-send').addEventListener('click',function(){
+    var btn=this;
     var c={ prenom:val('f-prenom'),nom:val('f-nom'),societe:val('f-societe'),tel:val('f-tel'),email:val('f-email'),adresse:val('f-adresse'),livraison:val('f-livraison'),periode:val('f-periode') };
     var err=$('iso-form-err'); var miss=[];
     if(!c.prenom) miss.push('prénom'); if(!c.nom) miss.push('nom'); if(!c.tel) miss.push('téléphone');
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(c.email)) miss.push('email valide'); if(!c.adresse) miss.push('adresse');
-    if(miss.length){ err.classList.remove('iso-hidden'); err.textContent='Merci de compléter : '+miss.join(', ')+'.'; return; }
+    if(miss.length){ err.style.color=''; err.classList.remove('iso-hidden'); err.textContent='Merci de compléter : '+miss.join(', ')+'.'; return; }
     err.classList.add('iso-hidden');
-    var body=summaryText(c);
-    if(ISO.contactEmail){ window.location.href='mailto:'+ISO.contactEmail+'?subject='+encodeURIComponent('Demande de devis toiture — '+c.prenom+' '+c.nom)+'&body='+encodeURIComponent(body); }
-    else copy(body,this);
+    sendDevis(c, btn, err);
   });
+  function sendDevis(c, btn, err){
+    var subject='Demande de devis toiture — '+c.prenom+' '+c.nom;
+    var body=summaryText(c);
+    var orig=btn.textContent; btn.disabled=true; btn.textContent='Envoi en cours…';
+    // Envoi automatique via le formulaire de contact natif Shopify (e-mail vers l'adresse boutique)
+    var p=new URLSearchParams();
+    p.append('form_type','contact'); p.append('utf8','✓');
+    p.append('contact[email]', c.email);
+    p.append('contact[name]', c.prenom+' '+c.nom);
+    p.append('contact[Téléphone]', c.tel);
+    p.append('contact[Société]', c.societe||'—');
+    p.append('contact[Livraison]', c.livraison+' — début : '+c.periode);
+    p.append('contact[Adresse]', c.adresse);
+    p.append('contact[body]', body);
+    fetch('/contact',{ method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded','Accept':'text/html'}, body:p.toString() })
+      .then(function(r){ if(!r.ok) throw new Error('contact '+r.status); return r.text(); })
+      .then(function(){
+        btn.textContent='✓ Demande envoyée'; btn.disabled=true;
+        err.style.color='#8ff0b0'; err.textContent='✓ Votre demande a bien été envoyée à Isotuiles. Vous pouvez aussi télécharger le PDF ci-dessus.'; err.classList.remove('iso-hidden');
+      })
+      .catch(function(){
+        // Repli hors Shopify : ouverture du client mail prérempli
+        btn.disabled=false; btn.textContent=orig;
+        if(ISO.contactEmail){ window.location.href='mailto:'+ISO.contactEmail+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body); }
+        else copy(body,btn);
+      });
+  }
   function val(id){ var el=$(id); return el?el.value.trim():''; }
   function copy(txt,btn){ var done=function(){ var o=btn.textContent; btn.textContent='Copié ✓'; setTimeout(function(){btn.textContent=o;},1800); };
     if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done,function(){fb(txt,done);}); } else fb(txt,done); }
