@@ -1,0 +1,1190 @@
+<!-- ============================================================= -->
+<!--  CONFIGURATEUR DE TOITURE 3D — ISOTUILES                       -->
+<!--  Aperçu 3D temps réel (WebGL/PBR). Dépendance : Three.js (CDN).-->
+<!--  Repli 2D automatique. À coller dans une section Liquid perso. -->
+<!--  Tout est scopé sous #iso-config.                              -->
+<!-- ============================================================= -->
+
+<!-- ============================================================= -->
+<!--  CATALOGUE SHOPIFY (injection Liquid)                          -->
+<!--  ▸ Dans Shopify (section "Liquid personnalisé"), ce bloc est   -->
+<!--    rempli automatiquement à partir d'une COLLECTION.            -->
+<!--  ▸ Pour ajouter un produit au configurateur : ajoutez-le à la  -->
+<!--    collection ci-dessous, puis complétez SHOP_MAP (plus bas).   -->
+<!--  ▸ Changez le handle de collection sur la ligne 'iso_collection'-->
+<!--  ▸ Hors Shopify (test local), ce bloc reste inerte : le        -->
+<!--    configurateur fonctionne, seul l'ajout au panier est inactif.-->
+<!-- ============================================================= -->
+{%- assign iso_collection = 'devis-isotuiles' -%}
+<script type="application/json" id="iso-shopify-data">
+{
+  "shopUrl": {{ shop.url | json }},
+  "currency": {{ shop.currency | json }},
+  "products": [
+    {%- assign iso_col = collections[iso_collection] -%}
+    {%- for p in iso_col.products -%}
+    {
+      "handle": {{ p.handle | json }},
+      "title": {{ p.title | json }},
+      "url": {{ p.url | json }},
+      "type": {{ p.type | json }},
+      "tags": {{ p.tags | json }},
+      "available": {{ p.available | json }},
+      "price": {{ p.price | json }},
+      "image": {%- if p.featured_image -%}{{ p.featured_image | image_url: width: 240 | json }}{%- else -%}""{%- endif -%},
+      "variants": [
+        {%- for v in p.variants -%}
+        {"id": {{ v.id | json }}, "title": {{ v.title | json }}, "available": {{ v.available | json }}, "price": {{ v.price | json }}, "options": {{ v.options | json }}}{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+    }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+
+<div id="iso-config" role="region" aria-label="Configurateur de toiture Isotuiles">
+
+  <header class="iso-head">
+    <p class="iso-eyebrow">Configurateur 3D</p>
+    <h2 class="iso-title">Composez votre toiture et visualisez-la en 3D</h2>
+    <p class="iso-sub">Panneau, finition, type de toit, dimensions, accessoires et fixations : visualisez le tout en 3D, puis recevez votre estimation et votre demande de devis.</p>
+  </header>
+
+  <nav class="iso-steps" aria-label="Étapes du configurateur">
+    <ol class="iso-steps-list">
+      <li class="iso-step is-active" data-step="1"><span class="iso-step-num">1</span><span class="iso-step-lbl">Gamme</span></li>
+      <li class="iso-step" data-step="2"><span class="iso-step-num">2</span><span class="iso-step-lbl">Finition</span></li>
+      <li class="iso-step" data-step="3"><span class="iso-step-num">3</span><span class="iso-step-lbl">Épaisseur</span></li>
+      <li class="iso-step" data-step="4"><span class="iso-step-num">4</span><span class="iso-step-lbl">Toiture</span></li>
+      <li class="iso-step" data-step="5"><span class="iso-step-num">5</span><span class="iso-step-lbl">Accessoires</span></li>
+      <li class="iso-step" data-step="6"><span class="iso-step-num">6</span><span class="iso-step-lbl">Devis</span></li>
+    </ol>
+    <div class="iso-progress"><span class="iso-progress-bar" style="width:16.6%"></span></div>
+  </nav>
+
+  <div class="iso-body">
+
+    <div class="iso-preview">
+      <div id="iso-3d" class="iso-3d" role="img" aria-label="Aperçu 3D de la toiture"></div>
+      <svg id="iso-roof" class="iso-fallback iso-hidden" viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">
+        <defs><clipPath id="iso-roof-clip"><polygon points="92,52 228,52 280,170 40,170"/></clipPath></defs>
+        <ellipse cx="160" cy="190" rx="150" ry="22" fill="rgba(0,0,0,.18)"/>
+        <polygon id="iso-roof-plane" points="92,52 228,52 280,170 40,170" fill="#A4472C"/>
+        <g clip-path="url(#iso-roof-clip)" id="iso-roof-texture"></g>
+        <polygon points="92,52 228,52 232,46 88,46" fill="rgba(255,255,255,.85)"/>
+        <rect x="36" y="170" width="248" height="7" rx="3" fill="rgba(255,255,255,.55)"/>
+      </svg>
+      <p class="iso-preview-cap" id="iso-preview-cap">Sélectionnez une gamme</p>
+      <p class="iso-3d-hint" id="iso-3d-hint">Glissez pour pivoter · molette pour zoomer</p>
+    </div>
+
+    <div class="iso-panel">
+
+      <!-- 1 GAMME -->
+      <section class="iso-screen is-shown" data-screen="1">
+        <h3 class="iso-screen-title">Quelle gamme de panneaux ?</h3>
+        <div class="iso-grid iso-grid-1" id="iso-gammes"></div>
+      </section>
+
+      <!-- 2 FINITION -->
+      <section class="iso-screen" data-screen="2">
+        <h3 class="iso-screen-title">Choisissez votre finition</h3>
+        <p class="iso-note">Teintes indicatives — le rendu réel peut légèrement varier.</p>
+        <div class="iso-grid iso-grid-2" id="iso-couleurs"></div>
+      </section>
+
+      <!-- 3 ÉPAISSEUR -->
+      <section class="iso-screen" data-screen="3">
+        <h3 class="iso-screen-title">Épaisseur d'isolant</h3>
+        <p class="iso-note">L'épaisseur de mousse isolante apparaît sur l'aperçu 3D.</p>
+        <div class="iso-chips" id="iso-epaisseurs"></div>
+      </section>
+
+      <!-- 4 TOITURE -->
+      <section class="iso-screen" data-screen="4">
+        <h3 class="iso-screen-title">Type de toit</h3>
+        <div class="iso-grid iso-grid-1" id="iso-types"></div>
+        <h3 class="iso-screen-title iso-mt">Dimensions</h3>
+        <div class="iso-fields" id="iso-dims"></div>
+        <p class="iso-note" id="iso-dims-note"></p>
+      </section>
+
+      <!-- 5 ACCESSOIRES & FIXATIONS -->
+      <section class="iso-screen" data-screen="5">
+        <h3 class="iso-screen-title">Charpente &amp; fixations</h3>
+        <div class="iso-fixrow">
+          <div>
+            <span class="iso-field-lbl">Type de charpente</span>
+            <div class="iso-chips iso-mt-s">
+              <button type="button" class="iso-chip is-sel" data-charpente="bois">Bois</button>
+              <button type="button" class="iso-chip" data-charpente="acier">Acier</button>
+            </div>
+          </div>
+          <label class="iso-field iso-entraxe">
+            <span class="iso-field-lbl">Entraxe des pannes
+              <span class="iso-info" tabindex="0" role="button" aria-label="Informations sur la quantité de vis">i<span class="iso-tip">Comptez 2 à 4 vis/m² selon l'entraxe des pannes (espacement). Entraxe recommandé&nbsp;: 2 à 2,5 m maximum.</span></span>
+            </span>
+            <select id="iso-entraxe" class="iso-input">
+              <option value="1.5">≤ 1,5 m (4 vis/m²)</option>
+              <option value="2" selected>≈ 2 m (3 vis/m²)</option>
+              <option value="2.5">2 – 2,5 m (2,5 vis/m²)</option>
+            </select>
+          </label>
+        </div>
+        <div id="iso-screws" class="iso-screws"></div>
+
+        <h3 class="iso-screen-title iso-mt">Accessoires conseillés</h3>
+        <p class="iso-note">Pré-sélectionnés selon votre configuration. Cochez/décochez et ajustez les quantités librement.</p>
+        <div id="iso-acc" class="iso-acc"></div>
+      </section>
+
+      <!-- 6 DEVIS -->
+      <section class="iso-screen" data-screen="6">
+        <h3 class="iso-screen-title">Votre configuration</h3>
+        <div id="iso-recap" class="iso-recap"></div>
+        <div id="iso-recap-alert" class="iso-alert iso-hidden"></div>
+
+        <div id="iso-shop" class="iso-shop"></div>
+
+        <div class="iso-cta-row">
+          <button type="button" class="iso-btn iso-btn-primary" id="iso-cart">Ajouter au panier</button>
+          <button type="button" class="iso-btn iso-btn-ghost" id="iso-devis">Demander mon devis</button>
+          <button type="button" class="iso-btn iso-btn-ghost" id="iso-pdf">Télécharger le PDF</button>
+          <button type="button" class="iso-btn iso-btn-ghost" id="iso-copy">Copier le récapitulatif</button>
+        </div>
+
+        <!-- Formulaire (révélé au clic) -->
+        <div id="iso-form" class="iso-form iso-hidden">
+          <h3 class="iso-screen-title">Vos coordonnées</h3>
+          <div class="iso-form-grid">
+            <label class="iso-field"><span class="iso-field-lbl">Prénom *</span><input class="iso-input" id="f-prenom" type="text" autocomplete="given-name"></label>
+            <label class="iso-field"><span class="iso-field-lbl">Nom *</span><input class="iso-input" id="f-nom" type="text" autocomplete="family-name"></label>
+            <label class="iso-field iso-col2"><span class="iso-field-lbl">Société <em>(facultatif)</em></span><input class="iso-input" id="f-societe" type="text" autocomplete="organization"></label>
+            <label class="iso-field"><span class="iso-field-lbl">Téléphone *</span><input class="iso-input" id="f-tel" type="tel" autocomplete="tel"></label>
+            <label class="iso-field"><span class="iso-field-lbl">Email *</span><input class="iso-input" id="f-email" type="email" autocomplete="email"></label>
+            <label class="iso-field iso-col2"><span class="iso-field-lbl">Adresse de livraison complète *</span><textarea class="iso-input iso-textarea" id="f-adresse" rows="2" autocomplete="street-address"></textarea></label>
+            <label class="iso-field"><span class="iso-field-lbl">Type de livraison *</span>
+              <select class="iso-input" id="f-livraison">
+                <option value="Livraison" selected>Livraison</option>
+                <option value="Retrait">Retrait sur place</option>
+              </select>
+            </label>
+            <label class="iso-field"><span class="iso-field-lbl">Début estimé du projet *</span>
+              <select class="iso-input" id="f-periode">
+                <option value="Moins de 30 jours">Moins de 30 jours</option>
+                <option value="1 à 3 mois" selected>1 à 3 mois</option>
+                <option value="3 à 6 mois">3 à 6 mois</option>
+                <option value="Plus de 6 mois">Plus de 6 mois</option>
+                <option value="Indéterminé">Indéterminé</option>
+              </select>
+            </label>
+          </div>
+          <p id="iso-form-err" class="iso-form-err iso-hidden"></p>
+          <div class="iso-cta-row">
+            <button type="button" class="iso-btn iso-btn-primary" id="iso-send">Envoyer ma demande</button>
+          </div>
+        </div>
+
+        <p class="iso-disclaimer">Estimations indicatives basées sur des panneaux standard. Le métrage exact et le tarif sont confirmés dans votre devis personnalisé.</p>
+      </section>
+
+    </div>
+  </div>
+
+  <footer class="iso-nav">
+    <button type="button" class="iso-btn iso-btn-ghost iso-reset" id="iso-reset">Recommencer</button>
+    <div class="iso-nav-right">
+      <button type="button" class="iso-btn iso-btn-ghost" id="iso-prev" disabled>Précédent</button>
+      <button type="button" class="iso-btn iso-btn-primary" id="iso-next" disabled>Suivant</button>
+    </div>
+  </footer>
+
+</div>
+
+<style>
+#iso-config{
+  --iso-dark:#002F5C; --iso-med:#2F6CA2; --iso-light:#3A83BE;
+  --iso-glass:rgba(255,255,255,.09); --iso-glass-2:rgba(255,255,255,.16);
+  --iso-line:rgba(255,255,255,.20); --iso-line-2:rgba(255,255,255,.4); --iso-radius:18px;
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  color:#fff; max-width:1040px; margin:0 auto; padding:clamp(20px,4vw,40px);
+  background:linear-gradient(140deg,#002F5C 0%,#2F6CA2 58%,#3A83BE 100%);
+  border-radius:24px; box-sizing:border-box; line-height:1.5; box-shadow:0 24px 60px rgba(0,20,45,.35);
+}
+#iso-config *{box-sizing:border-box}
+#iso-config .iso-head{text-align:center; margin-bottom:24px}
+#iso-config .iso-eyebrow{margin:0 0 6px; font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:rgba(255,255,255,.7); font-weight:600}
+#iso-config .iso-title{margin:0 0 10px; font-size:clamp(1.4rem,3.4vw,2rem); font-weight:800; letter-spacing:-.02em}
+#iso-config .iso-sub{margin:0 auto; max-width:640px; font-size:.94rem; color:rgba(255,255,255,.82)}
+
+#iso-config .iso-steps{margin:0 0 22px}
+#iso-config .iso-steps-list{display:flex; gap:6px; list-style:none; margin:0 0 12px; padding:0; overflow-x:auto}
+#iso-config .iso-step{display:flex; align-items:center; gap:8px; flex:1; min-width:max-content; opacity:.5; transition:opacity .25s; cursor:pointer}
+#iso-config .iso-step.is-active,#iso-config .iso-step.is-done{opacity:1}
+#iso-config .iso-step-num{display:grid; place-items:center; width:25px; height:25px; border-radius:50%; background:var(--iso-glass-2); border:1px solid var(--iso-line); font-size:.78rem; font-weight:700; flex:none}
+#iso-config .iso-step.is-active .iso-step-num{background:#fff; color:var(--iso-dark)}
+#iso-config .iso-step.is-done .iso-step-num{background:rgba(255,255,255,.85); color:var(--iso-dark)}
+#iso-config .iso-step-lbl{font-size:.8rem; font-weight:600; white-space:nowrap}
+#iso-config .iso-progress{height:4px; border-radius:4px; background:var(--iso-glass)}
+#iso-config .iso-progress-bar{display:block; height:100%; border-radius:4px; background:linear-gradient(90deg,#fff,rgba(255,255,255,.7)); transition:width .35s ease}
+
+#iso-config .iso-body{display:grid; grid-template-columns:1fr 1.15fr; gap:22px; align-items:start}
+#iso-config .iso-preview{position:relative; background:var(--iso-glass); border:1px solid var(--iso-line); border-radius:var(--iso-radius); padding:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); overflow:hidden; position:sticky; top:14px}
+#iso-config .iso-3d{width:100%; aspect-ratio:1/0.84; min-height:240px; touch-action:none; cursor:grab; border-radius:12px}
+#iso-config .iso-3d:active{cursor:grabbing}
+#iso-config .iso-3d canvas{display:block; width:100%!important; height:100%!important; border-radius:12px}
+#iso-config #iso-roof{width:100%; max-width:320px; height:auto}
+#iso-config .iso-preview-cap{margin:10px 0 0; font-size:.9rem; font-weight:700; text-align:center}
+#iso-config .iso-3d-hint{margin:3px 0 2px; font-size:.74rem; color:rgba(255,255,255,.6)}
+
+#iso-config .iso-panel{background:var(--iso-glass); border:1px solid var(--iso-line); border-radius:var(--iso-radius); padding:clamp(16px,2.4vw,26px); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); min-height:320px}
+#iso-config .iso-screen{display:none; animation:iso-fade .3s ease}
+#iso-config .iso-screen.is-shown{display:block}
+@keyframes iso-fade{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:none}}
+#iso-config .iso-screen-title{margin:0 0 14px; font-size:1.1rem; font-weight:700}
+#iso-config .iso-screen-title.iso-mt{margin-top:24px}
+#iso-config .iso-note{margin:0 0 14px; font-size:.82rem; color:rgba(255,255,255,.7)}
+#iso-config .iso-mt-s{margin-top:8px}
+
+#iso-config .iso-grid{display:grid; gap:12px}
+#iso-config .iso-grid-1{grid-template-columns:1fr}
+#iso-config .iso-grid-2{grid-template-columns:repeat(2,1fr)}
+#iso-config .iso-card{position:relative; text-align:left; cursor:pointer; padding:14px; border-radius:14px; background:var(--iso-glass); border:1.5px solid var(--iso-line); color:#fff; font-family:inherit; transition:.2s; display:flex; gap:12px; align-items:center; width:100%}
+#iso-config .iso-card:hover{background:var(--iso-glass-2); border-color:var(--iso-line-2)}
+#iso-config .iso-card.is-sel{background:rgba(255,255,255,.95); color:var(--iso-dark); border-color:#fff; box-shadow:0 8px 22px rgba(0,0,0,.22)}
+#iso-config .iso-card.is-sel .iso-card-sub{color:var(--iso-med)}
+#iso-config .iso-card-ico{flex:none; width:48px; height:40px; border-radius:8px; display:grid; place-items:center; background:rgba(255,255,255,.14)}
+#iso-config .iso-card.is-sel .iso-card-ico{background:rgba(0,47,92,.08)}
+#iso-config .iso-card-ico svg{width:36px; height:30px}
+#iso-config .iso-card-txt{display:flex; flex-direction:column}
+#iso-config .iso-card-name{font-weight:700; font-size:.96rem}
+#iso-config .iso-card-sub{font-size:.78rem; color:rgba(255,255,255,.7)}
+#iso-config .iso-card-check{position:absolute; top:10px; right:12px; opacity:0; font-weight:800; color:var(--iso-med)}
+#iso-config .iso-card.is-sel .iso-card-check{opacity:1}
+
+#iso-config .iso-swatch{flex-direction:column; gap:0; padding:0; overflow:hidden; align-items:stretch}
+#iso-config .iso-swatch .iso-sw-color{width:100%; height:60px}
+#iso-config .iso-swatch .iso-sw-name{padding:9px 12px; font-size:.82rem; font-weight:600}
+
+#iso-config .iso-chips{display:flex; flex-wrap:wrap; gap:10px}
+#iso-config .iso-chip{cursor:pointer; padding:11px 18px; border-radius:30px; background:var(--iso-glass); border:1.5px solid var(--iso-line); color:#fff; font-family:inherit; font-size:.92rem; font-weight:600; transition:.2s}
+#iso-config .iso-chip:hover{background:var(--iso-glass-2)}
+#iso-config .iso-chip.is-sel{background:#fff; color:var(--iso-dark); border-color:#fff}
+
+#iso-config .iso-fields{display:grid; gap:16px}
+#iso-config .iso-field{display:flex; flex-direction:column; gap:7px}
+#iso-config .iso-field-lbl{font-size:.9rem; font-weight:600}
+#iso-config .iso-field-lbl em{font-style:normal; color:rgba(255,255,255,.6); font-weight:400}
+#iso-config .iso-input{width:100%; padding:12px 14px; border-radius:11px; border:1.5px solid var(--iso-line); background:rgba(255,255,255,.95); color:var(--iso-dark); font-family:inherit; font-size:1rem; font-weight:600}
+#iso-config .iso-input:focus{outline:none; border-color:#fff; box-shadow:0 0 0 3px rgba(255,255,255,.3)}
+#iso-config .iso-textarea{font-weight:500; resize:vertical}
+#iso-config select.iso-input{appearance:none; cursor:pointer; background-image:linear-gradient(45deg,transparent 50%,var(--iso-med) 50%),linear-gradient(135deg,var(--iso-med) 50%,transparent 50%); background-position:calc(100% - 18px) center,calc(100% - 13px) center; background-size:5px 5px,5px 5px; background-repeat:no-repeat}
+#iso-config .iso-input-unit{position:relative; display:flex; align-items:center}
+#iso-config .iso-input-unit .iso-unit{position:absolute; right:14px; color:var(--iso-med); font-weight:700; pointer-events:none}
+#iso-config .iso-input-unit .iso-input{padding-right:38px}
+
+#iso-config .iso-fixrow{display:flex; gap:18px; flex-wrap:wrap; align-items:flex-end}
+#iso-config .iso-entraxe{min-width:200px; flex:1}
+#iso-config .iso-info{display:inline-grid; place-items:center; width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,.25); font-size:.68rem; font-weight:800; font-style:italic; cursor:help; position:relative; vertical-align:1px; margin-left:4px}
+#iso-config .iso-info .iso-tip{position:absolute; bottom:130%; left:50%; transform:translateX(-50%); width:220px; background:#fff; color:var(--iso-dark); padding:10px 12px; border-radius:10px; font-size:.78rem; font-weight:500; font-style:normal; line-height:1.4; box-shadow:0 8px 22px rgba(0,0,0,.3); opacity:0; pointer-events:none; transition:.15s; z-index:5}
+#iso-config .iso-info:hover .iso-tip,#iso-config .iso-info:focus .iso-tip{opacity:1}
+#iso-config .iso-screws{margin-top:14px; padding:12px 16px; border-radius:12px; background:rgba(255,255,255,.95); color:var(--iso-dark); font-weight:600; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap}
+#iso-config .iso-screws b{color:var(--iso-dark)}
+#iso-config .iso-screws .iso-screws-q{font-size:1.05rem; color:var(--iso-med)}
+
+#iso-config .iso-acc{display:grid; gap:10px}
+#iso-config .iso-acc-row{display:flex; align-items:center; gap:12px; padding:11px 14px; border-radius:12px; background:var(--iso-glass); border:1.5px solid var(--iso-line)}
+#iso-config .iso-acc-row.is-on{background:rgba(255,255,255,.95); color:var(--iso-dark); border-color:#fff}
+#iso-config .iso-acc-cb{width:20px; height:20px; flex:none; accent-color:var(--iso-med); cursor:pointer}
+#iso-config .iso-acc-main{flex:1; min-width:0}
+#iso-config .iso-acc-name{font-weight:700; font-size:.92rem; display:flex; align-items:center; gap:8px}
+#iso-config .iso-acc-sub{font-size:.74rem; opacity:.7}
+#iso-config .iso-acc-badge{font-size:.64rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; background:var(--iso-light); color:#fff; padding:2px 7px; border-radius:20px}
+#iso-config .iso-acc-row.is-on .iso-acc-badge{background:var(--iso-med)}
+#iso-config .iso-acc-qty{width:64px; padding:8px 8px; border-radius:9px; border:1.5px solid var(--iso-line); background:rgba(255,255,255,.95); color:var(--iso-dark); font-family:inherit; font-weight:700; text-align:center}
+#iso-config .iso-acc-unit{font-size:.74rem; opacity:.7; min-width:42px}
+
+#iso-config .iso-recap{display:grid; gap:0; background:rgba(255,255,255,.95); color:var(--iso-dark); border-radius:14px; overflow:hidden}
+#iso-config .iso-recap-row{display:flex; justify-content:space-between; align-items:baseline; gap:14px; padding:11px 16px; border-bottom:1px solid rgba(0,47,92,.1)}
+#iso-config .iso-recap-row:last-child{border-bottom:none}
+#iso-config .iso-recap-sec{background:rgba(0,47,92,.06); font-size:.72rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--iso-med); padding:8px 16px}
+#iso-config .iso-recap-row.iso-hl{background:linear-gradient(135deg,var(--iso-dark),var(--iso-med)); color:#fff}
+#iso-config .iso-recap-k{font-size:.86rem; color:var(--iso-med); font-weight:600}
+#iso-config .iso-recap-row.iso-hl .iso-recap-k{color:rgba(255,255,255,.85)}
+#iso-config .iso-recap-v{font-size:.98rem; font-weight:700; text-align:right}
+#iso-config .iso-recap-row.iso-hl .iso-recap-v{font-size:1.1rem}
+#iso-config .iso-recap-sw{display:inline-block; width:14px; height:14px; border-radius:4px; vertical-align:-2px; margin-right:7px; border:1px solid rgba(0,0,0,.15)}
+
+#iso-config .iso-alert{margin-top:14px; padding:12px 16px; border-radius:12px; background:rgba(255,210,120,.18); border:1px solid rgba(255,210,120,.5); font-size:.86rem}
+
+#iso-config .iso-form{margin-top:18px; padding:18px; border-radius:14px; background:var(--iso-glass); border:1px solid var(--iso-line)}
+#iso-config .iso-form-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+#iso-config .iso-form-grid .iso-col2{grid-column:1/-1}
+#iso-config .iso-form-err{margin:12px 0 0; font-size:.84rem; font-weight:600; color:#ffd27a}
+
+#iso-config .iso-btn{cursor:pointer; font-family:inherit; font-weight:700; font-size:.95rem; padding:13px 24px; border-radius:30px; border:1.5px solid transparent; transition:.2s}
+#iso-config .iso-btn:disabled{opacity:.4; cursor:not-allowed}
+#iso-config .iso-btn-primary{background:#fff; color:var(--iso-dark)}
+#iso-config .iso-btn-primary:not(:disabled):hover{transform:translateY(-1px); box-shadow:0 8px 20px rgba(0,0,0,.25)}
+#iso-config .iso-btn-ghost{background:transparent; color:#fff; border-color:var(--iso-line-2)}
+#iso-config .iso-btn-ghost:not(:disabled):hover{background:var(--iso-glass-2)}
+#iso-config .iso-cta-row{display:flex; flex-wrap:wrap; gap:12px; margin-top:18px}
+#iso-config .iso-disclaimer{margin:14px 0 0; font-size:.78rem; color:rgba(255,255,255,.65)}
+
+#iso-config .iso-shop{margin-top:16px; display:grid; gap:10px}
+#iso-config .iso-shop-head{font-size:.72rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:rgba(255,255,255,.75)}
+#iso-config .iso-shop-row{display:flex; align-items:center; gap:12px; padding:11px 14px; border-radius:12px; background:rgba(255,255,255,.95); color:var(--iso-dark)}
+#iso-config .iso-shop-row.is-missing{background:rgba(255,210,120,.18); color:#fff; border:1px solid rgba(255,210,120,.45)}
+#iso-config .iso-shop-thumb{width:40px; height:40px; border-radius:8px; object-fit:cover; flex:none; background:rgba(0,47,92,.08)}
+#iso-config .iso-shop-main{flex:1; min-width:0}
+#iso-config .iso-shop-name{font-weight:700; font-size:.9rem}
+#iso-config .iso-shop-sub{font-size:.76rem; opacity:.7}
+#iso-config .iso-shop-price{font-weight:700; font-size:.9rem; white-space:nowrap}
+#iso-config .iso-shop-link{flex:none; font-size:.8rem; font-weight:700; color:var(--iso-med); text-decoration:none; white-space:nowrap}
+#iso-config .iso-shop-link:hover{text-decoration:underline}
+#iso-config .iso-shop-total{display:flex; justify-content:space-between; padding:10px 14px; font-weight:800; color:#fff}
+#iso-config .iso-shop-note{font-size:.82rem; color:rgba(255,255,255,.78); background:var(--iso-glass); border:1px solid var(--iso-line); border-radius:12px; padding:11px 14px}
+
+#iso-config .iso-nav{display:flex; gap:12px; align-items:center; justify-content:space-between; margin-top:22px}
+#iso-config .iso-nav-right{display:flex; gap:12px}
+
+#iso-config .iso-hidden{display:none !important}
+#iso-config :focus-visible{outline:2px solid #fff; outline-offset:2px}
+
+@media (max-width:760px){
+  #iso-config .iso-body{grid-template-columns:1fr}
+  #iso-config .iso-preview{order:-1; position:relative; top:auto}
+  #iso-config .iso-step-lbl{display:none}
+  #iso-config .iso-steps-list{justify-content:space-between}
+  #iso-config .iso-step{flex:none}
+  #iso-config .iso-form-grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  #iso-config .iso-screen,#iso-config .iso-progress-bar{animation:none !important; transition:none !important}
+}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =====================================================================
+     DONNÉES — modifiez librement.
+     ===================================================================== */
+  var ISO = {
+    contactEmail:"isotuiles@gmail.com",             // adresse de réception des devis
+    panneau:{ longueurMin:2.10, longueurMax:15.75, pas:0.35, largeurUtileParDefaut:1.00 },
+    prixM2:null,                                     // ex: {romane:42,plates:48,bac:35}
+    produits:{
+      romane:{ nom:"Romane Canal", sousTitre:"Imitation tuile traditionnelle", profil:"canal", largeurUtile:1.00, delai:"3 à 5 semaines",
+        couleurs:[{nom:"Rouge terracotta",hex:"#A4472C"},{nom:"Rouge vieilli",hex:"#7E3A2C"},{nom:"Pastel vieilli",hex:"#C08763"},{nom:"Gris anthracite",hex:"#3A4044"}],
+        epaisseurs:["40/80 mm","60/100 mm"] },
+      plates:{ nom:"Tuiles Plates", sousTitre:"Imitation tuile moderne", profil:"plate", largeurUtile:1.00, delai:"5 à 8 semaines",
+        couleurs:[{nom:"Gris anthracite",hex:"#3A4044"},{nom:"Gris terre d'ombre",hex:"#5A5149"},{nom:"Rouge terracotta",hex:"#A4472C"}],
+        epaisseurs:["50/77 mm"] },
+      bac:{ nom:"Bac Acier", sousTitre:"Panneau sandwich nervuré", profil:"bac", largeurUtile:1.00, delai:"5 à 8 semaines",
+        couleurs:[{nom:"RAL 7016 Anthracite",hex:"#383E42"},{nom:"RAL 8012 Rouge oxyde",hex:"#642424"},{nom:"RAL 3009 Rouge terre",hex:"#703731"},{nom:"RAL 9006 Aluminium",hex:"#A5A8A6"},{nom:"RAL 9010 Blanc",hex:"#EDE8DC"},{nom:"RAL 6005 Vert",hex:"#114232"},{nom:"Autre RAL",hex:"#7C8A99"}],
+        epaisseurs:["30 mm","40 mm","60 mm","80 mm","100 mm"] }
+    }
+  };
+
+  var TYPES=[
+    {id:"mono",nom:"Toit monopente",sub:"1 versant",champs:["R"]},
+    {id:"2egaux",nom:"2 versants — parties égales",sub:"pans symétriques",champs:["R"]},
+    {id:"2inegaux",nom:"2 versants — parties inégales",sub:"pans asymétriques",champs:["Rg","Rd"]},
+    {id:"croupe",nom:"Toit en croupe",sub:"4 pans avec faîtage",champs:["R","P"]},
+    {id:"pavillon",nom:"Toit en pavillon",sub:"4 pans en pointe",champs:["R","P"]}
+  ];
+
+  var ACCESSOIRES=[
+    {id:"faitage_dp",nom:"Faîtage double pente",len:1.0,calc:function(m,A,R){var on=m.ridgeLen>0;return{rel:on,qty:on?Math.ceil(m.ridgeLen):0,on:on};}},
+    {id:"faitage_mur",nom:"Faîtage contre mur",len:2.1,calc:function(m,A,R){var on=m.type==="mono";return{rel:on,qty:on?Math.ceil(A/2.1):0,on:on};}},
+    {id:"faitage_ferm",nom:"Faîtage de fermeture",len:2.1,calc:function(m,A,R){var on=m.type==="mono";return{rel:on,qty:on?Math.ceil(A/2.1):0,on:on};}},
+    {id:"rive_U",nom:"Rive latérale U",len:2.1,calc:function(m,A,R){var on=m.vergeLen>0;return{rel:on,qty:on?Math.ceil(m.vergeLen/2.1):0,on:on};}},
+    {id:"rive_L",nom:"Rive latérale L",len:2.1,calc:function(m,A,R){var on=m.vergeLen>0;return{rel:on,qty:on?Math.ceil(m.vergeLen/2.1):0,on:false};}},
+    {id:"caches",nom:"Caches mousses",len:1.0,calc:function(m,A,R){return{rel:true,qty:Math.ceil(m.eaveLen),on:true};}},
+    {id:"vis_couture",nom:"Vis de couture",pack:100,unit:"pack(s) de 100",sub:"fixation des accessoires · vendu par 100",calc:function(m,A,R){var structML=m.ridgeLen+m.vergeLen+m.eaveLen+(m.type==="mono"?A:0);var units=Math.ceil(structML*3);return{rel:true,qty:Math.max(1,Math.ceil(units/100)),on:true};}}
+  ];
+
+  var ICONS={
+    canal:'<svg viewBox="0 0 40 34" fill="none"><path d="M2 30c3 0 3-22 6-22s3 22 6 22 3-22 6-22 3 22 6 22 3-22 6-22 3 22 6 22" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
+    plate:'<svg viewBox="0 0 40 34" fill="none"><rect x="3" y="6" width="10" height="9" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="15" y="6" width="10" height="9" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="27" y="6" width="10" height="9" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="9" y="19" width="10" height="9" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="21" y="19" width="10" height="9" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>',
+    bac:'<svg viewBox="0 0 40 34" fill="none"><path d="M3 28V12l5-5 5 5v16M13 28V12l5-5 5 5v16M23 28V12l5-5 5 5v16" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>',
+    mono:'<svg viewBox="0 0 40 30" fill="none"><path d="M4 24 36 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M4 24h32" stroke="currentColor" stroke-width="2" opacity=".5"/></svg>',
+    "2egaux":'<svg viewBox="0 0 40 30" fill="none"><path d="M4 24 20 8 36 24" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg>',
+    "2inegaux":'<svg viewBox="0 0 40 30" fill="none"><path d="M4 24 24 8 36 24" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg>',
+    croupe:'<svg viewBox="0 0 40 30" fill="none"><path d="M4 24 12 12h16l8 12M12 12 8 24M28 12l4 12" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>',
+    pavillon:'<svg viewBox="0 0 40 30" fill="none"><path d="M4 24 20 9 36 24M20 9 8 24M20 9l12 15" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>'
+  };
+
+  /* =====================================================================
+     INTÉGRATION SHOPIFY — TABLE DE CORRESPONDANCE
+     ---------------------------------------------------------------------
+     Handles RÉELS relevés dans le CSV/export de la boutique (juin 2026).
+       • ROMANE : 1 produit/teinte. Variantes = Taille (longueur) ×
+         Épaisseur ("40 mm / 80 mm" / "60 mm / 105 mm"). Prix par longueur.
+       • ACCESSOIRES / VISSERIE : variantes incluant la COULEUR de tuile
+         (Terracotta / Rouge Vieillie / Pastel Vieillie / Gris Ardoise) —
+         on matche donc aussi la teinte.
+       • PLATES / BAC : à compléter (voir note plus bas) — handles cassés
+         + modèle de prix à confirmer (au m² ?).
+     ▸ AJOUTER UN PRODUIT : l'ajouter à la collection 'devis-isotuiles' et
+       compléter le handle dans la table ci-dessous.
+     ===================================================================== */
+  var SHOP_MAP = {
+    maxLongueur: 12.25,                       // longueur max commandable (au-delà : sur devis)
+    // PANNEAUX : 'gamme|Teinte (libellé configurateur)' -> handle produit
+    panelHandles: {
+      'romane|Rouge terracotta': 'romane-canal-terracotta',
+      'romane|Rouge vieilli':    'romane-canal-rouge-vieillie',
+      'romane|Pastel vieilli':   'romane-canal-pastel-vieillie',
+      'romane|Gris anthracite':  'romane-canal-gris-anthracite'
+      // 'plates|...': '...',   // à compléter (handles cassés + prix à confirmer)
+      // 'bac|...':    '...'
+    },
+    // Teinte configurateur -> libellé "Couleur" des variantes accessoires/visserie
+    accColour: {
+      'Rouge terracotta':'Terracotta', 'Rouge vieilli':'Rouge Vieillie',
+      'Pastel vieilli':'Pastel Vieillie', 'Gris anthracite':'Gris Ardoise'   // ⚠ à confirmer (anthracite vs ardoise)
+    },
+    // ACCESSOIRES : id -> handle (string) ou fonction(state)->handle
+    accessoires: {
+      faitage_dp:   'faitage',
+      faitage_mur:  'faitage-contre-mur',
+      faitage_ferm: 'faitage-de-fermeture',
+      rive_U:       'rive-laterale-u',
+      rive_L:       'rive-laterale-l',
+      caches:       function(){ return thickToken()==='60' ? 'cache-mousse-ep-60-100-mm' : 'cache-mousse-ep-40-80-mm'; }
+      // vis_couture : aucun produit Shopify correspondant trouvé -> non ajouté au panier
+    },
+    // VISSERIE : charpente -> handle (VIS BOIS = vis-150mm, VIS ACIER = vis-125mm)
+    visserie: { bois:'vis-150mm', acier:'vis-125mm' }
+  };
+
+  /* Lecture du catalogue injecté par Liquid (inerte hors Shopify) */
+  var SHOP={ ok:false, products:[], shopUrl:'', currency:'EUR' };
+  (function(){
+    try{
+      var el=document.getElementById('iso-shopify-data');
+      var data=JSON.parse(el.textContent);
+      if(data && data.products && data.products.length){
+        SHOP.ok=true; SHOP.products=data.products; SHOP.shopUrl=data.shopUrl||''; SHOP.currency=data.currency||'EUR';
+      }
+    }catch(e){ SHOP.ok=false; }   // local : pas de catalogue -> mode hors-boutique
+  })();
+  function shopProduct(handle){ for(var i=0;i<SHOP.products.length;i++) if(SHOP.products[i].handle===handle) return SHOP.products[i]; return null; }
+  function shopVariant(handle, tokens, strict){
+    var p=shopProduct(handle); if(!p) return null;
+    var want=(tokens||[]).map(function(t){return (t||'').toString().toLowerCase();}).filter(Boolean);
+    if(p.variants.length===1 || !want.length) return {product:p, variant:p.variants[0]};
+    for(var i=0;i<p.variants.length;i++){
+      var hay=(p.variants[i].options||[]).join(' ').toLowerCase()+' '+(p.variants[i].title||'').toLowerCase();
+      var ok=true; for(var j=0;j<want.length;j++){ if(hay.indexOf(want[j])<0){ ok=false; break; } }
+      if(ok) return {product:p, variant:p.variants[i]};
+    }
+    if(strict) return {product:p, variant:null, nomatch:true};   // panneau : pas de variante approximative
+    return {product:p, variant:p.variants[0], approx:true};
+  }
+  /* longueur (m) -> libellé option "Taille" Shopify : 5.25 -> "5.250 mm" */
+  function tailleStr(m){ var mm=Math.round(m*1000), s=String(mm); return (s.length>3? s.slice(0,-3)+'.'+s.slice(-3):s)+' mm'; }
+  /* classe d'épaisseur (40 ou 60) pour matcher "40 mm / 80 mm" / "60 mm / 105 mm" */
+  function thickToken(){ var n=(state.epaisseur||'').match(/\d+/); return n?n[0]:''; }
+  function panelHandleFor(){
+    return SHOP_MAP.panelHandles[state.produit+'|'+state.couleur.nom] || null;
+  }
+  function money(cents){ try{ return (cents/100).toLocaleString('fr-FR',{style:'currency',currency:SHOP.currency}); }catch(e){ return (cents/100).toFixed(2)+' '+SHOP.currency; } }
+  function prodUrl(p,v){ return (p.url||('/products/'+p.handle))+(v?(((p.url||'').indexOf('?')>=0?'&':'?')+'variant='+v.id):''); }
+
+  /* État */
+  var state={ step:1, produit:null, couleur:null, epaisseur:null,
+    typeToit:"2egaux", largeur:null, rampant:null, rampantG:null, rampantD:null, profondeur:null,
+    charpente:"bois", entraxe:"2", accessoires:{}, _accSig:"" };
+  var MAX_STEP=6;
+  var PI=Math.PI, PITCH=28*PI/180;
+
+  var root=document.getElementById('iso-config');
+  function $(id){ return document.getElementById(id); }
+  function qa(s){ return Array.prototype.slice.call(root.querySelectorAll(s)); }
+  function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+  function fmt(n,d){ return n.toLocaleString('fr-FR',{minimumFractionDigits:d||0,maximumFractionDigits:d||0}); }
+
+  /* longueurs disponibles 2,10 → 15,75 par pas de 0,35 */
+  function longueurs(){ var a=[]; for(var v=ISO.panneau.longueurMin; v<=ISO.panneau.longueurMax+1e-9; v+=ISO.panneau.pas){ a.push(Math.round(v*100)/100); } return a; }
+
+  /* ===================================================================
+     GÉOMÉTRIE DE TOIT (partagée 3D + calcul de surface)
+     Retourne des pentes décrites par 4 coins [x,y,z] en mètres + méta.
+     =================================================================== */
+  function roofCorners(type, A, R, Rg, Rd){
+    A=A||8; R=R||5; Rg=Rg||4; Rd=Rd||6;
+    var s=[], meta={type:type, ridgeLen:0, eaveLen:0, vergeLen:0};
+    function sl(rl,rr,el,er){ return {RL:rl,RR:rr,EL:el,ER:er}; }
+    if(type==='mono'){
+      var run=R*Math.cos(PITCH), H=R*Math.sin(PITCH);
+      s.push(sl([-A/2,H,-run/2],[A/2,H,-run/2],[-A/2,0,run/2],[A/2,0,run/2]));
+      meta.eaveLen=A; meta.vergeLen=2*R;
+    } else if(type==='2egaux'){
+      var run2=R*Math.cos(PITCH), H2=R*Math.sin(PITCH);
+      s.push(sl([-A/2,H2,0],[A/2,H2,0],[-A/2,0,run2],[A/2,0,run2]));
+      s.push(sl([-A/2,H2,0],[A/2,H2,0],[-A/2,0,-run2],[A/2,0,-run2]));
+      meta.ridgeLen=A; meta.eaveLen=2*A; meta.vergeLen=2*R;
+    } else if(type==='2inegaux'){
+      var H3=Math.min(Rg,Rd)*Math.sin(PITCH);
+      var rg=Math.sqrt(Math.max(Rg*Rg-H3*H3,0.04)), rd=Math.sqrt(Math.max(Rd*Rd-H3*H3,0.04));
+      s.push(sl([-A/2,H3,0],[A/2,H3,0],[-A/2,0,rd],[A/2,0,rd]));
+      s.push(sl([-A/2,H3,0],[A/2,H3,0],[-A/2,0,-rg],[A/2,0,-rg]));
+      meta.ridgeLen=A; meta.eaveLen=2*A; meta.vergeLen=Rg+Rd;
+    } else { /* croupe / pavillon */
+      var run4=R*Math.cos(PITCH), H4=R*Math.sin(PITCH);
+      var ridgeLen = type==='pavillon' ? 0 : Math.max(A-2*run4,0);
+      var rx=ridgeLen/2;
+      s.push(sl([-rx,H4,0],[rx,H4,0],[-A/2,0,run4],[A/2,0,run4]));        // avant
+      s.push(sl([-rx,H4,0],[rx,H4,0],[-A/2,0,-run4],[A/2,0,-run4]));      // arrière
+      s.push(sl([rx,H4,0],[rx,H4,0],[A/2,0,run4],[A/2,0,-run4]));         // croupe droite
+      s.push(sl([-rx,H4,0],[-rx,H4,0],[-A/2,0,-run4],[-A/2,0,run4]));     // croupe gauche
+      meta.ridgeLen=ridgeLen; meta.eaveLen=2*A+4*run4; meta.vergeLen=0;
+    }
+    return {slopes:s, meta:meta};
+  }
+  function triArea(a,b,c){
+    var ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2], vx=c[0]-a[0],vy=c[1]-a[1],vz=c[2]-a[2];
+    var x=uy*vz-uz*vy,y=uz*vx-ux*vz,z=ux*vy-uy*vx; return 0.5*Math.sqrt(x*x+y*y+z*z);
+  }
+  function roofArea(slopes){ var t=0; slopes.forEach(function(q){ t+=triArea(q.RL,q.RR,q.ER)+triArea(q.RL,q.ER,q.EL); }); return t; }
+
+  function mainR(){ return state.typeToit==='2inegaux' ? Math.max(state.rampantG||0,state.rampantD||0) : (state.rampant||0); }
+  function currentCorners(forDisplay){
+    var A=state.largeur|| (forDisplay?8:0);
+    var R=state.rampant|| (forDisplay?5:0);
+    var Rg=state.rampantG|| (forDisplay?4:0), Rd=state.rampantD|| (forDisplay?6:0);
+    return roofCorners(state.typeToit, A, R, Rg, Rd);
+  }
+  function thicknessMm(){ if(!state.epaisseur) return 40; var m=state.epaisseur.match(/\d+/); return m?parseInt(m[0],10):40; }
+
+  /* ===================================================================
+     MODULE 3D
+     =================================================================== */
+  function _sub(a,b){return [a[0]-b[0],a[1]-b[1],a[2]-b[2]];}
+  function _cross(a,b){return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
+  function _len(a){return Math.sqrt(a[0]*a[0]+a[1]*a[1]+a[2]*a[2])||1;}
+  function _normv(a){var l=_len(a);return [a[0]/l,a[1]/l,a[2]/l];}
+  function _lerp(a,b,t){return [a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];}
+
+  var iso3D=(function(){
+    var ok=false, renderer, scene, camera, group, matRoof, matFoam, slopeMeshes=[], foamMesh, ridgeMesh, ground;
+    var rotY=0.7, rotX=-0.5, targetRotY=0.7, dist=6.0, targetDist=6.0, dragging=false, lastX=0,lastY=0, mount, key='';
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+    /* modules réels (m) par profil : largeur motif (mw), hauteur de rang (mh), + carreau de texture nx×ny */
+    var MOD={ canal:{mw:0.35,mh:0.35,nx:4,ny:4}, plate:{mw:0.25,mh:0.21,nx:5,ny:6}, bac:{mw:0.35,mh:0.50,nx:4,ny:3} };
+    function patch(profile){ var m=MOD[profile]||MOD.canal; return {px:m.mw*m.nx, py:m.mh*m.ny, m:m}; }
+    function smoothstep(a,b,t){ t=clamp((t-a)/(b-a),0,1); return t*t*(3-2*t); }
+
+    /* relief normalisé 0..1 selon le profil */
+    function tileShape(u,v,profile,nWave,nRow,nCol){
+      if(profile==='canal'){
+        var barrel=Math.pow(0.5+0.5*Math.cos(u*2*PI*nWave),0.72);          // barrette arrondie
+        var cp=(v*nRow)%1; if(cp<0) cp+=1;
+        var lip=Math.exp(-Math.pow(cp/0.07,2))+Math.exp(-Math.pow((cp-1)/0.07,2)); // recouvrement de rang
+        return clamp(barrel*0.82+lip*0.18,0,1);
+      }
+      if(profile==='bac'){ return 0.5+0.5*Math.tanh(3*Math.cos(u*2*PI*nWave)); }
+      // tuiles plates : tuiles plates en quinconce, joints creusés, marche de recouvrement
+      var ri=Math.floor(v*nRow), rf=v*nRow-ri;
+      var off=(((ri%2)+2)%2)?0.5:0;
+      var cf=(u*nCol+off); cf-=Math.floor(cf);
+      var gv=smoothstep(0,0.07,Math.min(cf,1-cf));   // joint vertical entre tuiles
+      var gh=smoothstep(0,0.12,rf);                  // recouvrement (haut du rang plus bas)
+      return 0.12+0.88*Math.min(gv,gh);
+    }
+
+    /* texture procédurale mouchetée par teinte (calée sur les vraies couleurs) */
+    var texCache={};
+    function shade(hex,f){
+      var c=new THREE.Color(hex); var r=clamp(c.r*f,0,1),g=clamp(c.g*f,0,1),b=clamp(c.b*f,0,1);
+      return 'rgb('+(r*255|0)+','+(g*255|0)+','+(b*255|0)+')';
+    }
+    function tileTexture(hex,profile){
+      var key=profile+hex; if(texCache[key]) return texCache[key];
+      var pa=patch(profile), m=pa.m, px=320, cv=document.createElement('canvas'); cv.width=cv.height=px;
+      var x=cv.getContext('2d'), k;
+      x.fillStyle=shade(hex,1.0); x.fillRect(0,0,px,px);
+      if(profile==='plate'){
+        var tw=px/m.nx, th=px/m.ny, ry,cx;
+        for(ry=-1;ry<m.ny+1;ry++){ var off=(((ry%2)+2)%2)?tw*0.5:0;
+          for(cx=-1;cx<m.nx+1;cx++){ var f=0.84+Math.random()*0.30; x.fillStyle=shade(hex,f); x.fillRect(cx*tw+off+1, ry*th+1, tw-2, th-2); }
+        }
+        x.strokeStyle='rgba(0,0,0,.34)'; x.lineWidth=2;
+        for(ry=-1;ry<m.ny+1;ry++){ var o2=(((ry%2)+2)%2)?tw*0.5:0, Y=ry*th;
+          x.beginPath(); x.moveTo(0,Y); x.lineTo(px,Y); x.stroke();
+          for(cx=-1;cx<m.nx+2;cx++){ var X=cx*tw+o2; x.beginPath(); x.moveTo(X,Y); x.lineTo(X,Y+th); x.stroke(); }
+        }
+      } else {
+        var bar=px/m.nx;     // barrettes (canal)
+        for(k=-1;k<m.nx+1;k++){ var xv=k*bar, xc=(k+0.5)*bar;
+          var gr=x.createLinearGradient(xv-bar*0.5,0,xv+bar*0.5,0);
+          gr.addColorStop(0,'rgba(0,0,0,0)'); gr.addColorStop(0.5,'rgba(0,0,0,.22)'); gr.addColorStop(1,'rgba(0,0,0,0)');
+          x.fillStyle=gr; x.fillRect(xv-bar*0.5,0,bar,px);
+          x.fillStyle='rgba(255,255,255,.08)'; x.fillRect(xc-bar*0.12,0,bar*0.24,px);
+        }
+        var rh=px/m.ny;      // lignes de rang
+        for(k=0;k<m.ny+1;k++){ var yv=k*rh; x.fillStyle='rgba(0,0,0,.20)'; x.fillRect(0,yv-1,px,2); x.fillStyle='rgba(255,255,255,.10)'; x.fillRect(0,yv+1,px,1); }
+      }
+      // moucheture (vieillissement) — dessinée en wrap pour rester raccordable
+      for(k=0;k<160;k++){
+        var bx=Math.random()*px, by=Math.random()*px, br=2+Math.random()*8, ff=0.66+Math.random()*0.56;
+        x.globalAlpha=0.08+Math.random()*0.14; x.fillStyle=shade(hex,ff);
+        for(var dx=-px;dx<=px;dx+=px) for(var dy=-px;dy<=px;dy+=px){ x.beginPath(); x.arc(bx+dx,by+dy,br,0,6.283); x.fill(); }
+      }
+      x.globalAlpha=1;
+      var img=x.getImageData(0,0,px,px), d=img.data;
+      for(k=0;k<d.length;k+=4){ var n=(Math.random()-0.5)*14; d[k]+=n; d[k+1]+=n; d[k+2]+=n; }
+      x.putImageData(img,0,0);
+      var t=new THREE.CanvasTexture(cv); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.encoding=THREE.sRGBEncoding; t.anisotropy=4;
+      texCache[key]=t; return t;
+    }
+
+    function pushTri(arr,a,b,c){ arr.push(a[0],a[1],a[2],b[0],b[1],b[2],c[0],c[1],c[2]); }
+    function band(arr, P0, P1, nrm, thk){
+      var b0=[P0[0]-nrm[0]*thk,P0[1]-nrm[1]*thk,P0[2]-nrm[2]*thk];
+      var b1=[P1[0]-nrm[0]*thk,P1[1]-nrm[1]*thk,P1[2]-nrm[2]*thk];
+      pushTri(arr,P0,b0,b1); pushTri(arr,P0,b1,P1);
+    }
+
+    function buildSurface(c,s,yOff,profile,nWave,nRow,nCol,thk,foamArr){
+      function V(a){return [a[0]*s, a[1]*s+yOff, a[2]*s];}
+      var RL=V(c.RL),RR=V(c.RR),EL=V(c.EL),ER=V(c.ER);
+      var nrm=_normv(_cross(_sub(RR,RL),_sub(EL,RL))); if(nrm[1]<0) nrm=[-nrm[0],-nrm[1],-nrm[2]];
+      var ampM = profile==='canal'?0.05 : profile==='bac'?0.04 : 0.012;   // hauteur réelle (m)
+      var amp = clamp(ampM*s*1.9, 0.010, 0.10);
+      var pa=patch(profile);
+      var widthM=_len(_sub(c.RR,c.RL))||_len(_sub(c.ER,c.EL))||1, slopeM=_len(_sub(c.EL,c.RL))||1;
+      var segU=clamp(Math.round((profile==='plate'?nCol:nWave)*6),60,180), segV=profile==='bac'?28:40, i,j;
+      var g=new THREE.BufferGeometry(), pos=[], uv=[], idx=[];
+      for(j=0;j<=segV;j++){ var v=j/segV;
+        for(i=0;i<=segU;i++){ var u=i/segU;
+          var T=_lerp(RL,RR,u), B=_lerp(EL,ER,u), P=_lerp(T,B,v), d=tileShape(u,v,profile,nWave,nRow,nCol)*amp;
+          pos.push(P[0]+nrm[0]*d, P[1]+nrm[1]*d, P[2]+nrm[2]*d);
+          uv.push(u*widthM/pa.px, v*slopeM/pa.py);
+        }
+      }
+      for(j=0;j<segV;j++) for(i=0;i<segU;i++){ var a=j*(segU+1)+i,b=a+1,cc=a+(segU+1),e=cc+1; idx.push(a,cc,b,b,cc,e); }
+      g.setIndex(idx); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+      g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2)); g.computeVertexNormals();
+      // mousse : bande à l'égout + bandes sur rives latérales
+      var fs=24, k;
+      for(k=0;k<fs;k++){ var u0=k/fs,u1=(k+1)/fs; band(foamArr,_lerp(EL,ER,u0),_lerp(EL,ER,u1),nrm,thk); }
+      for(k=0;k<fs;k++){ var v0=k/fs,v1=(k+1)/fs;
+        band(foamArr,_lerp(RL,EL,v0),_lerp(RL,EL,v1),nrm,thk);
+        band(foamArr,_lerp(RR,ER,v0),_lerp(RR,ER,v1),nrm,thk);
+      }
+      return g;
+    }
+
+    function rebuild(o){
+      var rc=roofCorners(o.type,o.A,o.R,o.Rg,o.Rd), slopes=rc.slopes;
+      // bbox / échelle
+      var maxX=0,maxZ=0,maxY=0;
+      slopes.forEach(function(q){ ['RL','RR','EL','ER'].forEach(function(kk){ var p=q[kk]; maxX=Math.max(maxX,Math.abs(p[0])); maxZ=Math.max(maxZ,Math.abs(p[2])); maxY=Math.max(maxY,p[1]); }); });
+      var s=3.0/Math.max(maxX*2, maxZ*2, maxY*1.6, 1), yOff=-maxY*s/2;
+      var thk=clamp((o.mm/1000)*s*4.2, 0.02, 0.22);
+      var nWave = (o.profile==='bac'||o.profile==='canal')?clamp(Math.round(o.A/0.35),3,80):1;
+      var nRow, nCol;
+      if(o.profile==='plate'){ nCol=clamp(Math.round(o.A/MOD.plate.mw),3,100); nRow=clamp(Math.round(o.R/MOD.plate.mh),3,140); }
+      else { nRow=clamp(Math.round(o.R/0.35),4,90); nCol=clamp(Math.round(o.A/0.30),6,80); }
+      var foamArr=[], i;
+      for(i=0;i<slopeMeshes.length;i++){
+        if(i<slopes.length){
+          if(slopeMeshes[i].geometry) slopeMeshes[i].geometry.dispose();
+          slopeMeshes[i].geometry=buildSurface(slopes[i],s,yOff,o.profile,nWave,nRow,nCol,thk,foamArr);
+          slopeMeshes[i].visible=true;
+        } else slopeMeshes[i].visible=false;
+      }
+      var fg=new THREE.BufferGeometry(); fg.setAttribute('position',new THREE.Float32BufferAttribute(foamArr,3)); fg.computeVertexNormals();
+      if(foamMesh.geometry) foamMesh.geometry.dispose(); foamMesh.geometry=fg;
+      // faîtage
+      if(rc.meta.ridgeLen>0.001){ ridgeMesh.visible=true; ridgeMesh.scale.x=rc.meta.ridgeLen*s*1.02; ridgeMesh.position.set(0, maxY*s+yOff, 0); }
+      else ridgeMesh.visible=false;
+      ground.position.y=yOff-0.04;
+    }
+
+    function makeEnv(){
+      var c=document.createElement('canvas'); c.width=16; c.height=128; var x=c.getContext('2d');
+      var grd=x.createLinearGradient(0,0,0,128);
+      grd.addColorStop(0,'#eaf3fb'); grd.addColorStop(0.48,'#bcd6ee'); grd.addColorStop(0.52,'#7f9db8'); grd.addColorStop(1,'#34506b');
+      x.fillStyle=grd; x.fillRect(0,0,16,128);
+      var tex=new THREE.CanvasTexture(c); tex.mapping=THREE.EquirectangularReflectionMapping;
+      var pm=new THREE.PMREMGenerator(renderer); var env=pm.fromEquirectangular(tex).texture; pm.dispose(); tex.dispose(); return env;
+    }
+
+    function init(){
+      mount=$('iso-3d'); if(typeof THREE==='undefined'||!mount) return false;
+      try{
+        renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+        renderer.outputEncoding=THREE.sRGBEncoding; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.02;
+        renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+      }catch(e){ return false; }
+      mount.appendChild(renderer.domElement);
+      scene=new THREE.Scene(); scene.environment=makeEnv();
+      camera=new THREE.PerspectiveCamera(34,1,0.1,100); camera.position.set(0,0.4,dist);
+      scene.add(new THREE.AmbientLight(0xffffff,0.35));
+      scene.add(new THREE.HemisphereLight(0xffffff,0x33424f,0.45));
+      var keyL=new THREE.DirectionalLight(0xffffff,1.15); keyL.position.set(4,7,5); keyL.castShadow=true;
+      keyL.shadow.mapSize.set(1024,1024); keyL.shadow.camera.near=1; keyL.shadow.camera.far=25;
+      keyL.shadow.camera.left=-4; keyL.shadow.camera.right=4; keyL.shadow.camera.top=4; keyL.shadow.camera.bottom=-4; keyL.shadow.bias=-0.0005; scene.add(keyL);
+      var fill=new THREE.DirectionalLight(0xbcd4ee,0.4); fill.position.set(-5,2,-3); scene.add(fill);
+
+      group=new THREE.Group(); scene.add(group);
+      matRoof=new THREE.MeshStandardMaterial({color:0x8a99a8,metalness:0.35,roughness:0.42,side:THREE.DoubleSide,envMapIntensity:1.0});
+      matFoam=new THREE.MeshStandardMaterial({color:0xE9DEC2,metalness:0.0,roughness:0.95,side:THREE.DoubleSide,envMapIntensity:0.4});
+      var i; for(i=0;i<4;i++){ var m=new THREE.Mesh(new THREE.BufferGeometry(),matRoof); m.castShadow=true; m.receiveShadow=true; m.visible=false; group.add(m); slopeMeshes.push(m); }
+      foamMesh=new THREE.Mesh(new THREE.BufferGeometry(),matFoam); foamMesh.castShadow=true; group.add(foamMesh);
+      var rGeo=new THREE.CylinderGeometry(0.05,0.05,1,18); rGeo.rotateZ(PI/2);
+      ridgeMesh=new THREE.Mesh(rGeo,new THREE.MeshStandardMaterial({color:0xffffff,metalness:0.2,roughness:0.5})); ridgeMesh.castShadow=true; group.add(ridgeMesh);
+      ground=new THREE.Mesh(new THREE.PlaneGeometry(16,16),new THREE.ShadowMaterial({opacity:0.22})); ground.rotation.x=-PI/2; ground.receiveShadow=true; scene.add(ground);
+
+      rebuild({type:'2egaux',A:8,R:5,Rg:4,Rd:6,profile:'canal',mm:40}); key='2egaux|8|5||canal|40';
+      bindPointer(); resize(); window.addEventListener('resize',resize);
+      if(window.ResizeObserver) new ResizeObserver(resize).observe(mount);
+      ok=true; animate(); return true;
+    }
+    function bindPointer(){
+      var el=renderer.domElement;
+      el.addEventListener('pointerdown',function(e){ dragging=true; lastX=e.clientX; lastY=e.clientY; el.setPointerCapture&&el.setPointerCapture(e.pointerId); });
+      el.addEventListener('pointermove',function(e){ if(!dragging) return; targetRotY+=(e.clientX-lastX)*0.01; rotX=clamp(rotX+(e.clientY-lastY)*0.008,-1.15,0.25); lastX=e.clientX; lastY=e.clientY; });
+      function up(e){ dragging=false; try{ el.releasePointerCapture&&e.pointerId!=null&&el.releasePointerCapture(e.pointerId); }catch(_){} }
+      el.addEventListener('pointerup',up); el.addEventListener('pointerleave',up); el.addEventListener('pointercancel',up);
+      el.addEventListener('wheel',function(e){ e.preventDefault(); targetDist=clamp(targetDist+(e.deltaY>0?0.5:-0.5),4.2,8.5); },{passive:false});
+    }
+    function resize(){ if(!mount) return; var w=mount.clientWidth||320,h=mount.clientHeight||260; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+    function animate(){ requestAnimationFrame(animate); if(!dragging&&!reduce) targetRotY+=0.0024; rotY+=(targetRotY-rotY)*0.12; dist+=(targetDist-dist)*0.1; group.rotation.y=rotY; group.rotation.x=rotX; camera.position.z=dist; renderer.render(scene,camera); }
+    function setFinish(hex,profile){
+      if(profile==='canal'||profile==='plate'){
+        matRoof.map=tileTexture(hex,profile); matRoof.color.setRGB(1,1,1);
+        matRoof.metalness=0.04; matRoof.roughness=0.88; matRoof.envMapIntensity=0.45;
+      } else {
+        matRoof.map=null; matRoof.color.copy(new THREE.Color(hex)).convertSRGBToLinear();
+        matRoof.metalness=0.45; matRoof.roughness=0.40; matRoof.envMapIntensity=1.0;
+      }
+      matRoof.needsUpdate=true;
+    }
+
+    return { init:init, get ok(){return ok;},
+      update:function(o){ if(!ok||!o) return;
+        var k=[o.type,o.A,o.R,(o.Rg||'')+'-'+(o.Rd||''),o.profile,o.mm].join('|');
+        if(k!==key){ rebuild(o); key=k; } if(o.hex) setFinish(o.hex,o.profile);
+      }
+    };
+  })();
+
+  function paintRoofSVG(){
+    var plane=$('iso-roof-plane'),tex=$('iso-roof-texture'); if(!plane) return;
+    plane.setAttribute('fill', state.couleur?state.couleur.hex:'#8a99a8'); tex.innerHTML='';
+  }
+  function paintRoof(){
+    var profil=state.produit?ISO.produits[state.produit].profil:'canal';
+    var col=state.couleur?state.couleur.hex:'#8a99a8';
+    var A=state.largeur||8, R=state.rampant||5, Rg=state.rampantG||4, Rd=state.rampantD||6, mm=thicknessMm();
+    if(iso3D.ok){ iso3D.update({hex:col,profile:profil,type:state.typeToit,A:A,R:R,Rg:Rg,Rd:Rd,mm:mm}); } else paintRoofSVG();
+    var cap=$('iso-preview-cap');
+    cap.textContent = state.produit ? (ISO.produits[state.produit].nom+(state.couleur?' — '+state.couleur.nom:'')) : 'Sélectionnez une gamme';
+  }
+
+  /* ----- Étape 1 ----- */
+  function renderGammes(){
+    var w=$('iso-gammes'); w.innerHTML='';
+    Object.keys(ISO.produits).forEach(function(key){ var p=ISO.produits[key];
+      var b=document.createElement('button'); b.type='button'; b.className='iso-card'; b.dataset.key=key; b.setAttribute('aria-pressed','false');
+      b.innerHTML='<span class="iso-card-ico">'+ICONS[p.profil]+'</span><span class="iso-card-txt"><span class="iso-card-name">'+p.nom+'</span><span class="iso-card-sub">'+p.sousTitre+' · délai '+p.delai+'</span></span><span class="iso-card-check">✓</span>';
+      b.addEventListener('click',function(){ selectGamme(key); }); w.appendChild(b);
+    });
+    syncGammeSel();
+  }
+  function selectGamme(k){ if(state.produit!==k){ state.couleur=null; state.epaisseur=null; } state.produit=k; syncGammeSel(); renderCouleurs(); renderEpaisseurs(); paintRoof(); refresh(); }
+  function syncGammeSel(){ qa('#iso-gammes .iso-card').forEach(function(c){ var on=c.dataset.key===state.produit; c.classList.toggle('is-sel',on); c.setAttribute('aria-pressed',on); }); }
+
+  /* ----- Étape 2 ----- */
+  function renderCouleurs(){
+    var w=$('iso-couleurs'); w.innerHTML=''; if(!state.produit) return;
+    ISO.produits[state.produit].couleurs.forEach(function(c){
+      var b=document.createElement('button'); b.type='button'; b.className='iso-card iso-swatch'; b.dataset.name=c.nom; b.setAttribute('aria-pressed','false');
+      b.innerHTML='<span class="iso-sw-color" style="background:'+c.hex+'"></span><span class="iso-sw-name">'+c.nom+'</span><span class="iso-card-check">✓</span>';
+      b.addEventListener('click',function(){ state.couleur=c; syncColorSel(); paintRoof(); refresh(); }); w.appendChild(b);
+    });
+    syncColorSel();
+  }
+  function syncColorSel(){ qa('#iso-couleurs .iso-card').forEach(function(c){ var on=state.couleur&&c.dataset.name===state.couleur.nom; c.classList.toggle('is-sel',on); c.setAttribute('aria-pressed',!!on); }); }
+
+  /* ----- Étape 3 ----- */
+  function renderEpaisseurs(){
+    var w=$('iso-epaisseurs'); w.innerHTML=''; if(!state.produit) return;
+    ISO.produits[state.produit].epaisseurs.forEach(function(e){
+      var b=document.createElement('button'); b.type='button'; b.className='iso-chip'; b.textContent=e; b.dataset.val=e; b.setAttribute('aria-pressed','false');
+      b.addEventListener('click',function(){ state.epaisseur=e; syncEpSel(); paintRoof(); refresh(); }); w.appendChild(b);
+    });
+    syncEpSel();
+  }
+  function syncEpSel(){ qa('#iso-epaisseurs .iso-chip').forEach(function(c){ var on=c.dataset.val===state.epaisseur; c.classList.toggle('is-sel',on); c.setAttribute('aria-pressed',on); }); }
+
+  /* ----- Étape 4 : type + dimensions ----- */
+  function renderTypes(){
+    var w=$('iso-types'); w.innerHTML='';
+    TYPES.forEach(function(t){
+      var b=document.createElement('button'); b.type='button'; b.className='iso-card'; b.dataset.type=t.id; b.setAttribute('aria-pressed','false');
+      b.innerHTML='<span class="iso-card-ico">'+(ICONS[t.id]||'')+'</span><span class="iso-card-txt"><span class="iso-card-name">'+t.nom+'</span><span class="iso-card-sub">'+t.sub+'</span></span><span class="iso-card-check">✓</span>';
+      b.addEventListener('click',function(){ state.typeToit=t.id; syncTypeSel(); renderDims(); paintRoof(); refresh(); }); w.appendChild(b);
+    });
+    syncTypeSel();
+  }
+  function syncTypeSel(){ qa('#iso-types .iso-card').forEach(function(c){ var on=c.dataset.type===state.typeToit; c.classList.toggle('is-sel',on); c.setAttribute('aria-pressed',on); }); }
+
+  function lenSelect(id,val,label){
+    var opts='<option value="">— choisir —</option>';
+    longueurs().forEach(function(l){ opts+='<option value="'+l+'"'+(val&&Math.abs(val-l)<1e-6?' selected':'')+'>'+fmt(l,2)+' m</option>'; });
+    return '<label class="iso-field"><span class="iso-field-lbl">'+label+'</span><select class="iso-input" id="'+id+'">'+opts+'</select></label>';
+  }
+  function renderDims(){
+    var t=null; TYPES.forEach(function(x){ if(x.id===state.typeToit) t=x; });
+    var w=$('iso-dims'), html='';
+    html+='<label class="iso-field"><span class="iso-field-lbl">Largeur du versant <em>(le long de la gouttière)</em></span><div class="iso-input-unit"><input id="iso-largeur" class="iso-input" type="number" min="1" max="60" step="0.1" inputmode="decimal" placeholder="ex. 8" value="'+(state.largeur||'')+'"><span class="iso-unit">m</span></div></label>';
+    if(t.champs.indexOf('R')>=0) html+=lenSelect('iso-rampant',state.rampant,'Longueur de panneau (gouttière → faîtage)');
+    if(t.champs.indexOf('Rg')>=0) html+=lenSelect('iso-rampantG',state.rampantG,'Longueur de panneau — pan gauche');
+    if(t.champs.indexOf('Rd')>=0) html+=lenSelect('iso-rampantD',state.rampantD,'Longueur de panneau — pan droit');
+    if(t.champs.indexOf('P')>=0) html+='<label class="iso-field"><span class="iso-field-lbl">Profondeur du bâtiment <em>(pignon)</em></span><div class="iso-input-unit"><input id="iso-prof" class="iso-input" type="number" min="1" max="40" step="0.1" inputmode="decimal" placeholder="ex. 9" value="'+(state.profondeur||'')+'"><span class="iso-unit">m</span></div></label>';
+    w.innerHTML=html;
+    $('iso-dims-note').textContent='Longueurs de panneau disponibles de '+fmt(ISO.panneau.longueurMin,2)+' m à '+fmt(ISO.panneau.longueurMax,2)+' m, par multiples de 35 cm (débord inclus).';
+    // events
+    $('iso-largeur').addEventListener('input',function(e){ state.largeur=parseFloat(e.target.value)||null; paintRoof(); refresh(); });
+    var r=$('iso-rampant'); if(r) r.addEventListener('change',function(e){ state.rampant=parseFloat(e.target.value)||null; paintRoof(); refresh(); });
+    var rg=$('iso-rampantG'); if(rg) rg.addEventListener('change',function(e){ state.rampantG=parseFloat(e.target.value)||null; paintRoof(); refresh(); });
+    var rd=$('iso-rampantD'); if(rd) rd.addEventListener('change',function(e){ state.rampantD=parseFloat(e.target.value)||null; paintRoof(); refresh(); });
+    var pf=$('iso-prof'); if(pf) pf.addEventListener('input',function(e){ state.profondeur=parseFloat(e.target.value)||null; refresh(); });
+  }
+
+  /* ----- Étape 5 : fixations + accessoires ----- */
+  function density(){ return state.entraxe==='1.5'?4:state.entraxe==='2'?3:2.5; }
+  function surfaceM2(){ var rc=currentCorners(false); return roofArea(rc.slopes); }
+  function screwsCount(){
+    var s=surfaceM2(), q=s>0?Math.ceil(s*density()):0, packs=Math.ceil(q/100);
+    return { qty:q, packs:packs, type:state.charpente==='bois'?'Vis bois':'Vis autoforeuse (acier)', label:state.charpente==='bois'?'vis bois':'vis autoforeuses' };
+  }
+  function renderScrews(){
+    var box=$('iso-screws'), sc=screwsCount();
+    box.innerHTML='<span><b>'+sc.type+'</b> · '+density()+' vis/m²</span><span class="iso-screws-q">≈ '+sc.qty+' vis · '+sc.packs+' pack(s) de 100</span>';
+  }
+  function accSig(){ return [state.typeToit,state.largeur,state.rampant,state.rampantG,state.rampantD].join('|'); }
+  function renderAccessoires(){
+    var rc=currentCorners(false), m=rc.meta, A=state.largeur||0, R=mainR();
+    var fresh = accSig()!==state._accSig; state._accSig=accSig();
+    var w=$('iso-acc'); w.innerHTML='';
+    ACCESSOIRES.forEach(function(a){
+      var c=a.calc(m,A,R);
+      if(fresh || !state.accessoires[a.id]) state.accessoires[a.id]={included:c.on, qty:c.qty};
+      var st=state.accessoires[a.id];
+      var row=document.createElement('div'); row.className='iso-acc-row'+(st.included?' is-on':'');
+      var badge=c.rel?'<span class="iso-acc-badge">conseillé</span>':'';
+      var sub=a.sub?a.sub:('vendu en '+fmt(a.len,a.len%1?2:0)+' ml');
+      var unit=a.unit?a.unit:'pièce(s)';
+      row.innerHTML=
+        '<input type="checkbox" class="iso-acc-cb"'+(st.included?' checked':'')+' aria-label="Inclure '+a.nom+'">'+
+        '<div class="iso-acc-main"><div class="iso-acc-name">'+a.nom+badge+'</div><div class="iso-acc-sub">'+sub+'</div></div>'+
+        '<input type="number" class="iso-acc-qty" min="0" step="1" value="'+st.qty+'" aria-label="Quantité '+a.nom+'"><span class="iso-acc-unit">'+unit+'</span>';
+      var cb=row.querySelector('.iso-acc-cb'), qty=row.querySelector('.iso-acc-qty');
+      cb.addEventListener('change',function(){ st.included=cb.checked; row.classList.toggle('is-on',cb.checked); });
+      qty.addEventListener('input',function(){ st.qty=Math.max(0,parseInt(qty.value,10)||0); });
+      w.appendChild(row);
+    });
+    renderScrews();
+  }
+  function bindFixations(){
+    qa('[data-charpente]').forEach(function(b){ b.addEventListener('click',function(){
+      state.charpente=b.dataset.charpente; qa('[data-charpente]').forEach(function(x){ x.classList.toggle('is-sel',x===b); }); renderScrews();
+    }); });
+    $('iso-entraxe').addEventListener('change',function(e){ state.entraxe=e.target.value; renderScrews(); });
+  }
+
+  /* ----- Calcul récap ----- */
+  function compute(){
+    var rc=currentCorners(false), surface=roofArea(rc.slopes);
+    var lu=(ISO.produits[state.produit].largeurUtile)||ISO.panneau.largeurUtileParDefaut;
+    var longP=mainR();
+    var metrage=surface/lu;
+    var nb=longP>0?Math.ceil(metrage/longP):0;
+    var prix=(ISO.prixM2&&ISO.prixM2[state.produit]!=null)?surface*ISO.prixM2[state.produit]:null;
+    var hors=longP>ISO.panneau.longueurMax;
+    return {surface:surface,longP:longP,nb:nb,metrage:metrage,prix:prix,hors:hors,delai:ISO.produits[state.produit].delai,meta:rc.meta};
+  }
+  function selectedAccessoires(){
+    var out=[]; ACCESSOIRES.forEach(function(a){ var st=state.accessoires[a.id]; if(st&&st.included&&st.qty>0) out.push({nom:a.nom,qty:st.qty,len:a.len,pack:a.pack,unit:a.unit}); }); return out;
+  }
+  function accQtyText(a){ return a.pack ? (a.qty+' '+(a.unit||'pack(s) de 100')) : (a.qty+' × '+fmt(a.len,a.len%1?2:0)+' ml'); }
+  function typeNom(){ var n=state.typeToit; TYPES.forEach(function(t){ if(t.id===state.typeToit) n=t.nom; }); return n; }
+  function dimsText(){
+    if(state.typeToit==='2inegaux') return 'L '+fmt(state.largeur||0,1)+' m · pan G '+fmt(state.rampantG||0,2)+' m · pan D '+fmt(state.rampantD||0,2)+' m';
+    var t=''; t+='L '+fmt(state.largeur||0,1)+' m · panneau '+fmt(state.rampant||0,2)+' m';
+    if(state.profondeur) t+=' · prof. '+fmt(state.profondeur,1)+' m'; return t;
+  }
+
+  function renderRecap(){
+    var c=compute(), box=$('iso-recap'), alert=$('iso-recap-alert');
+    var acc=selectedAccessoires(), sc=screwsCount();
+    var rows=[
+      ['sec','Configuration'],
+      ['Gamme',ISO.produits[state.produit].nom],
+      ['Finition','<span class="iso-recap-sw" style="background:'+state.couleur.hex+'"></span>'+state.couleur.nom],
+      ['Épaisseur',state.epaisseur],
+      ['Type de toit',typeNom()],
+      ['Dimensions',dimsText()],
+      ['sec','Estimation panneaux'],
+      ['Surface de toiture',fmt(c.surface,1)+' m²'],
+      ['Longueur de panneau',fmt(c.longP,2)+' m'],
+      ['Nombre de panneaux','≈ '+c.nb],
+      ['Métrage linéaire total','≈ '+fmt(c.metrage,1)+' m'],
+      ['Délai de fabrication',c.delai],
+      ['sec','Fixations'],
+      ['Charpente',state.charpente==='bois'?'Bois':'Acier'],
+      ['Visserie','≈ '+sc.qty+' '+sc.label+' · '+sc.packs+' pack(s) de 100']
+    ];
+    if(acc.length){ rows.push(['sec','Accessoires']); acc.forEach(function(a){ rows.push([a.nom, accQtyText(a)]); }); }
+    var html='';
+    rows.forEach(function(r){
+      if(r[0]==='sec'){ html+='<div class="iso-recap-sec">'+r[1]+'</div>'; }
+      else html+='<div class="iso-recap-row"><span class="iso-recap-k">'+r[0]+'</span><span class="iso-recap-v">'+r[1]+'</span></div>';
+    });
+    if(c.prix!=null) html+='<div class="iso-recap-row iso-hl"><span class="iso-recap-k">Estimation indicative</span><span class="iso-recap-v">≈ '+fmt(c.prix,0)+' € HT</span></div>';
+    box.innerHTML=html;
+    if(c.hors){ alert.classList.remove('iso-hidden'); alert.textContent='ℹ️ La longueur de panneau choisie ('+fmt(c.longP,2)+' m) nécessite une fabrication en longueur spéciale — nous le confirmons dans votre devis.'; }
+    else alert.classList.add('iso-hidden');
+    renderShop();
+  }
+
+  /* ----- Shopify : lignes de commande, affichage, panier ----- */
+  function orderItems(){
+    var c=compute(), items=[];
+    // panneau principal : variante = longueur (Taille) × épaisseur -> prix exact
+    var handle=panelHandleFor(), taille=tailleStr(c.longP), hue=thickToken();
+    var tooLong=c.longP>SHOP_MAP.maxLongueur;
+    var rv = tooLong ? {product:shopProduct(handle), variant:null, nomatch:true, tooLong:true}
+                     : shopVariant(handle, [taille, hue], true);
+    items.push({ label:ISO.produits[state.produit].nom+' — '+state.couleur.nom+' · '+state.epaisseur+' · '+fmt(c.longP,2)+' m',
+      handle:handle, res:rv, qty:Math.max(1,c.nb), unitTxt:'panneau(x) de '+fmt(c.longP,2)+' m', tooLong:tooLong,
+      props:{ 'Type de toit':typeNom(), 'Dimensions':dimsText(), 'Longueur de panneau':fmt(c.longP,2)+' m',
+        'Surface':fmt(c.surface,1)+' m²', 'Finition':state.couleur.nom, 'Épaisseur':state.epaisseur } });
+    // accessoires sélectionnés (variantes incluant la teinte de tuile)
+    var accCol=SHOP_MAP.accColour[state.couleur.nom]||'';
+    selectedAccessoires().forEach(function(a){
+      var id=null; ACCESSOIRES.forEach(function(x){ if(x.nom===a.nom) id=x.id; });
+      var hv=SHOP_MAP.accessoires[id]; if(!hv) return;            // ex. vis_couture : pas de produit
+      var h=(typeof hv==='function')?hv():hv;
+      items.push({ label:a.nom, handle:h, res:shopVariant(h,[accCol]), qty:a.qty, unitTxt:(a.pack?'pack(s)':'pièce(s)'), props:{} });
+    });
+    // visserie (variante = teinte ; produit selon charpente)
+    var sc=screwsCount(), vh=SHOP_MAP.visserie[state.charpente];
+    if(vh) items.push({ label:sc.type, handle:vh, res:shopVariant(vh,[accCol]), qty:sc.packs, unitTxt:'pack(s) de 100', props:{'Entraxe':state.entraxe+' m'} });
+    return items;
+  }
+  function renderShop(){
+    var box=$('iso-shop'), cart=$('iso-cart'); if(!box) return;
+    if(!SHOP.ok){
+      box.innerHTML='<div class="iso-shop-note">🛈 Catalogue boutique non détecté (test hors Shopify). Une fois la page intégrée à votre boutique, vos produits s\'afficheront ici avec leurs prix et l\'ajout au panier sera actif.</div>';
+      cart.disabled=true; cart.title='Disponible une fois intégré à votre boutique Shopify'; return;
+    }
+    var items=orderItems(), html='<div class="iso-shop-head">Produits correspondants</div>', total=0, allPriced=true, anyResolved=false, missing=0;
+    items.forEach(function(it){
+      if(it.res && it.res.variant){
+        anyResolved=true; var p=it.res.product, v=it.res.variant;
+        var line=v.price*it.qty; if(v.price!=null){ total+=line; } else allPriced=false;
+        html+='<div class="iso-shop-row">'+
+          (p.image?'<img class="iso-shop-thumb" src="'+p.image+'" alt="">':'<span class="iso-shop-thumb"></span>')+
+          '<div class="iso-shop-main"><div class="iso-shop-name">'+p.title+'</div><div class="iso-shop-sub">'+it.qty+' '+it.unitTxt+(v.price!=null?(' · '+money(v.price)+' /u'):'')+(it.res.approx?' · variante par défaut':'')+'</div></div>'+
+          (v.price!=null?'<span class="iso-shop-price">'+money(line)+'</span>':'')+
+          '<a class="iso-shop-link" href="'+prodUrl(p,v)+'" target="_blank" rel="noopener">Voir ↗</a>'+
+          '</div>';
+      } else {
+        missing++;
+        var why = it.tooLong ? ('Longueur '+(it.label.match(/[\d,]+ m$/)||[''])[0]+' &gt; '+fmt(SHOP_MAP.maxLongueur,2)+' m : sur devis')
+                : (it.res && it.res.product) ? 'Longueur/épaisseur introuvable parmi les variantes du produit'
+                : ('Produit non relié (handle « '+it.handle+' » absent de la collection)');
+        html+='<div class="iso-shop-row is-missing"><div class="iso-shop-main"><div class="iso-shop-name">'+it.label+'</div><div class="iso-shop-sub">'+why+'</div></div></div>';
+      }
+    });
+    if(allPriced && anyResolved) html+='<div class="iso-shop-total"><span>Total panier estimé</span><span>'+money(total)+'</span></div>';
+    if(missing) html+='<div class="iso-shop-note">'+missing+' élément(s) non relié(s) : vérifiez le handle dans SHOP_MAP et que le produit est bien dans la collection. Ils ne seront pas ajoutés au panier.</div>';
+    box.innerHTML=html;
+    cart.disabled=!anyResolved; cart.title=anyResolved?'':'Aucun produit relié pour le moment';
+  }
+  function addToCart(btn){
+    if(!SHOP.ok) return;
+    var items=orderItems().filter(function(it){ return it.res && it.res.variant; });
+    if(!items.length) return;
+    var payload={ items: items.map(function(it){
+      var props={}; for(var k in it.props) props[k]=it.props[k];
+      return { id: it.res.variant.id, quantity: it.qty, properties: props };
+    }) };
+    var orig=btn.textContent; btn.disabled=true; btn.textContent='Ajout en cours…';
+    fetch('/cart/add.js',{ method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body:JSON.stringify(payload) })
+      .then(function(r){ if(!r.ok) throw new Error('cart'); return r.json(); })
+      .then(function(){ window.location.href='/cart'; })
+      .catch(function(){ btn.disabled=false; btn.textContent=orig; alert('Ajout au panier impossible. Vérifiez que la page est bien sur votre boutique Shopify et que les produits sont reliés.'); });
+  }
+
+  function summaryText(contact){
+    var c=compute(), acc=selectedAccessoires(), sc=screwsCount();
+    var L=['Demande de devis — Configurateur Isotuiles','==========================================',
+      '— Configuration —',
+      'Gamme : '+ISO.produits[state.produit].nom,
+      'Finition : '+state.couleur.nom,
+      'Épaisseur : '+state.epaisseur,
+      'Type de toit : '+typeNom(),
+      'Dimensions : '+dimsText(),'',
+      '— Estimation panneaux —',
+      'Surface : '+fmt(c.surface,1)+' m²',
+      'Longueur de panneau : '+fmt(c.longP,2)+' m',
+      'Nombre de panneaux : ≈ '+c.nb,
+      'Métrage linéaire : ≈ '+fmt(c.metrage,1)+' m',
+      'Délai indicatif : '+c.delai,'',
+      '— Fixations —',
+      'Charpente : '+(state.charpente==='bois'?'Bois':'Acier'),
+      'Visserie : ≈ '+sc.qty+' '+sc.label+' · '+sc.packs+' pack(s) de 100 (entraxe '+state.entraxe+' m)'];
+    if(acc.length){ L.push('','— Accessoires —'); acc.forEach(function(a){ L.push('• '+a.nom+' : '+accQtyText(a)); }); }
+    if(c.prix!=null) L.push('','Estimation indicative : ≈ '+fmt(c.prix,0)+' € HT');
+    if(contact){ L.push('','— Coordonnées —',
+      'Nom : '+contact.prenom+' '+contact.nom,
+      contact.societe?('Société : '+contact.societe):null,
+      'Téléphone : '+contact.tel,
+      'Email : '+contact.email,
+      'Livraison : '+contact.livraison,
+      'Adresse : '+contact.adresse,
+      'Début estimé : '+contact.periode); }
+    return L.filter(function(x){return x!==null;}).join('\n');
+  }
+
+  /* ----- Validation / navigation ----- */
+  function dimsValid(){
+    if(!(state.largeur>0)) return false;
+    if(state.typeToit==='2inegaux') return state.rampantG>0 && state.rampantD>0;
+    if(state.typeToit==='croupe'||state.typeToit==='pavillon') return state.rampant>0 && state.profondeur>0;
+    return state.rampant>0;
+  }
+  function stepValid(s){
+    switch(s){
+      case 1: return !!state.produit;
+      case 2: return !!state.couleur;
+      case 3: return !!state.epaisseur;
+      case 4: return dimsValid();
+      case 5: return true;
+      default: return true;
+    }
+  }
+  function showStep(s){
+    state.step=s;
+    if(s===5) renderAccessoires();
+    if(s===6) renderRecap();
+    qa('.iso-screen').forEach(function(sc){ sc.classList.toggle('is-shown',+sc.dataset.screen===s); });
+    qa('.iso-step').forEach(function(st){ var n=+st.dataset.step; st.classList.toggle('is-active',n===s); st.classList.toggle('is-done',n<s); });
+    root.querySelector('.iso-progress-bar').style.width=(s/MAX_STEP*100)+'%';
+    $('iso-prev').disabled=s===1;
+    $('iso-next').classList.toggle('iso-hidden', s===MAX_STEP);
+    if(s!==6){ $('iso-form').classList.add('iso-hidden'); }
+    refresh();
+    root.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  function refresh(){ $('iso-next').disabled=!stepValid(state.step); }
+
+  $('iso-next').addEventListener('click',function(){ if(stepValid(state.step)&&state.step<MAX_STEP) showStep(state.step+1); });
+  $('iso-prev').addEventListener('click',function(){ if(state.step>1) showStep(state.step-1); });
+  qa('.iso-step').forEach(function(st){ st.addEventListener('click',function(){ var t=+st.dataset.step; if(t<=state.step||stepValid(state.step)) showStep(Math.min(t, state.step+(stepValid(state.step)?1:0))); }); });
+  $('iso-reset').addEventListener('click',function(){
+    state={ step:1, produit:null, couleur:null, epaisseur:null, typeToit:"2egaux", largeur:null, rampant:null, rampantG:null, rampantD:null, profondeur:null, charpente:"bois", entraxe:"2", accessoires:{}, _accSig:"" };
+    $('iso-entraxe').value='2'; qa('[data-charpente]').forEach(function(x){ x.classList.toggle('is-sel',x.dataset.charpente==='bois'); });
+    renderGammes(); renderCouleurs(); renderEpaisseurs(); renderTypes(); renderDims(); paintRoof(); showStep(1);
+  });
+
+  /* ----- Devis ----- */
+  $('iso-cart').addEventListener('click',function(){ addToCart(this); });
+  $('iso-devis').addEventListener('click',function(){ var f=$('iso-form'); f.classList.remove('iso-hidden'); f.scrollIntoView({behavior:'smooth',block:'nearest'}); $('f-prenom').focus(); });
+  $('iso-copy').addEventListener('click',function(){ copy(summaryText(null),this); });
+  $('iso-send').addEventListener('click',function(){
+    var c={ prenom:val('f-prenom'),nom:val('f-nom'),societe:val('f-societe'),tel:val('f-tel'),email:val('f-email'),adresse:val('f-adresse'),livraison:val('f-livraison'),periode:val('f-periode') };
+    var err=$('iso-form-err'); var miss=[];
+    if(!c.prenom) miss.push('prénom'); if(!c.nom) miss.push('nom'); if(!c.tel) miss.push('téléphone');
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(c.email)) miss.push('email valide'); if(!c.adresse) miss.push('adresse');
+    if(miss.length){ err.classList.remove('iso-hidden'); err.textContent='Merci de compléter : '+miss.join(', ')+'.'; return; }
+    err.classList.add('iso-hidden');
+    var body=summaryText(c);
+    if(ISO.contactEmail){ window.location.href='mailto:'+ISO.contactEmail+'?subject='+encodeURIComponent('Demande de devis toiture — '+c.prenom+' '+c.nom)+'&body='+encodeURIComponent(body); }
+    else copy(body,this);
+  });
+  function val(id){ var el=$(id); return el?el.value.trim():''; }
+  function copy(txt,btn){ var done=function(){ var o=btn.textContent; btn.textContent='Copié ✓'; setTimeout(function(){btn.textContent=o;},1800); };
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done,function(){fb(txt,done);}); } else fb(txt,done); }
+  function fb(txt,cb){ var t=document.createElement('textarea'); t.value=txt; t.style.position='fixed'; t.style.opacity='0'; document.body.appendChild(t); t.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(t); cb&&cb(); }
+
+  /* ----- Coordonnées éventuelles (si le formulaire est rempli) ----- */
+  function getContactOrNull(){
+    var c={ prenom:val('f-prenom'),nom:val('f-nom'),societe:val('f-societe'),tel:val('f-tel'),email:val('f-email'),adresse:val('f-adresse'),livraison:val('f-livraison'),periode:val('f-periode') };
+    return (c.nom||c.email||c.tel) ? c : null;
+  }
+
+  /* ----- Génération PDF (sans dépendance externe) ----- */
+  function pdfEscape(s){
+    // remplace les caractères non encodables en Latin-1/WinAnsi
+    s=s.replace(/≈/g,'env. ').replace(/→/g,'-').replace(/€/g,'EUR').replace(/œ/g,'oe').replace(/Œ/g,'OE')
+       .replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/–/g,'-').replace(/—/g,'-').replace(/…/g,'...').replace(/•/g,'-').replace(/✓/g,'');
+    var out=''; for(var i=0;i<s.length;i++){ var code=s.charCodeAt(i); if(code>255) out+='?'; else if(code===40||code===41||code===92) out+='\\'+s[i]; else out+=s[i]; }
+    return out;
+  }
+  function buildPDF(lines){
+    var pageH=842, pageW=595, top=792, left=48, lead=15, size=11, perPage=Math.floor((top-48)/lead);
+    var pages=[]; for(var i=0;i<lines.length;i+=perPage) pages.push(lines.slice(i,i+perPage));
+    if(!pages.length) pages.push([' ']);
+    var P=pages.length;
+    // Schéma d'objets : 1=Font, 2..(1+P)=streams, (2+P)..(1+2P)=pages, (2+2P)=Pages tree, (3+2P)=Catalog
+    var fontId=1, pagesTreeId=2+2*P, catId=3+2*P;
+    var objs=[];
+    objs[fontId]='<</Type/Font/Subtype/Type1/BaseFont/Helvetica/Encoding/WinAnsiEncoding>>';
+    var pIds=[];
+    pages.forEach(function(pl,i){
+      var streamId=2+i, pageId=2+P+i; pIds.push(pageId);
+      var stream='BT /F1 '+size+' Tf '+left+' '+top+' Td '+lead+' TL\n';
+      pl.forEach(function(ln,idx){ stream+='('+pdfEscape(ln)+') Tj'+(idx<pl.length-1?' T*':'')+'\n'; });
+      stream+='ET';
+      objs[streamId]='<</Length '+stream.length+'>>\nstream\n'+stream+'\nendstream';
+      objs[pageId]='<</Type/Page/Parent '+pagesTreeId+' 0 R/MediaBox[0 0 '+pageW+' '+pageH+']/Resources<</Font<</F1 '+fontId+' 0 R>>>>/Contents '+streamId+' 0 R>>';
+    });
+    objs[pagesTreeId]='<</Type/Pages/Kids['+pIds.map(function(id){return id+' 0 R';}).join(' ')+']/Count '+P+'>>';
+    objs[catId]='<</Type/Catalog/Pages '+pagesTreeId+' 0 R>>';
+    var total=catId;
+    var header='%PDF-1.4\n', body='', offsets=[], pos=header.length;
+    for(var o=1;o<=total;o++){ var s=o+' 0 obj\n'+objs[o]+'\nendobj\n'; offsets[o]=pos; body+=s; pos+=s.length; }
+    var xrefPos=header.length+body.length;
+    var xref='xref\n0 '+(total+1)+'\n0000000000 65535 f \n';
+    for(var x=1;x<=total;x++){ xref+=('0000000000'+offsets[x]).slice(-10)+' 00000 n \n'; }
+    var trailer='trailer\n<</Size '+(total+1)+'/Root '+catId+' 0 R>>\nstartxref\n'+xrefPos+'\n%%EOF';
+    var pdf=header+body+xref+trailer;
+    var bytes=new Uint8Array(pdf.length); for(var k=0;k<pdf.length;k++) bytes[k]=pdf.charCodeAt(k)&0xff;
+    return new Blob([bytes],{type:'application/pdf'});
+  }
+  function downloadPDF(){
+    var contact=getContactOrNull();
+    var lines=summaryText(contact).split('\n');
+    lines.push(''); lines.push('Document genere le '+new Date().toLocaleDateString('fr-FR')+' — Isotuiles / isotuiles.fr');
+    var blob=buildPDF(lines), url=URL.createObjectURL(blob);
+    var a=document.createElement('a'); a.href=url; a.download='devis-isotuiles.pdf'; document.body.appendChild(a); a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },1500);
+  }
+  $('iso-pdf').addEventListener('click',downloadPDF);
+
+  /* ----- Init ----- */
+  function boot(){
+    var started=false; try{ started=iso3D.init(); }catch(e){ started=false; }
+    if(!started){ $('iso-3d').classList.add('iso-hidden'); $('iso-roof').classList.remove('iso-hidden'); $('iso-3d-hint').classList.add('iso-hidden'); }
+    renderGammes(); renderTypes(); renderDims(); bindFixations(); paintRoof(); showStep(1);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+})();
+</script>
