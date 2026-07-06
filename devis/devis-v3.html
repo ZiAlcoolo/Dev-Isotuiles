@@ -48,13 +48,13 @@
   <header class="iso-head">
     <p class="iso-eyebrow">Configurateur 3D</p>
     <h2 class="iso-title">Composez votre toiture et visualisez-la en 3D</h2>
-    <p class="iso-sub">Panneau, finition, type de toit, dimensions, accessoires et fixations : visualisez le tout en 3D, recevez votre estimation et votre demande de devis, puis finalisez votre commande directement sur notre site web ou en contactant nos conseillers.</p>
+    <p class="iso-sub">Panneau, coloris, type de toit, dimensions, accessoires et fixations : visualisez le tout en 3D, recevez votre estimation et votre demande de devis, puis finalisez votre commande directement sur notre site web ou en contactant nos conseillers.</p>
   </header>
 
   <nav class="iso-steps" aria-label="Étapes du configurateur">
     <ol class="iso-steps-list">
       <li class="iso-step is-active" data-step="1"><span class="iso-step-num">1</span><span class="iso-step-lbl">Gamme</span></li>
-      <li class="iso-step" data-step="2"><span class="iso-step-num">2</span><span class="iso-step-lbl">Finition</span></li>
+      <li class="iso-step" data-step="2"><span class="iso-step-num">2</span><span class="iso-step-lbl">Coloris</span></li>
       <li class="iso-step" data-step="3"><span class="iso-step-num">3</span><span class="iso-step-lbl">Épaisseur</span></li>
       <li class="iso-step" data-step="4"><span class="iso-step-num">4</span><span class="iso-step-lbl">Toiture</span></li>
       <li class="iso-step" data-step="5"><span class="iso-step-num">5</span><span class="iso-step-lbl">Accessoires</span></li>
@@ -1077,7 +1077,7 @@
     var rows=[
       ['sec','Configuration'],
       ['Gamme',ISO.produits[state.produit].nom],
-      ['Finition','<span class="iso-recap-sw" style="background:'+state.couleur.hex+'"></span>'+state.couleur.nom],
+      ['Coloris','<span class="iso-recap-sw" style="background:'+state.couleur.hex+'"></span>'+state.couleur.nom],
       ['Épaisseur',state.epaisseur],
       ['Type de toit',typeNom()],
       ['Dimensions',dimsText()],
@@ -1113,7 +1113,7 @@
       var rv = tooLong ? {product:shopProduct(pr.handle), variant:null, nomatch:true, tooLong:true}
                        : shopVariant(pr.handle, [tailleStr(pr.R), pr.hue], true);
       var props={ 'Type de toit':typeNom(), 'Dimensions':dimsText(), 'Longueur de panneau':fmt(pr.R,2)+' m',
-        'Surface':fmt(pr.surf,1)+' m²', 'Finition':state.couleur.nom, 'Épaisseur':state.epaisseur };
+        'Surface':fmt(pr.surf,1)+' m²', 'Coloris':state.couleur.nom, 'Épaisseur':state.epaisseur };
       if(pr.lbl) props['Pan']=pr.lbl;
       items.push({ kind:'panel',
         label:ISO.produits[state.produit].nom+' — '+state.couleur.nom+' · '+state.epaisseur+(pr.lbl?' · '+pr.lbl:'')+' · '+fmt(pr.R,2)+' m',
@@ -1184,7 +1184,7 @@
     var L=['Demande de devis — Configurateur Isotuiles','==========================================',
       '— Configuration —',
       'Gamme : '+ISO.produits[state.produit].nom,
-      'Finition : '+state.couleur.nom,
+      'Coloris : '+state.couleur.nom,
       'Épaisseur : '+state.epaisseur,
       'Type de toit : '+typeNom(),
       'Dimensions : '+dimsText(),'',
