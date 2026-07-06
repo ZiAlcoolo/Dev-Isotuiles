@@ -89,7 +89,7 @@
 
       <!-- 2 FINITION -->
       <section class="iso-screen" data-screen="2">
-        <h3 class="iso-screen-title">Choisissez votre finition</h3>
+        <h3 class="iso-screen-title">Choisissez votre coloris</h3>
         <p class="iso-note">Teintes indicatives — le rendu réel peut légèrement varier.</p>
         <div class="iso-grid iso-grid-2" id="iso-couleurs"></div>
       </section>
@@ -103,11 +103,24 @@
 
       <!-- 4 TOITURE -->
       <section class="iso-screen" data-screen="4">
-        <h3 class="iso-screen-title">Type de toit</h3>
-        <div class="iso-grid iso-grid-1" id="iso-types"></div>
-        <h3 class="iso-screen-title iso-mt">Dimensions</h3>
-        <div class="iso-fields" id="iso-dims"></div>
-        <p class="iso-note" id="iso-dims-note"></p>
+        <div class="iso-chips iso-modeswitch">
+          <button type="button" class="iso-chip is-sel" data-mode="toiture">Par toiture</button>
+          <button type="button" class="iso-chip" data-mode="custom">Liste personnalisée</button>
+        </div>
+        <div id="iso-guided">
+          <h3 class="iso-screen-title">Type de toit</h3>
+          <div class="iso-grid iso-grid-1" id="iso-types"></div>
+          <h3 class="iso-screen-title iso-mt">Dimensions</h3>
+          <div class="iso-fields" id="iso-dims"></div>
+          <p class="iso-note" id="iso-dims-note"></p>
+        </div>
+        <div id="iso-custom" class="iso-hidden">
+          <h3 class="iso-screen-title">Longueurs personnalisées</h3>
+          <p class="iso-note">Composez librement votre commande : ajoutez autant de longueurs que nécessaire, chacune avec sa quantité de panneaux.</p>
+          <div id="iso-custom-lines" class="iso-custom-lines"></div>
+          <button type="button" class="iso-btn iso-btn-ghost iso-custom-add" id="iso-custom-add">+ Ajouter une longueur</button>
+          <p class="iso-note" id="iso-custom-sum"></p>
+        </div>
       </section>
 
       <!-- 5 ACCESSOIRES & FIXATIONS -->
@@ -355,6 +368,20 @@
 #iso-config .iso-cta-row{display:flex; flex-wrap:wrap; gap:12px; margin-top:18px}
 #iso-config .iso-disclaimer{margin:14px 0 0; font-size:.78rem; color:rgba(255,255,255,.65)}
 
+#iso-config .iso-modeswitch{margin-bottom:18px}
+#iso-config .iso-body.custom-mode{grid-template-columns:1fr}
+#iso-config .iso-body.custom-mode .iso-preview{display:none}
+#iso-config .iso-custom-lines{display:grid; gap:10px; margin-bottom:12px}
+#iso-config .iso-custom-row{display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; background:var(--iso-glass); border:1.5px solid var(--iso-line)}
+#iso-config .iso-custom-row .iso-cl-idx{font-size:.8rem; font-weight:700; opacity:.6; min-width:20px}
+#iso-config .iso-custom-row .iso-input{flex:1; min-width:0}
+#iso-config .iso-custom-row .iso-cl-qty{width:90px; flex:none}
+#iso-config .iso-custom-row .iso-cl-lbl{font-size:.72rem; opacity:.65; white-space:nowrap}
+#iso-config .iso-custom-row .iso-cl-del{flex:none; width:32px; height:32px; border-radius:8px; border:1.5px solid var(--iso-line); background:var(--iso-glass); color:#fff; cursor:pointer; font-size:1.1rem; line-height:1}
+#iso-config .iso-custom-row .iso-cl-del:hover{background:rgba(255,120,120,.25); border-color:rgba(255,120,120,.5)}
+#iso-config .iso-custom-add{margin-top:2px}
+@media (max-width:520px){ #iso-config .iso-custom-row{flex-wrap:wrap} #iso-config .iso-custom-row .iso-cl-qty{width:72px} }
+
 #iso-config .iso-modal{position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(0,20,45,.55); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px)}
 #iso-config .iso-modal-box{position:relative; width:100%; max-width:420px; background:linear-gradient(140deg,#002F5C,#2F6CA2); border:1px solid var(--iso-line-2); border-radius:18px; padding:26px 24px; box-shadow:0 24px 60px rgba(0,20,45,.5); text-align:center}
 #iso-config .iso-modal-title{margin:0 0 8px; font-size:1.15rem; font-weight:800;color:#fff;}
@@ -430,8 +457,17 @@
         epaisseurs:["50/77 mm"] },
       bac:{ nom:"Bac Acier", sousTitre:"Panneau sandwich nervuré", profil:"bac", largeurUtile:1.00, delai:"5 à 8 semaines",
         img:"https://cdn.shopify.com/s/files/1/0909/7605/9715/files/bac-acier-illustration.png?v=1774001720",
-        couleurs:[{nom:"RAL 9010 Blanc",hex:"#EDE8DC"},{nom:"RAL 9005 Noir Profond",hex:"#0E0E10"},{nom:"RAL 7016 Anthracite",hex:"#383E42"},{nom:"RAL 8004 Tuile Rouge",hex:"#8D4931"},{nom:"RAL 3009 Rouge terre",hex:"#703731"},{nom:"RAL 9006 Aluminium",hex:"#A5A8A6"},{nom:"RAL 6005 Vert",hex:"#114232"},{nom:"Autre RAL",hex:"#7C8A99"}],
-        epaisseurs:["30 mm","40 mm","60 mm","80 mm","100 mm"] }
+        couleurs:[
+          {nom:"RAL 9010 Blanc",hex:"#F1F0EA"},{nom:"RAL 9006 Métal argenté",hex:"#A5A5A5"},
+          {nom:"RAL 9007 Métal gris",hex:"#8F9091"},{nom:"RAL 7038 Gris perle",hex:"#B5B8B1"},
+          {nom:"RAL 7012 Gris basalte",hex:"#4E5452"},{nom:"RAL 7016 Gris anthracite",hex:"#383E42"},
+          {nom:"RAL 7022 Gris foncé",hex:"#4B4A44"},{nom:"RAL 9005 Noir profond",hex:"#0A0A0A"},
+          {nom:"RAL 8004 Tuile rouge",hex:"#8E402A"},{nom:"RAL 3009 Rouge foncé",hex:"#642424"},
+          {nom:"RAL 3000 Rouge feu",hex:"#AF2B1E"},{nom:"RAL 1015 Crème",hex:"#E6D2B5"},
+          {nom:"RAL 1018 Jaune zinc",hex:"#F3DA0B"},{nom:"RAL 5010 Bleu gentiane",hex:"#0E294B"},
+          {nom:"RAL 6005 Vert foncé",hex:"#114232"}
+        ],
+        epaisseurs:["30 mm","40 mm","50 mm","60 mm","80 mm","100 mm"] }
     }
   };
 
@@ -505,15 +541,23 @@
       'plates|Rouge terracotta':     'tuiles-plates-terracotta',
       'plates|Gris anthracite':      'tuiles-plates-gris-anthracite-ral-7016',
       "plates|Gris terre d'ombre":   'tuiles-plates-gris-terre-d-ombre-ral-7022',
-
+      
       // BAC ACIER
-      'bac|RAL 9010 Blanc': 'bac-acier-blanc-ral-9010',
-      'bac|RAL 9005 Noir Profond': 'bac-acier-noir-profond-ral-9005',
-      'bac|RAL 7016 Anthracite': 'bac-acier-anthracite-ral-7016',
-      'bac|RAL 8004 Tuile Rouge': 'bac-acier-tuile-rouge-ral-8004',
-      'bac|RAL 3009 Rouge terre': 'bac-acier-rouge-fonce-ral-3009',
-      'bac|RAL 9006 Aluminium': 'bac-acier-metal-argente-ral-9006',
-      'bac|RAL 6005 Vert': 'bac-acier-vert-fonce-ral-6005',
+      'bac|RAL 9010 Blanc'            : 'bac-acier-blanc-ral-9010',
+      'bac|RAL 9006 Aluminium'        : 'bac-acier-metal-argente-ral-9006',
+      'bac|RAL 9007 Gris métal'       : 'bac-acier-metal-gris-ral-9007',
+      'bac|RAL 7038 Gris perle'       : 'bac-acier-gris-perle-ral-7038',
+      'bac|RAL 7012 Gris basalte'     : 'bac-acier-gris-basalte-ral-7012',
+      'bac|RAL 7016 Anthracite'       : 'bac-acier-gris-anthracite-ral-7016',
+      'bac|RAL 7022 Gris foncé'       : 'bac-acier-gris-fonce-ral-7022',
+      'bac|RAL 9005 Noir'             : 'bac-acier-noir-profond-ral-9005',
+      'bac|RAL 8004 Tuile Rouge'      : 'bac-acier-tuile-rouge-ral-8004',
+      'bac|RAL 3009 Rouge terre'      : 'bac-acier-rouge-fonce-ral-3009',
+      'bac|RAL 3000 Rouge feu'        : 'bac-acier-rouge-feu-ral-3000',
+      'bac|RAL 1015 Crème'            : 'bac-acier-creme-ral-1015',
+      'bac|RAL 1018 Jaune Zinc'       : 'bac-acier-jaune-zinc-ral-1018',
+      'bac|RAL 5010 Bleu Gentiane'    : 'bac-acier-bleu-gentiane-ral-5010',
+      'bac|RAL 6005 Vert'             : 'bac-acier-vert-fonce-ral-6005',
     },
     // Teinte configurateur -> libellé "Couleur" des variantes accessoires/visserie
     accColour: {
@@ -588,6 +632,17 @@
     var c=compute(), u=panelUnitFor(), hue=thickToken(), handle=panelHandleFor();
     var lu=(ISO.produits[state.produit].largeurUtile)||ISO.panneau.largeurUtileParDefaut;
     var A=state.largeur||0, pans;
+    function priceFor(R){ if(SHOP.ok && R>0 && R<=SHOP_MAP.maxLongueur){ var rv=shopVariant(handle,[tailleStr(R),hue],true); if(rv&&rv.variant&&rv.variant.price!=null) return rv.variant.price/100; } return null; }
+    // MODE PERSONNALISÉ : une ligne par longueur saisie
+    if(state.customMode){
+      return (state.customLines||[]).filter(function(l){ return l.len>0 && l.qty>0; }).map(function(l){
+        var surf=l.len*lu*l.qty, qty, unit, price=priceFor(l.len);
+        if(u==='m2'){ qty=Math.max(1,Math.ceil(surf)); unit='m²'; }
+        else if(u==='ml'){ qty=Math.max(1,Math.ceil(surf/lu)); unit='ml'; }
+        else { qty=l.qty; unit='panneau(x)'; }
+        return { lbl:fmt(l.len,2)+' m', R:l.len, surf:surf, qty:qty, unit:unit, price:price, total:(price!=null?price*qty:null), handle:handle, hue:hue };
+      });
+    }
     if(state.typeToit==='2inegaux'){
       pans=[{lbl:'Pan gauche', R:state.rampantG||0}, {lbl:'Pan droit', R:state.rampantD||0}];
     } else {
@@ -600,13 +655,8 @@
       if(u==='m2'){ qty=Math.max(1,Math.ceil(surf)); unit='m²'; }
       else if(u==='ml'){ qty=Math.max(1,Math.ceil(surf/lu)); unit='ml'; }
       else { qty = state.typeToit==='2inegaux' ? Math.max(1,Math.ceil(A/lu)) : Math.max(1,c.nb); unit='panneau(x)'; }
-      var price=null;
-      if(SHOP.ok && R>0 && R<=SHOP_MAP.maxLongueur){
-        var rv=shopVariant(handle,[tailleStr(R),hue],true);
-        if(rv && rv.variant && rv.variant.price!=null) price=rv.variant.price/100;
-      }
-      return { lbl:pan.lbl, R:R, surf:surf, qty:qty, unit:unit, price:price, total:(price!=null?price*qty:null), handle:handle, hue:hue };
-    });
+      return { lbl:pan.lbl, R:R, surf:surf, qty:qty, unit:unit, price:priceFor(R), total:null, handle:handle, hue:hue };
+    }).map(function(r){ r.total=(r.price!=null?r.price*r.qty:null); return r; });
   }
   /* classe d'épaisseur (40 ou 60) pour matcher "40 mm / 80 mm" / "60 mm / 105 mm" */
   function thickToken(){ var n=(state.epaisseur||'').match(/\d+/); return n?n[0]:''; }
@@ -619,7 +669,8 @@
   /* État */
   var state={ step:1, produit:null, couleur:null, epaisseur:null,
     typeToit:"2egaux", largeur:null, rampant:null, rampantG:null, rampantD:null, profondeur:null,
-    charpente:"bois", entraxe:"2", accessoires:{}, _accSig:"" };
+    charpente:"bois", entraxe:"2", accessoires:{}, _accSig:"",
+    customMode:false, customLines:[] };
   var MAX_STEP=6;
   var PI=Math.PI, PITCH=28*PI/180;
 
@@ -1011,10 +1062,10 @@
     var box=$('iso-screws'), sc=screwsCount();
     box.innerHTML='<span><b>'+sc.type+'</b> · '+density()+' vis/m²</span><span class="iso-screws-q">≈ '+sc.qty+' vis · '+sc.packs+' pack(s) de 100</span>';
   }
-  function accSig(){ return [state.typeToit,state.largeur,state.rampant,state.rampantG,state.rampantD].join('|'); }
+  function accSig(){ return [state.customMode,state.typeToit,state.largeur,state.rampant,state.rampantG,state.rampantD].join('|'); }
   function accForGamme(){ return ACCESSOIRES.filter(function(a){ return !a.gammes || a.gammes.indexOf(state.produit)>=0; }); }
   function renderAccessoires(){
-    var rc=currentCorners(false), m=rc.meta, A=state.largeur||0, R=mainR();
+    var m=compute().meta, A=state.largeur||0, R=mainR();
     var fresh = accSig()!==state._accSig; state._accSig=accSig();
     var w=$('iso-acc'); w.innerHTML='';
     accForGamme().forEach(function(a){
@@ -1051,8 +1102,15 @@
 
   /* ----- Calcul récap ----- */
   function compute(){
+    var lu=(ISO.produits[state.produit]?ISO.produits[state.produit].largeurUtile:1)||ISO.panneau.largeurUtileParDefaut;
+    if(state.customMode){
+      var surface=0, nb=0, maxL=0;
+      (state.customLines||[]).forEach(function(l){ if(l.len>0&&l.qty>0){ surface+=l.len*lu*l.qty; nb+=l.qty; maxL=Math.max(maxL,l.len); } });
+      var prixC=(ISO.prixM2&&ISO.prixM2[state.produit]!=null)?surface*ISO.prixM2[state.produit]:null;
+      return {surface:surface,longP:maxL,nb:nb,metrage:surface/lu,prix:prixC,hors:maxL>ISO.panneau.longueurMax,
+        delai:ISO.produits[state.produit].delai,meta:{type:'custom',ridgeLen:0,eaveLen:0,vergeLen:0}};
+    }
     var rc=currentCorners(false), surface=roofArea(rc.slopes);
-    var lu=(ISO.produits[state.produit].largeurUtile)||ISO.panneau.largeurUtileParDefaut;
     var longP=mainR();
     var metrage=surface/lu;
     var nb=longP>0?Math.ceil(metrage/longP):0;
@@ -1064,8 +1122,9 @@
     var out=[]; accForGamme().forEach(function(a){ var st=state.accessoires[a.id]; if(st&&st.included&&st.qty>0) out.push({nom:a.nom,qty:st.qty,len:a.len,pack:a.pack,unit:a.unit}); }); return out;
   }
   function accQtyText(a){ return a.pack ? (a.qty+' '+(a.unit||'pack(s) de 100')) : (a.qty+' × '+fmt(a.len,a.len%1?2:0)+' ml'); }
-  function typeNom(){ var n=state.typeToit; TYPES.forEach(function(t){ if(t.id===state.typeToit) n=t.nom; }); return n; }
+  function typeNom(){ if(state.customMode) return 'Commande personnalisée'; var n=state.typeToit; TYPES.forEach(function(t){ if(t.id===state.typeToit) n=t.nom; }); return n; }
   function dimsText(){
+    if(state.customMode){ var ls=(state.customLines||[]).filter(function(l){return l.len>0&&l.qty>0;}); return 'Liste personnalisée — '+ls.length+' longueur(s), '+ls.reduce(function(s,l){return s+l.qty;},0)+' panneaux'; }
     if(state.typeToit==='2inegaux') return 'L '+fmt(state.largeur||0,1)+' m · pan G '+fmt(state.rampantG||0,2)+' m · pan D '+fmt(state.rampantD||0,2)+' m';
     var t=''; t+='L '+fmt(state.largeur||0,1)+' m · panneau '+fmt(state.rampant||0,2)+' m';
     if(state.profondeur) t+=' · prof. '+fmt(state.profondeur,1)+' m'; return t;
@@ -1215,12 +1274,13 @@
     if(state.typeToit==='croupe'||state.typeToit==='pavillon') return state.rampant>0 && state.profondeur>0;
     return state.rampant>0;
   }
+  function customValid(){ return (state.customLines||[]).some(function(l){ return l.len>0 && l.qty>0; }); }
   function stepValid(s){
     switch(s){
       case 1: return !!state.produit;
       case 2: return !!state.couleur;
       case 3: return !!state.epaisseur;
-      case 4: return dimsValid();
+      case 4: return state.customMode ? customValid() : dimsValid();
       case 5: return true;
       default: return true;
     }
@@ -1232,6 +1292,7 @@
     qa('.iso-screen').forEach(function(sc){ sc.classList.toggle('is-shown',+sc.dataset.screen===s); });
     qa('.iso-step').forEach(function(st){ var n=+st.dataset.step; st.classList.toggle('is-active',n===s); st.classList.toggle('is-done',n<s); });
     root.querySelector('.iso-progress-bar').style.width=(s/MAX_STEP*100)+'%';
+    var body=root.querySelector('.iso-body'); if(body) body.classList.toggle('custom-mode', state.customMode);
     $('iso-prev').disabled=s===1;
     $('iso-next').classList.toggle('iso-hidden', s===MAX_STEP);
     if(s!==6){ $('iso-form').classList.add('iso-hidden'); }
@@ -1244,8 +1305,9 @@
   $('iso-prev').addEventListener('click',function(){ if(state.step>1) showStep(state.step-1); });
   qa('.iso-step').forEach(function(st){ st.addEventListener('click',function(){ var t=+st.dataset.step; if(t<=state.step||stepValid(state.step)) showStep(Math.min(t, state.step+(stepValid(state.step)?1:0))); }); });
   $('iso-reset').addEventListener('click',function(){
-    state={ step:1, produit:null, couleur:null, epaisseur:null, typeToit:"2egaux", largeur:null, rampant:null, rampantG:null, rampantD:null, profondeur:null, charpente:"bois", entraxe:"2", accessoires:{}, _accSig:"" };
+    state={ step:1, produit:null, couleur:null, epaisseur:null, typeToit:"2egaux", largeur:null, rampant:null, rampantG:null, rampantD:null, profondeur:null, charpente:"bois", entraxe:"2", accessoires:{}, _accSig:"", customMode:false, customLines:[] };
     $('iso-entraxe').value='2'; qa('[data-charpente]').forEach(function(x){ x.classList.toggle('is-sel',x.dataset.charpente==='bois'); });
+    setMode('toiture');
     renderGammes(); renderCouleurs(); renderEpaisseurs(); renderTypes(); renderDims(); paintRoof(); showStep(1);
   });
 
@@ -1523,11 +1585,52 @@
     if(btn){ btn.disabled=false; btn.textContent=orig; }
   }
 
+  /* ----- Mode personnalisé (liste de longueurs) ----- */
+  function setMode(mode){
+    state.customMode = (mode==='custom');
+    qa('.iso-modeswitch [data-mode]').forEach(function(b){ b.classList.toggle('is-sel', b.dataset.mode===mode); });
+    $('iso-guided').classList.toggle('iso-hidden', state.customMode);
+    $('iso-custom').classList.toggle('iso-hidden', !state.customMode);
+    var body=root.querySelector('.iso-body'); if(body) body.classList.toggle('custom-mode', state.customMode);
+    if(state.customMode && (!state.customLines || !state.customLines.length)){ state.customLines=[{len:0,qty:1}]; }
+    if(state.customMode) renderCustom(); else paintRoof();
+    refresh();
+  }
+  function renderCustom(){
+    var w=$('iso-custom-lines'); if(!w) return; w.innerHTML='';
+    var opts=''; longueurs().forEach(function(l){ opts+='<option value="'+l+'">'+fmt(l,2)+' m</option>'; });
+    (state.customLines||[]).forEach(function(line, i){
+      var row=document.createElement('div'); row.className='iso-custom-row';
+      row.innerHTML='<span class="iso-cl-idx">'+(i+1)+'</span>'+
+        '<select class="iso-input iso-cl-len"><option value="">— longueur —</option>'+opts+'</select>'+
+        '<input type="number" class="iso-input iso-cl-qty" min="1" step="1" value="'+(line.qty||1)+'"><span class="iso-cl-lbl">panneaux</span>'+
+        '<button type="button" class="iso-cl-del" aria-label="Supprimer">×</button>';
+      var sel=row.querySelector('.iso-cl-len'), qty=row.querySelector('.iso-cl-qty'), del=row.querySelector('.iso-cl-del');
+      if(line.len>0) sel.value=String(line.len);
+      sel.addEventListener('change',function(){ line.len=parseFloat(sel.value)||0; updateCustomSum(); refresh(); });
+      qty.addEventListener('input',function(){ line.qty=Math.max(1,parseInt(qty.value,10)||1); updateCustomSum(); refresh(); });
+      del.addEventListener('click',function(){ state.customLines.splice(i,1); if(!state.customLines.length) state.customLines=[{len:0,qty:1}]; renderCustom(); refresh(); });
+      w.appendChild(row);
+    });
+    updateCustomSum();
+  }
+  function updateCustomSum(){
+    var ls=(state.customLines||[]).filter(function(l){return l.len>0&&l.qty>0;});
+    var nb=ls.reduce(function(s,l){return s+l.qty;},0);
+    var lu=(ISO.produits[state.produit]?ISO.produits[state.produit].largeurUtile:1)||1;
+    var surf=ls.reduce(function(s,l){return s+l.len*lu*l.qty;},0);
+    $('iso-custom-sum').textContent = ls.length? (nb+' panneau(x) sur '+ls.length+' longueur(s) · surface totale ≈ '+fmt(surf,1)+' m²') : 'Ajoutez au moins une longueur avec sa quantité.';
+  }
+  function bindCustom(){
+    qa('.iso-modeswitch [data-mode]').forEach(function(b){ b.addEventListener('click',function(){ setMode(b.dataset.mode); }); });
+    $('iso-custom-add').addEventListener('click',function(){ state.customLines.push({len:0,qty:1}); renderCustom(); refresh(); });
+  }
+
   /* ----- Init ----- */
   function boot(){
     var started=false; try{ started=iso3D.init(); }catch(e){ started=false; }
     if(!started){ $('iso-3d').classList.add('iso-hidden'); $('iso-roof').classList.remove('iso-hidden'); $('iso-3d-hint').classList.add('iso-hidden'); }
-    renderGammes(); renderTypes(); renderDims(); bindFixations(); paintRoof(); showStep(1);
+    renderGammes(); renderTypes(); renderDims(); bindFixations(); bindCustom(); paintRoof(); showStep(1);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
